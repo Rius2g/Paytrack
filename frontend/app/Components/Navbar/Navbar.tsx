@@ -4,8 +4,9 @@ import Container from "../Container";
 import Search from "./Search";
 import UserMenu from "./Usermenu";
 import Logo from "./Logo";
+import { IDate } from "@/app/Helper/Modules";
 
-const Navbar = () => {
+const Navbar = (props:{date:IDate}) => {
     return (
         <div className="fixed w-full bg-white z-10 shadow-sm">
             <div
@@ -21,12 +22,12 @@ const Navbar = () => {
                 flex-row
                 items-center
                 justify-between
-                gap-3
+                gap-5
                 md:gap-0
                 "
                 >
                 <Logo />
-                <Search />
+                <Search date={props.date} />
                 <UserMenu />
                 </div>
             </Container>

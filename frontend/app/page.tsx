@@ -26,7 +26,7 @@ export default function Home() {
   return (
     <>
     <div>
-    <Stack spacing={3}>
+    <Stack spacing={3} justifyContent="center" alignItems="center">
     <Button className="bg-gray-200
      text-black 
      font-semibold 

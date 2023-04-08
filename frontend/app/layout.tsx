@@ -1,6 +1,7 @@
 import './globals.css'
 import Navbar from './Components/Navbar/Navbar'
 import { Nunito } from 'next/font/google';
+import { date_instance } from './Helper/Modules';
 
 export const metadata = {
   title: 'Paytrack',
@@ -19,8 +20,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={font.className}>
-        <Navbar />
-        <div className="justify-center flex-auto inline-block" >
+        <Navbar date={date_instance}/>
+        <div className="pt-32" >
         {children}
         </div>
       </body>

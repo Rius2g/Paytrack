@@ -6,7 +6,11 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 import { PickersDay, PickersDayProps } from '@mui/x-date-pickers/PickersDay';
+import { IDate } from '@/app/Helper/Modules';
+import weekOfTheYearPlugin from 'dayjs/plugin/weekOfYear';
 
+
+dayjs.extend(weekOfTheYearPlugin);
 dayjs.extend(isBetweenPlugin);
 
 interface CustomPickerDayProps extends PickersDayProps<Dayjs> {
@@ -44,8 +48,8 @@ function Day(props: PickersDayProps<Dayjs> & { selectedDay?: Dayjs | null }) {
     return <PickersDay day={day} {...other} />;
   }
 
-  const start = selectedDay.startOf('week');
-  const end = selectedDay.endOf('week');
+  const start = selectedDay.startOf('week').add(1, 'day');
+  const end = selectedDay.endOf('week').add(1, 'day');
 
   const dayIsBetween = day.isBetween(start, end, null, '[]');
   const isFirstDay = day.isSame(start, 'day');
@@ -63,14 +67,23 @@ function Day(props: PickersDayProps<Dayjs> & { selectedDay?: Dayjs | null }) {
   );
 }
 
-export default function Weekpicker() {
-  const [value, setValue] = React.useState<Dayjs | null>(dayjs('2022-04-17'));
+export default function Weekpicker(props:{date:IDate, handleclose:() => void}) {
+  const [value, setValue] = React.useState<Dayjs | null>(props.date.date);
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <DateCalendar
         value={value}
-        onChange={(newValue) => setValue(newValue)}
+        onChange={(newValue) => {
+            setValue(newValue);
+            props.date.week = dayjs(newValue).week();
+            props.date.month = dayjs(newValue).month();
+            props.date.year = dayjs(newValue).year();
+            props.date.date = dayjs(newValue);
+            props.date.endOf = dayjs(newValue).endOf('week');
+            props.date.startOf = dayjs(newValue).startOf('week');
+            props.handleclose();
+          }}
         slots={{ day: Day }}
         slotProps={{
           day: {

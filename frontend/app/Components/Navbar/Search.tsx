@@ -1,6 +1,9 @@
 'use client';
 
-const Search = () => {
+import WeekPopup from "../Calender/Weekpopup";
+import { IDate } from "../../Helper/Modules";
+
+const Search = (props:{date:IDate}) => {
     return (
         <div 
         className="
@@ -30,7 +33,7 @@ const Search = () => {
                 px-6
                 "
                 >
-                    Anywhere
+                    <WeekPopup date={props.date} Refresh={() => {}}/>
                 </div>
 
             </div>
