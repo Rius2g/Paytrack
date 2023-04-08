@@ -14,7 +14,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <Head>
-        <h1>PAytrack</h1>
+      <h1>Paytrack</h1>
       </Head>
       <body>
         <h1>Paytrack</h1>
