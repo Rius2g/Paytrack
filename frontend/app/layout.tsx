@@ -1,10 +1,15 @@
-import Head from 'next/head'
 import './globals.css'
+import Navbar from './Components/Navbar/Navbar'
+import { Nunito } from 'next/font/google';
 
 export const metadata = {
   title: 'Paytrack',
   description: 'A Rius2g project',
 }
+
+const font = Nunito({
+  subsets: ['latin']
+})
 
 export default function RootLayout({
   children,
@@ -13,12 +18,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <Head>
-      <h1>Paytrack</h1>
-      </Head>
-      <body>
-        <h1>Paytrack</h1>
-        <div className="justify-center flex flex-auto inline-block" >
+      <body className={font.className}>
+        <Navbar />
+        <div className="justify-center flex-auto inline-block" >
         {children}
         </div>
       </body>
