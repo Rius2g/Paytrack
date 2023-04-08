@@ -1,3 +1,6 @@
+'use client';
+
+
 import React, { useState } from 'react';
 import { Popover } from '@mui/material';
 import Weekpicker from './Weekpicker';
@@ -22,7 +25,17 @@ export default function WeekPopup(props:{date:IDate, Refresh:() => void}){
     const id = open ? 'simple-popover' : undefined;
     return (
         <div>
-            <Button variant="contained" onClick={handleClick}>
+            <Button className="bg-rose-300
+     text-black 
+     font-semibold 
+     px-10 
+     text-sm
+     hidden
+     hover:bg-gray-300
+     flex-center 
+     text-center 
+     border-x-[1px] 
+     sm:block" variant="contained" onClick={handleClick}>
                week {props.date.week}
             </Button>
             <Popover

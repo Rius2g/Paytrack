@@ -1,6 +1,12 @@
 'use client';
 
 import dayjs, { Dayjs } from 'dayjs';
+import weekOfTheYearPlugin from "dayjs/plugin/weekOfYear";
+import isBetweenPlugin from 'dayjs/plugin/isBetween';
+
+
+dayjs.extend(isBetweenPlugin);
+dayjs.extend(weekOfTheYearPlugin);
 
 interface IShift {
     ShiftID: number;

@@ -1,10 +1,11 @@
 'use client';
 
 import ShiftList from "./Components/Shifts/Shiftlist"
-import { IShift } from "./Helper/Modules"
+import { IShift, date_instance } from "./Helper/Modules"
 import { useState } from "react"
 import { Button } from "@mui/material";
 import { Stack } from "@mui/material";
+import convert_date2db from "./Helper/Functions";
 
 export default function Home() {
   const [shiftList, setShiftList] = useState<IShift[]>([])
@@ -12,9 +13,9 @@ export default function Home() {
   const addShift = () => {
     const newShift: IShift = {
       ShiftID: shiftList.length + 1,
-      ShiftDate: 1,
-      ShiftStartTime: 1,
-      ShiftEndTime: 1,
+      ShiftDate: convert_date2db(date_instance.date),
+      ShiftStartTime: 1030,
+      ShiftEndTime: 1030,
       ShiftBreakTime: 1,
       UiD: 1,
       JobbId: 1
@@ -27,7 +28,7 @@ export default function Home() {
     <>
     <div>
     <Stack spacing={3} justifyContent="center" alignItems="center">
-    <Button className="bg-gray-200
+    <Button className="bg-rose-300
      text-black 
      font-semibold 
      px-10 
