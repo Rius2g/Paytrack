@@ -5,7 +5,6 @@ namespace Paytrack.Models
         public int ShiftID { get; set; }
         public int Start { get; set; }
         public int End { get; set; }
-        public int Break { get; set; }
 
         public int UiD { get; set; }
 
