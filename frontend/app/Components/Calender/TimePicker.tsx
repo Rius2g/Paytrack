@@ -7,14 +7,22 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import { Stack } from '@mui/material';
 import { IShift } from '@/app/Helper/Modules';
-import { numberto_DayjsTime } from '@/app/Helper/Functions';
+import { dayjsTime_toNumber, numberto_DayjsTime } from '@/app/Helper/Functions';
 
 export default function TimePickers(props:{shift:IShift}) {
   const [ startValue, setStartValue] = React.useState<Dayjs | null>(numberto_DayjsTime(props.shift.ShiftStartTime));
   const [ endValue, setEndValue] = React.useState<Dayjs | null>(numberto_DayjsTime(props.shift.ShiftEndTime));
 
-  console.log(startValue);
-  console.log(endValue);
+  const handleStartChange = (newValue: Dayjs) => {
+    setStartValue(newValue);
+    props.shift.ShiftStartTime = dayjsTime_toNumber(newValue);
+  };
+
+  const handleEndChange = (newValue: Dayjs) => {
+    setEndValue(newValue);
+    props.shift.ShiftEndTime = dayjsTime_toNumber(newValue);
+  };
+
 
   return (
     <Stack direction="row">

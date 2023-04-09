@@ -1,3 +1,5 @@
+'use client';
+
 import dayjs, { Dayjs } from "dayjs";
 
 //includes functions to convert dates to and from the database (integer format)

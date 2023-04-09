@@ -45,7 +45,7 @@ export default function Home() {
     <Button className="bg-rose-300
      text-black 
      font-semibold 
-     px-10 
+     px-4
      text-sm
      hidden
      hover:bg-gray-300

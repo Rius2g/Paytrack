@@ -21,7 +21,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={font.className}>
         <Navbar date={date_instance}/>
-        <div className="pt-32" >
+        <div className="pt-36" >
         {children}
         </div>
       </body>
