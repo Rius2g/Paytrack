@@ -48,7 +48,7 @@ namespace Paytrack.Database
                                 JobID INTEGER NOT NULL,
                                 Start INTEGER NOT NULL,
                                 End INTEGER NOT NULL,
-                                Rate INTEGER NOT NULL
+                                Rate INTEGER NOT NULL,
                                 RateType TEXT,
                                 RuleType TEXT,
                                 Day INTEGER,

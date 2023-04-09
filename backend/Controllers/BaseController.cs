@@ -1,7 +1,7 @@
 using Dapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.Sqlite;
-using Workouts.Database;
+using Paytrack.Database;
 
 namespace backend.Controllers;
 
