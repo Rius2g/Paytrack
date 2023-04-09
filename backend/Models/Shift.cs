@@ -9,6 +9,8 @@ namespace Paytrack.Models
         public int UiD { get; set; }
 
         public int JobID { get; set; }
+
+        public int Date { get; set; }
       
     }
 }

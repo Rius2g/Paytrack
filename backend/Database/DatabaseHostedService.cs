@@ -23,6 +23,7 @@ namespace Paytrack.Database
                             CREATE TABLE IF NOT EXISTS Shifts (
                                 ShiftId INTEGER PRIMARY KEY AUTOINCREMENT,
                                 Start INTEGER NOT NULL,
+                                Date INTEGER NOT NULL,
                                 End INTEGER NOT NULL,
                                 UiD INTEGER NOT NULL,
                                 JobID INTEGER NOT NULL
