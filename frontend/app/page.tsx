@@ -6,6 +6,9 @@ import { useState } from "react"
 import { Button } from "@mui/material";
 import { Stack } from "@mui/material";
 import convert_date2db from "./Helper/Functions";
+import { Paper, Box, Grid } from "@mui/material";
+import ReturnWorkDay from "./Components/Shifts/WorkDay";
+
 
 export default function Home() {
   const [shiftList, setShiftList] = useState<IShift[]>([])
@@ -18,10 +21,21 @@ export default function Home() {
       ShiftEndTime: 1030,
       ShiftBreakTime: 1,
       UiD: 1,
-      JobbId: 1
+      JobbId: 1,
+      JobName: "Job name"
     }
     setShiftList([...shiftList, newShift])
   }
+
+  const daysOfWeek = [
+    { name: "Monday", dayIndex: 1 },
+    { name: "Tuesday", dayIndex: 2 },
+    { name: "Wednesday", dayIndex: 3 },
+    { name: "Thursday", dayIndex: 4 },
+    { name: "Friday", dayIndex: 5 },
+    { name: "Saturday", dayIndex: 6 },
+    { name: "Sunday", dayIndex: 0 },
+  ];
 
 
   return (
@@ -40,9 +54,27 @@ export default function Home() {
      border-x-[1px] 
      sm:block" 
     onClick={addShift}>Add Shift</Button>
-    <h1>
-      <ShiftList shiftList={shiftList}/>
-    </h1>
+       <Paper>
+       <Box p={10} sx={{ width: "100%", height: "100%" }}>
+        <Grid container spacing={2} alignItems="stretch">
+          {daysOfWeek.map(({ name, dayIndex }) => (
+            <Grid key={dayIndex} item xs={20} sm>
+              <Box mt={-4} textAlign="center">{name}</Box>
+              <Box sx={{
+                borderRadius: '25px',
+                overflow: "auto",
+                color: "black",
+                boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+                padding: "1cm",
+                height: "80%", // Added height property to allow the Box component to stretch to fill the available space
+              }} alignSelf="stretch">
+                <ReturnWorkDay shiftList={shiftList} day={dayIndex} date={date_instance} Refresh={() => { }} Delete={() => { }} />
+              </Box>
+            </Grid>
+          ))}
+        </Grid>
+      </Box>
+    </Paper>
     </Stack>
     </div>
     </>

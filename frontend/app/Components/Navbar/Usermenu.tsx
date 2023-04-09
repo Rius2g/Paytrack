@@ -3,8 +3,9 @@
 import { Avatar } from '@mui/material';
 import { AiOutlineMenu } from 'react-icons/ai'
 import { useCallback, useState } from 'react';
-import LoginModal from './LoginModal';
-import RegisterModal from './RegisterModal';
+import LoginModal from '../Modals/LoginModal';
+import RegisterModal from '../Modals/RegisterModal';
+import JobModal from '../Modals/JobModal';
 
 
 const UserMenu = () => {
@@ -79,6 +80,7 @@ const UserMenu = () => {
                     <>
                 <LoginModal />
                 <RegisterModal />
+                <JobModal />
                     </>
                 </div>
                 </div>

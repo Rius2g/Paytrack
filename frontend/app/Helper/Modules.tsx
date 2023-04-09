@@ -16,6 +16,7 @@ interface IShift {
     ShiftBreakTime: number;
     UiD: number;
     JobbId: number;
+    JobName: string;
 }
 
 interface IDate 
@@ -28,6 +29,15 @@ interface IDate
     endOf: Dayjs,
     startOf: Dayjs
 };
+
+interface IJob {
+    JobID: number;
+    JobName: string;
+    PayRate: number;
+    UiD: number;
+
+}
+
 
 
 var date_instance:IDate = {
@@ -42,4 +52,4 @@ var date_instance:IDate = {
 
 
 export { date_instance };
-export type { IShift, IDate }
+export type { IShift, IDate, IJob }
