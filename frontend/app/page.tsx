@@ -66,7 +66,7 @@ export default function Home() {
                 color: "black",
                 boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
                 padding: "1cm",
-                height: "80%", // Added height property to allow the Box component to stretch to fill the available space
+                height: "100%", // Added height property to allow the Box component to stretch to fill the available space
               }} alignSelf="stretch">
                 <ReturnWorkDay shiftList={shiftList} day={dayIndex} date={date_instance} Refresh={() => { }} Delete={() => { }} />
               </Box>

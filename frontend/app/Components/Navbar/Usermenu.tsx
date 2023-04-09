@@ -6,6 +6,7 @@ import { useCallback, useState } from 'react';
 import LoginModal from '../Modals/LoginModal';
 import RegisterModal from '../Modals/RegisterModal';
 import JobModal from '../Modals/JobModal';
+import RulesModal from '../Modals/RulesModal';
 
 
 const UserMenu = () => {
@@ -81,6 +82,7 @@ const UserMenu = () => {
                 <LoginModal />
                 <RegisterModal />
                 <JobModal />
+                <RulesModal />
                     </>
                 </div>
                 </div>

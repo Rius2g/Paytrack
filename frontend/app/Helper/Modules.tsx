@@ -35,6 +35,19 @@ interface IJob {
     JobName: string;
     PayRate: number;
     UiD: number;
+}
+
+interface IRule {
+    RuleID: number;
+    JobID: number;
+    UiD: number;
+    RuleType: string;
+    Rate: number;
+    Date?: number;
+    StartTime?: number;
+    EndTime?: number;
+    Day?: number;
+    RateType?: string;
 
 }
 
@@ -52,4 +65,4 @@ var date_instance:IDate = {
 
 
 export { date_instance };
-export type { IShift, IDate, IJob }
+export type { IShift, IDate, IJob, IRule }
