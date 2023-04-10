@@ -51,6 +51,20 @@ interface IRule {
 
 }
 
+interface IUser {
+    UiD: number;
+    Email: string;
+    Password: string;
+    loggedIn: boolean;
+}
+
+
+interface IBackEndUser {
+    UserID: number;
+    Email: string;
+    Password: string;
+}
+
 
 
 var date_instance:IDate = {
@@ -65,4 +79,4 @@ var date_instance:IDate = {
 
 
 export { date_instance };
-export type { IShift, IDate, IJob, IRule }
+export type { IShift, IDate, IJob, IRule, IUser, IBackEndUser }

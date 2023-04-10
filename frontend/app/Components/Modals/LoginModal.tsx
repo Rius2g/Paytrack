@@ -1,6 +1,8 @@
 'use client';
+import { IUser, IBackEndUser } from '@/app/Helper/Modules';
 
 import * as React from 'react';
+import { UserAPI } from '@/app/api/UserAPI';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import Button from '@mui/material/Button';
@@ -30,6 +32,8 @@ const style = {
   pb: 3,
 };
 
+var userAPI = new UserAPI();
+
 export default function LoginModal() {
   const [open, setOpen] = React.useState(false);
   const [email, setEmail] = useState('');
@@ -51,7 +55,7 @@ export default function LoginModal() {
   };
 
   const handleSubmit = () => {
-    //api call here
+    // const resp = userAPI.loginUser(email, password);
     handleClose();
   }
 

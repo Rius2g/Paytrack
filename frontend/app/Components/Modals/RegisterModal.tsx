@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import { UserAPI } from '@/app/api/UserAPI';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import Button from '@mui/material/Button';
@@ -15,6 +16,7 @@ import { InputLabel } from '@mui/material';
 import { OutlinedInput } from '@mui/material';
 import { FcGoogle } from "react-icons/fc";
 import CustomButton from '../Button';
+import { IBackEndUser } from '@/app/Helper/Modules';
 
 const style = {
   position: 'absolute' as 'absolute',
@@ -29,6 +31,8 @@ const style = {
   px: 4,
   pb: 3,
 };
+
+var userAPI = new UserAPI();
 
 export default function RegisterModal() {
   const [open, setOpen] = React.useState(false);
@@ -59,9 +63,15 @@ export default function RegisterModal() {
   };
 
   const handleSubmit = () => {
+    var user:IBackEndUser = {
+      Email: email,
+      Password: password,
+      UserID: 0
+    }
+
     //some rules to check if password and confirm password match
     //and valid email
-    //api call here
+    // const resp = userAPI.registerUser(user);
     handleClose();
   }
 
