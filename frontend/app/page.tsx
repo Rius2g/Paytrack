@@ -1,6 +1,5 @@
 'use client';
 
-import ShiftList from "./Components/Shifts/Shiftlist"
 import { IShift, date_instance } from "./Helper/Modules"
 import { useState } from "react"
 import { Button } from "@mui/material";

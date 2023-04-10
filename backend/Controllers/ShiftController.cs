@@ -39,7 +39,8 @@ public class ShiftController : BaseController
         return shift;
     }
 
-    
+    //get shifts by user id
+    // GET: api/Shift/5
     [HttpGet("weekly/{id}")]
     public IEnumerable<Shift> GetWeeklyShifts([FromQuery]long DateStart, [FromQuery]long DateEnd, int id)
     {
@@ -126,5 +127,35 @@ public class ShiftController : BaseController
 
         return result;
     }
+
+    //update shift
+    // PUT: api/Shift/5
+    [HttpPut("{id}")]
+    public bool PutShift(int id, Shift shift)
+    {
+        using var connection = new SqliteConnection(_db.Name);
+
+        var result = connection.Execute(
+            @"UPDATE Shifts
+                    SET
+                        Start = @Start,
+                        Date = @Date,
+                        End = @End,
+                        UiD = @UiD,
+                        JobID = @JobID
+                    WHERE ShiftId = @IdInsert;",
+            new
+            {
+                IdInsert = id,
+                UserID = shift.UiD,
+                Date = shift.Date,
+                Start = shift.Start,
+                End = shift.End,
+                JobID = shift.JobID
+            });
+
+        return result == 1;
+    }
+    
     
 }

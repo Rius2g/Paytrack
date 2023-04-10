@@ -4,6 +4,7 @@ using Paytrack.Database;
 using Microsoft.Data.Sqlite;
 using System;
 using Dapper;
+using backend.Security;
 
 
 namespace backend.Controllers;

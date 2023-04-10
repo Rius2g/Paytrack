@@ -25,7 +25,7 @@ namespace Paytrack.Database
                                 Start INTEGER NOT NULL,
                                 Date INTEGER NOT NULL,
                                 End INTEGER NOT NULL,
-                                UiD INTEGER NOT NULL,
+                                UserID INTEGER NOT NULL,
                                 JobID INTEGER NOT NULL
                             );
 
@@ -54,6 +54,15 @@ namespace Paytrack.Database
                                 Day INTEGER,
                                 Date INTEGER
                             );
+
+                            CREATE TABLE IF NOT EXISTS Salts (
+                                    SaltID INTEGER PRIMARY KEY AUTOINCREMENT,
+                                    UserID INTEGER,
+                                    Salt VARCHAR(64),
+                                    FOREIGN KEY(UserID) REFERENCES Users(UserID),
+                                    UNIQUE(UserID),
+                                    UNIQUE(UserID,Salt)
+                                );
 
             ");
 
