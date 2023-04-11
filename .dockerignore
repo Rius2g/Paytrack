@@ -1,0 +1,7 @@
+frontend/node_modules
+
+
+backend/bin
+backend/obj
+backend/.vscode
+backend/db.sqlite

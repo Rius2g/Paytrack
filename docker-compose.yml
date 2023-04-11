@@ -1,0 +1,28 @@
+version: '3.5'
+services:
+  frontend:
+    build: 
+      context: frontend
+      dockerfile: .docker/Dockerfile
+    ports:
+      - 3000:3000
+    stdin_open: true
+    tty: true
+
+  
+  backend:
+    build: 
+      context: backend
+      dockerfile: .docker/Dockerfile
+    volumes:
+      - type: bind
+        source: ./backend/db.sqlite
+        target: /app/db.sqlite
+    ports:
+      - 6032:5001
+
+
+
+
+
+

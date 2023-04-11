@@ -1,23 +1,42 @@
-import axios from "axios";
-
 export class ShiftsAPI 
 {
-    private enviroment = "http://localhost:5022/api/Shift";
+    private enviroment = "http://localhost:5001/api/Shift";
 
     public async getShifts() {
-        const response = await axios.get(this.enviroment);
-        return response.data;
+        const response = await fetch(this.enviroment, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+        
+        const data = await response.json();
+        return data;
     }
 
 
     public async getShift(id: number) {
-        const response = await axios.get(this.enviroment + "/" + id);
-        return response.data;
+        const response = await fetch(this.enviroment + "/" + id.toString(), {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+
+        const data = await response.json();
+        return data;
     }
 
     public async createShift(shift: any) {
-        const response = await axios.post(this.enviroment, shift);
-        return response.data;
+        const response = await fetch(this.enviroment, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                },
+                body: JSON.stringify(shift),
+            });
+            const data = await response.json();
+            return data;
     }
     
     public async getShiftsInRange(dateStart: number, dateEnd:number, UiD:number)
@@ -34,8 +53,15 @@ export class ShiftsAPI
     }
 
     public async updateShift(shift: any) {
-        const response = await axios.put(this.enviroment, shift);
-        return response.data;
+        const response = await fetch(this.enviroment, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                },
+                body: JSON.stringify(shift),
+            });
+            const data = await response.json();
+            return data;
     }
 
 }

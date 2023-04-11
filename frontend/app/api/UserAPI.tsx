@@ -2,7 +2,7 @@ import { IBackEndUser, IUser } from '@/app/Helper/Modules';
 
 export class UserAPI {
 
-    private enviroment = "http://localhost:5022/api/User";
+    private enviroment = "http://localhost:5001/api/User";
 
     public async registerUser(user:IBackEndUser){
         const response = await fetch(this.enviroment + "/register", {

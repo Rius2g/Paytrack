@@ -13,7 +13,6 @@ interface IShift {
     ShiftDate: number;
     ShiftStartTime: number;
     ShiftEndTime: number;
-    ShiftBreakTime: number;
     UiD: number;
     JobbId: number;
     JobName: string;

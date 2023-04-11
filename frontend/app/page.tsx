@@ -1,5 +1,3 @@
-'use client';
-
 import { IShift, date_instance } from "./Helper/Modules"
 import { useState } from "react"
 import { Button } from "@mui/material";
@@ -7,8 +5,10 @@ import { Stack } from "@mui/material";
 import convert_date2db from "./Helper/Functions";
 import { Paper, Box, Grid } from "@mui/material";
 import ReturnWorkDay from "./Components/Shifts/WorkDay";
+import { ShiftsAPI } from "./api/ShiftsAPI";
 
 
+const shiftsAPI = new ShiftsAPI();
 export default function Home() {
   const [shiftList, setShiftList] = useState<IShift[]>([])
 
@@ -18,12 +18,12 @@ export default function Home() {
       ShiftDate: convert_date2db(date_instance.date),
       ShiftStartTime: 1030,
       ShiftEndTime: 1030,
-      ShiftBreakTime: 1,
       UiD: 1,
       JobbId: 1,
       JobName: "Job name"
     }
     setShiftList([...shiftList, newShift])
+    shiftsAPI.createShift(newShift)
   }
 
   const daysOfWeek = [
