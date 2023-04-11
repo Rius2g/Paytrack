@@ -1,3 +1,5 @@
+'use client';
+
 import { IShift, date_instance } from "./Helper/Modules"
 import { useState } from "react"
 import { Button } from "@mui/material";
