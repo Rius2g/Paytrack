@@ -1,7 +1,8 @@
 import './globals.css'
+import * as React from 'react'
 import Navbar from './Components/Navbar/Navbar'
 import { Nunito } from 'next/font/google';
-import { date_instance } from './Helper/Modules';
+import { DateContext } from './page';
 
 export const metadata = {
   title: 'Paytrack',
@@ -12,6 +13,7 @@ const font = Nunito({
   subsets: ['latin']
 })
 
+
 export default function RootLayout({
   children,
 }: {
@@ -20,7 +22,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={font.className}>
-        <Navbar date={date_instance}/>
+        <Navbar/>
         <div className="pt-36" >
         {children}
         </div>

@@ -63,6 +63,35 @@ export default function RegisterModal() {
   };
 
   const handleSubmit = () => {
+
+    if(password !== confirmPassword){
+      alert("Passwords do not match");
+      return;
+  }
+
+  if(password.length < 8){
+      alert("Password must be at least 8 characters");
+      return;
+  }
+
+  
+  if(!password.match(/[0-9]/)) {
+      alert("Password must contain a number");
+      return;
+  }
+
+  //checks if password contains an uppercase letter
+  if(!password.match(/[A-Z]/)) {
+      alert("Password must contain an uppercase letter");
+      return;
+  }
+
+  if(!email.match((/[@]/)))
+  {
+      alert("Please enter a valid email");
+      return;
+  }
+
     var user:IBackEndUser = {
       Email: email,
       Password: password,
@@ -71,7 +100,12 @@ export default function RegisterModal() {
 
     //some rules to check if password and confirm password match
     //and valid email
-    // const resp = userAPI.registerUser(user);
+     userAPI.registerUser(user).then((response) => {
+      if(response.status !== 200){
+        alert("User already exists");
+      }
+    });
+      
     handleClose();
   }
 

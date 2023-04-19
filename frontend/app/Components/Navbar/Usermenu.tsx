@@ -7,6 +7,7 @@ import LoginModal from '../Modals/LoginModal';
 import RegisterModal from '../Modals/RegisterModal';
 import JobModal from '../Modals/JobModal';
 import RulesModal from '../Modals/RulesModal';
+import SettingsModal from '../Modals/SettingsModal';
 
 
 const UserMenu = () => {
@@ -83,6 +84,7 @@ const UserMenu = () => {
                 <RegisterModal />
                 <JobModal />
                 <RulesModal />
+                <SettingsModal />
                     </>
                 </div>
                 </div>

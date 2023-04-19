@@ -5,8 +5,13 @@ import Search from "./Search";
 import UserMenu from "./Usermenu";
 import Logo from "./Logo";
 import { IDate } from "@/app/Helper/Modules";
+import { DateContext } from "@/app/page";
+import { useContext } from "react";
 
-const Navbar = (props:{date:IDate}) => {
+
+
+const Navbar = () => {
+    const date = useContext(DateContext);
     return (
         <div className="fixed w-full bg-white z-10 shadow-sm">
             <div
@@ -27,7 +32,7 @@ const Navbar = (props:{date:IDate}) => {
                 "
                 >
                 <Logo />
-                <Search date={props.date} />
+                <Search date={date} />
                 <UserMenu />
                 </div>
             </Container>

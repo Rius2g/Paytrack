@@ -1,6 +1,6 @@
 'use client';
-import { IUser, IBackEndUser } from '@/app/Helper/Modules';
 
+import { IUser, IBackEndUser } from '@/app/Helper/Modules';
 import * as React from 'react';
 import { UserAPI } from '@/app/api/UserAPI';
 import Box from '@mui/material/Box';
@@ -17,6 +17,9 @@ import { InputLabel } from '@mui/material';
 import { OutlinedInput } from '@mui/material';
 import { FcGoogle } from "react-icons/fc";
 import CustomButton from '../Button';
+import Cookies from "js-cookie";
+import { v4 as uuidv4 } from "uuid";
+
 
 const style = {
   position: 'absolute' as 'absolute',
@@ -31,6 +34,7 @@ const style = {
   px: 4,
   pb: 3,
 };
+
 
 var userAPI = new UserAPI();
 
@@ -55,7 +59,51 @@ export default function LoginModal() {
   };
 
   const handleSubmit = () => {
-    // const resp = userAPI.loginUser(email, password);
+    const failedLoginAttemptsCookie = Cookies.get('failedLoginAttempts');
+    const failedLoginAttempts = failedLoginAttemptsCookie !== undefined ? parseInt(failedLoginAttemptsCookie) : 0;
+
+    if( failedLoginAttempts >= 5)
+    {
+      alert("You have exceeded the maximum number of failed login attempts. Please try again later.");
+      Cookies.set("timeOut", "true", { expires: 1/1440 * 3} );
+      return;
+    }
+    const cookie = Cookies.get('timeOut');
+    if(cookie !== undefined)
+    {
+      alert("You have exceeded the maximum number of failed login attempts. Please try again later.");
+      return;
+    }
+
+    userAPI.loginUser(email, password).then((res) => {
+      if(res.ok)
+      {
+        if(res.status === 200)
+        {
+          res.json().then((data) => {
+            if(data.UserID === 0)
+            {
+              alert("Invalid email or password");
+              Cookies.set("failedLoginAttempts", (failedLoginAttempts + 1).toString());
+              setPassword("");
+              return;
+            }
+            //successfull login
+            Cookies.set("failedLoginAttempts", "0");
+            const cookie = uuidv4();
+            Cookies.set("loggedIn", cookie, { expires: 7 });
+            Cookies.set("userID", data.userID, { expires: 7 });
+          })
+        }
+        else {
+          alert("Invalid email or password");
+          Cookies.set("failedLoginAttempts", (failedLoginAttempts + 1).toString());
+          setPassword("");
+        }
+      }
+    })
+
+
     handleClose();
   }
 

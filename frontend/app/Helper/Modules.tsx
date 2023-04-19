@@ -18,6 +18,18 @@ interface IShift {
     JobName: string;
 }
 
+export interface IAuth {
+    auth: boolean;
+    setAuth: React.Dispatch<React.SetStateAction<boolean>>;
+  }
+
+export interface UserIdType{
+
+  userId: number;
+  setuserId: React.Dispatch<React.SetStateAction<number>>;
+
+}
+
 interface IDate 
 {
     date: Dayjs,
@@ -66,16 +78,4 @@ interface IBackEndUser {
 
 
 
-var date_instance:IDate = {
-    date: dayjs(),
-    week: dayjs().week(),
-    month: dayjs().month(),
-    day: dayjs().day(),
-    year: dayjs().year(),
-    endOf: dayjs().endOf('week'),
-    startOf: dayjs().startOf('week')
-}
-
-
-export { date_instance };
 export type { IShift, IDate, IJob, IRule, IUser, IBackEndUser }
