@@ -9,6 +9,7 @@ import CustomButton from '../Button';
 import { IJob, IRule } from '@/app/Helper/Modules';
 import { Stack } from '@mui/material';
 import RuleList from '../Rules/RuleList';
+import Cookies from "js-cookie";
 
 
 const style = {
@@ -28,6 +29,11 @@ const style = {
 export default function RulesModal() {
   const [ open, setOpen ] = useState(false);
   const [ rules, setRules ] = useState<IRule[]>([]);
+  const [userId, setuserId] = React.useState<number>(() =>
+  Cookies.get("userID") !== undefined
+    ? (Cookies.get("userID") as unknown as number)
+    : 0
+  );
 
   const handleOpen = () => {
     //api call to fetch jobs
@@ -40,6 +46,12 @@ export default function RulesModal() {
 
   const handleNewRule = () => {
     //api call here
+    if(userId === 0)
+    {
+      alert("You must be logged in to add a rule");
+      return;
+    }
+    
     var newRule: IRule = {
         RuleID: rules.length + 1,
         JobID: 0,
@@ -54,7 +66,18 @@ export default function RulesModal() {
   return (
     <div>
        {/* style this button */}
-      <Button onClick={handleOpen}>Rules</Button>
+      <Button className="bg-rose-300
+     text-black 
+     font-semibold 
+     px-4 
+     text-sm
+     hidden
+     hover:bg-gray-300
+     flex-center 
+     text-center 
+     border-x-[1px] 
+     sm:block
+     w-24"  onClick={handleOpen}>Rules</Button>
       <Modal
         open={open}
         onClose={handleClose}

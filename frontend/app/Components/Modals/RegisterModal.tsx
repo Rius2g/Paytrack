@@ -121,7 +121,18 @@ export default function RegisterModal() {
   return (
     <div>
        {/* style this button */}
-      <Button onClick={handleOpen}>Register</Button>
+      <Button className="bg-rose-300
+     text-black 
+     font-semibold 
+     px-4 
+     text-sm
+     hidden
+     hover:bg-gray-300
+     flex-center 
+     text-center 
+     border-x-[1px] 
+     sm:block
+     w-24"  onClick={handleOpen}>Register</Button>
       <Modal
         open={open}
         onClose={handleClose}

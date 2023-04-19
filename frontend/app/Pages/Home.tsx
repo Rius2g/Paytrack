@@ -17,6 +17,13 @@ export default function Home(props:{uid:number}) {
   const [shiftList, setShiftList] = useState<IShift[]>([])
 
   const addShift = () => {
+    if(props.uid === 0)
+    {
+      alert("Please login to add a shift");
+      return;
+    }
+    console.log(props.uid)
+
     const newShift: IShift = {
       ShiftID: shiftList.length + 1,
       ShiftDate: convert_date2db(date_instance.date),
@@ -66,7 +73,6 @@ export default function Home(props:{uid:number}) {
      border-x-[1px] 
      sm:block" 
     onClick={addShift}>Add Shift</Button>
-       <Paper>
        <Box p={10} sx={{ width: "100%", height: "100%" }}>
         <Grid container spacing={2} alignItems="stretch">
           {daysOfWeek.map(({ name, dayIndex }) => (
@@ -86,7 +92,6 @@ export default function Home(props:{uid:number}) {
           ))}
         </Grid>
       </Box>
-    </Paper>
     </Stack>
     </div>
     </>

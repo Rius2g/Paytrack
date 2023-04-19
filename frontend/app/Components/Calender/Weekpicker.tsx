@@ -27,10 +27,10 @@ const CustomPickersDay = styled(PickersDay, {
 })<CustomPickerDayProps>(({ theme, dayIsBetween, isFirstDay, isLastDay }) => ({
   ...(dayIsBetween && {
     borderRadius: 0,
-    backgroundColor: theme.palette.primary.main,
+    backgroundColor: `${theme.palette.primary.main} !important`,
     color: theme.palette.common.white,
     '&:hover, &:focus': {
-      backgroundColor: theme.palette.primary.dark,
+      backgroundColor: `${theme.palette.primary.dark} !important`,
     },
   }),
   ...(isFirstDay && {

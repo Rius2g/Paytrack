@@ -1,6 +1,5 @@
 'use client';
 
-import { IUser, IBackEndUser } from '@/app/Helper/Modules';
 import * as React from 'react';
 import { UserAPI } from '@/app/api/UserAPI';
 import Box from '@mui/material/Box';
@@ -114,7 +113,18 @@ export default function LoginModal() {
   return (
     <div>
        {/* style this button */}
-      <Button onClick={handleOpen}>Login</Button>
+      <Button className="bg-rose-300
+     text-black 
+     font-semibold 
+     px-4 
+     text-sm
+     hidden
+     hover:bg-gray-300
+     flex-center 
+     text-center 
+     border-x-[1px] 
+     sm:block
+     w-24"  onClick={handleOpen}>Login</Button>
       <Modal
         open={open}
         onClose={handleClose}
