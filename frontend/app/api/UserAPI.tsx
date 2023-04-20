@@ -2,11 +2,12 @@ import { IBackEndUser, IUser } from '@/app/Helper/Modules';
 
 export class UserAPI {
 
-    private enviroment = "http://localhost:5001/api/User";
+    private enviroment = "http://localhost:6032/api/User";
 
     public async registerUser(user:IBackEndUser){
         return await fetch(this.enviroment + "/register", {
             method: "POST",
+            mode: "cors",
             headers: {
                 "Content-Type": "application/json",
             },
@@ -20,6 +21,7 @@ export class UserAPI {
 
         return await fetch(this.enviroment+"/login", {
             method: "POST",
+            mode: "cors",
             headers: {
                 "Content-Type": "application/json",
                 },

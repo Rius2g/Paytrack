@@ -1,6 +1,6 @@
 export class ShiftsAPI 
 {
-    private enviroment = "http://localhost:5001/api/Shift";
+    private enviroment = "http://localhost:6032/api/Shift";
 
     public async getShifts() {
         const response = await fetch(this.enviroment, {

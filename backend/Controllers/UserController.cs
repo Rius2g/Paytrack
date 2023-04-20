@@ -25,7 +25,7 @@ public class UserController : BaseController
         using var connection = new SqliteConnection(_db.Name);
 
        var resGet = connection.QuerySingleOrDefault<int>(@"
-            SELECT UserID FROM Users WHERE Email = @Email;",
+            SELECT UiD FROM Users WHERE Email = @Email;",
             new
             {
                 Email = user.Email
@@ -41,19 +41,22 @@ public class UserController : BaseController
         var hash = passwordHash.CreateHashPassword(user.Password, out var salt);
 
         var result = connection.QuerySingleOrDefault<int>(@"
-                INSERT OR IGNORE INTO Users (
-                        Email,
-                        Password,
-                    ) VALUES (
-                        @Email,
-                        @Password,
-                        )
-                        RETURNING *;",
-                new
-                {
-                    Password = hash,
-                    Email = user.Email,
-                });
+        INSERT OR IGNORE INTO Users (
+            Email,
+            Password,
+            TaxRate
+        ) VALUES (
+            @Email,
+            @Password,
+            @TaxRate
+        );
+        SELECT last_insert_rowid();",
+        new
+        {
+            Password = hash,
+            Email = user.Email,
+            TaxRate = 0
+        });
 
        var res = passwordHash.PostSalt(result, salt, _db.Name);
 

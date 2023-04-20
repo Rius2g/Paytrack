@@ -25,8 +25,9 @@ namespace Paytrack.Database
                                 Start INTEGER NOT NULL,
                                 Date INTEGER NOT NULL,
                                 End INTEGER NOT NULL,
-                                UserID INTEGER NOT NULL,
-                                JobID INTEGER NOT NULL
+                                UiD INTEGER NOT NULL,
+                                JobID INTEGER NOT NULL,
+                                FOREIGN KEY(UiD) REFERENCES Users(UiD)
                             );
 
                             CREATE TABLE IF NOT EXISTS Jobs (
@@ -39,7 +40,8 @@ namespace Paytrack.Database
                             CREATE TABLE IF NOT EXISTS Users (
                                 UiD INTEGER PRIMARY KEY AUTOINCREMENT,
                                 Email TEXT NOT NULL,
-                                Password TEXT NOT NULL
+                                Password TEXT NOT NULL,
+                                TaxRate INTEGER
                             );
 
                             CREATE TABLE IF NOT EXISTS Rules (
@@ -56,12 +58,12 @@ namespace Paytrack.Database
                             );
 
                             CREATE TABLE IF NOT EXISTS Salts (
-                                    SaltID INTEGER PRIMARY KEY AUTOINCREMENT,
-                                    UserID INTEGER,
-                                    Salt VARCHAR(64),
-                                    FOREIGN KEY(UserID) REFERENCES Users(UserID),
-                                    UNIQUE(UserID),
-                                    UNIQUE(UserID,Salt)
+                                SaltID INTEGER PRIMARY KEY AUTOINCREMENT,
+                                UiD INTEGER,
+                                Salt VARCHAR(64),
+                                FOREIGN KEY(UiD) REFERENCES Users(UiD),
+                                UNIQUE(UiD),
+                                UNIQUE(UiD,Salt)
                                 );
 
             ");
@@ -78,6 +80,7 @@ namespace Paytrack.Database
                             DELETE TABLE IF EXISTS Jobs;
                             DELETE TABLE IF EXISTS Users;
                             DELETE TABLE IF EXISTS Rules;
+                            DELETE TABLE IF EXISTS Salts;
             ");
 
             return Task.CompletedTask;

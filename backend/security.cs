@@ -34,31 +34,31 @@ public class PasswordHash
         return hashToCompare.SequenceEqual(Convert.FromHexString(hash));
     }
 
-	public string GetPasswordForUser(string username, string DBname)
+	public string GetPasswordForUser(string email, string DBname)
 	{
         using var connection = new SqliteConnection(DBname);
 		var password = connection.QuerySingleOrDefault<string>(@"
 			SELECT Password
 				FROM Users
-				WHERE UserName = @Username;",
+				WHERE Email = @Email;",
 				new
 				{
-					Username = username,
+					Email = email,
 				});
 
 		return password;
     }
 
-	public int GetIDForUSer(string username, string DBname)
+	public int GetIDForUSer(string email, string DBname)
 	{
         using var connection = new SqliteConnection(DBname);
 		var id = connection.QuerySingleOrDefault<int>(@"
-			SELECT UserID
+			SELECT UiD
 				FROM Users
-				WHERE UserName = @Username;",
+				WHERE Email = @Email;",
 				new
 				{
-					Username = username
+					Email = email
 				});
 
         return id;
@@ -72,7 +72,7 @@ public class PasswordHash
         var salt = connection.QuerySingleOrDefault<string>(@"
 			SELECT Salt
 				FROM Salts
-				WHERE UserID = @Id;",
+				WHERE UiD = @Id;",
 				new
 				{
 					Id = id,
@@ -87,17 +87,17 @@ public class PasswordHash
 		using var connection = new SqliteConnection(DBname);
 		var result = connection.Execute(@"
                 INSERT OR IGNORE INTO Salts (
-                        UserID,
+                        UiD,
                         Salt
                     ) VALUES (
-                        @UserID,
+                        @UiD,
                         @Salt
                         )
                         RETURNING *;",
 
                 new
                 {
-                    UserID = uID,
+                    UiD = uID,
 					Salt = salt,
                 });
 
@@ -106,16 +106,16 @@ public class PasswordHash
 
 	public bool PostSalt(string username, byte[] salt_hex, string DBname)
 	{
-		var uID = GetIDForUSer(username, DBname);
-		return PostSalt(uID, salt_hex, DBname);
+		var UiD = GetIDForUSer(username, DBname);
+		return PostSalt(UiD, salt_hex, DBname);
 
 	}
 
 	public string HashPassword(string password, string username, string DBname)
 	{
 		var hash = CreateHashPassword(password, out var salt);
-		var uID = GetIDForUSer(username, DBname);
-		var result = PostSalt(uID, salt, DBname);
+		var UiD = GetIDForUSer(username, DBname);
+		var result = PostSalt(UiD, salt, DBname);
 
 		return hash;
 	}
@@ -133,7 +133,7 @@ public class PasswordHash
 		var connection = new SqliteConnection(DBname);
         var result = connection.Execute(                                                                                                                             // query the database to delete a user
             @"DELETE FROM Salts
-                    WHERE UserID = @IdInsert;",
+                    WHERE UiD = @IdInsert;",
             new { IdInsert = id });
 
 		return result == 1;
@@ -146,7 +146,7 @@ public class PasswordHash
         var connection = new SqliteConnection(DBname);
         var result = connection.Execute(                                                                                                                             // query the database to delete a user
             @"DELETE FROM Salts
-                    WHERE UserID = @IdInsert;",
+                    WHERE UiD = @IdInsert;",
             new { IdInsert = id });
 
         return result == 1;

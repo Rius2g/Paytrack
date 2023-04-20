@@ -1,5 +1,5 @@
 export class JobsAPI {
-    private enviroment = "http://localhost:5001/api/job";
+    private enviroment = "http://localhost:6032/api/Job";
     
     public async getJobs(UiD: number){
         const response = await fetch(this.enviroment + "/" +  UiD.toString(), {
