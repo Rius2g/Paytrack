@@ -8,11 +8,11 @@ import { IShift } from '@/app/Helper/Modules';
 import convert_date2db, { convert_dbDate2Frontend } from '@/app/Helper/Functions';
 
 export default function DatePick(props:{shift:IShift}) {
-  const [value, setValue] = React.useState<Dayjs | null>(dayjs(convert_dbDate2Frontend(props.shift.ShiftDate)));
+  const [value, setValue] = React.useState<Dayjs | null>(dayjs(convert_dbDate2Frontend(props.shift.shiftDate)));
 
   const handleDateChange = (newValue: Dayjs, shiftID: number) => {
     setValue(newValue);
-    props.shift.ShiftDate = convert_date2db(newValue);
+    props.shift.shiftDate = convert_date2db(newValue);
   }
 
 

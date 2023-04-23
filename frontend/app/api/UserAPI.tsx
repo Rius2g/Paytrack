@@ -1,4 +1,4 @@
-import { IBackEndUser, IUser } from '@/app/Helper/Modules';
+import { IBackEndUser } from '@/app/Helper/Modules';
 
 export class UserAPI {
 
@@ -16,16 +16,15 @@ export class UserAPI {
     }
 
 
-    public async loginUser(email: string, password: string)
+    public async loginUser(user:IBackEndUser)
     {
-
         return await fetch(this.enviroment+"/login", {
             method: "POST",
             mode: "cors",
             headers: {
                 "Content-Type": "application/json",
                 },
-                body: JSON.stringify({email: email, password: password}),
+                body: JSON.stringify(user),
             });
     }
 

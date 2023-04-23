@@ -9,7 +9,6 @@ export class ShiftsAPI
                 "Content-Type": "application/json",
             },
         });
-        
         const data = await response.json();
         return data;
     }
@@ -41,7 +40,7 @@ export class ShiftsAPI
     
     public async getShiftsInRange(dateStart: number, dateEnd:number, UiD:number)
     {
-        const response = await fetch(this.enviroment+UiD.toString()+"?dateStart="+dateStart.toString()+"&dateEnd="+dateEnd.toString(),
+        const response = await fetch(this.enviroment+"/weekly/"+ UiD.toString()+"?dateStart="+dateStart.toString()+"&dateEnd="+dateEnd.toString(),
         {
             method: "GET",
             headers: {

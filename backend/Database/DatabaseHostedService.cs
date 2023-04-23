@@ -21,12 +21,12 @@ namespace Paytrack.Database
 
             connection.Execute(@"
                             CREATE TABLE IF NOT EXISTS Shifts (
-                                ShiftId INTEGER PRIMARY KEY AUTOINCREMENT,
-                                Start INTEGER NOT NULL,
-                                Date INTEGER NOT NULL,
-                                End INTEGER NOT NULL,
+                                ShiftID INTEGER PRIMARY KEY AUTOINCREMENT,
+                                ShiftStartTime INTEGER NOT NULL,
+                                ShiftDate INTEGER NOT NULL,
+                                ShiftEndTime INTEGER NOT NULL,
                                 UiD INTEGER NOT NULL,
-                                JobID INTEGER NOT NULL,
+                                JobbID INTEGER NOT NULL,
                                 FOREIGN KEY(UiD) REFERENCES Users(UiD)
                             );
 

@@ -10,17 +10,17 @@ import { IShift } from '@/app/Helper/Modules';
 import { dayjsTime_toNumber, numberto_DayjsTime } from '@/app/Helper/Functions';
 
 export default function TimePickers(props:{shift:IShift}) {
-  const [ startValue, setStartValue] = React.useState<Dayjs | null>(numberto_DayjsTime(props.shift.ShiftStartTime));
-  const [ endValue, setEndValue] = React.useState<Dayjs | null>(numberto_DayjsTime(props.shift.ShiftEndTime));
+  const [ startValue, setStartValue] = React.useState<Dayjs | null>(numberto_DayjsTime(props.shift.shiftStartTime));
+  const [ endValue, setEndValue] = React.useState<Dayjs | null>(numberto_DayjsTime(props.shift.shiftEndTime));
 
   const handleStartChange = (newValue: Dayjs) => {
     setStartValue(newValue);
-    props.shift.ShiftStartTime = dayjsTime_toNumber(newValue);
+    props.shift.shiftStartTime = dayjsTime_toNumber(newValue);
   };
 
   const handleEndChange = (newValue: Dayjs) => {
     setEndValue(newValue);
-    props.shift.ShiftEndTime = dayjsTime_toNumber(newValue);
+    props.shift.shiftEndTime = dayjsTime_toNumber(newValue);
   };
 
 

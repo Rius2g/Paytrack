@@ -22,16 +22,14 @@ export default function Home(props:{uid:number}) {
       alert("Please login to add a shift");
       return;
     }
-    console.log(props.uid)
 
     const newShift: IShift = {
-      ShiftID: shiftList.length + 1,
-      ShiftDate: convert_date2db(date_instance.date),
-      ShiftStartTime: 1030,
-      ShiftEndTime: 1030,
-      UiD: props.uid,
-      JobbId: 1,
-      JobName: "Job name"
+      shiftID: shiftList.length + 1,
+      shiftDate: convert_date2db(date_instance.date),
+      shiftStartTime: 1030,
+      shiftEndTime: 1030,
+      uiD: props.uid,
+      jobbID: 1
     }
     setShiftList([...shiftList, newShift])
     shiftsAPI.createShift(newShift)
@@ -48,13 +46,19 @@ export default function Home(props:{uid:number}) {
   ];
 
   const getShifts = () => {
+    if(props.uid !== 0)
+    {
+      shiftsAPI.getShiftsInRange(convert_date2db(date_instance.startOf), convert_date2db(date_instance.endOf), props.uid).then((data) => {
+        setShiftList(data)
+      })
+  
+    }
     //call api to get shifts with date
-    console.log("get shifts");
   }
 
   useEffect(() => {
     getShifts();
-  }, [date_instance])
+  }, [])
 
 
   return (

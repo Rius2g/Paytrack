@@ -95,7 +95,7 @@ export default function RegisterModal() {
     var user:IBackEndUser = {
       Email: email,
       Password: password,
-      UserID: 0
+      UiD: 0
     }
 
     //some rules to check if password and confirm password match

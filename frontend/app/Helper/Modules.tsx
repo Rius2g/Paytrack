@@ -9,13 +9,13 @@ dayjs.extend(isBetweenPlugin);
 dayjs.extend(weekOfTheYearPlugin);
 
 interface IShift {
-    ShiftID: number;
-    ShiftDate: number;
-    ShiftStartTime: number;
-    ShiftEndTime: number;
-    UiD: number;
-    JobbId: number;
-    JobName: string;
+    shiftID: number;
+    shiftDate: number;
+    shiftStartTime: number;
+    shiftEndTime: number;
+    uiD: number;
+    jobbID: number;
+    jobName?: string;
 }
 
 export interface IAuth {
@@ -71,7 +71,7 @@ interface IUser {
 
 
 interface IBackEndUser {
-    UserID: number;
+    UiD: number;
     Email: string;
     Password: string;
 }

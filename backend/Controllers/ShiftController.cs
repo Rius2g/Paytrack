@@ -48,7 +48,7 @@ public class ShiftController : BaseController
         // Execute query to get session with matching SessionID
         var shifts = connection.Query<Shift>(
                 @"SELECT * FROM Shifts WHERE 
-                ((Date BETWEEN @dateStart AND @dateEnd)
+                ((ShiftDate BETWEEN @dateStart AND @dateEnd)
                  AND UiD = @UserId);",
                 new {dateStart = DateStart, dateEnd = DateEnd, UserId = id});
 
@@ -63,7 +63,7 @@ public class ShiftController : BaseController
         using var connection = new SqliteConnection(_db.Name);                                                                                                     // create connection to sqlite database
         var result = connection.Execute(                                                                                                                            // Execute query to delete session with matching SessionID
             @"DELETE FROM Shifts
-                    WHERE ShiftId = @IdInsert;",
+                    WHERE ShiftID = @IdInsert;",
             new { IdInsert = id });
 
 
@@ -80,7 +80,7 @@ public class ShiftController : BaseController
         int owner = connection.QuerySingleOrDefault<int>(@"
                     SELECT UiD
                         FROM Shifts
-                        WHERE ShiftId = @IdInsert;",
+                        WHERE ShiftID = @IdInsert;",
                 new { IdInsert = id });
 
         var result = false;
@@ -103,11 +103,11 @@ public class ShiftController : BaseController
 
          var result = connection.QuerySingleOrDefault<int>(@"
                 INSERT INTO Shifts (
-                        Start,
-                        Date,
-                        End,
+                        ShiftStartTime,
+                        ShiftDate,
+                        ShiftEndTime,
                         UiD,
-                        JobID
+                        JobbID
                     ) VALUES (
                         @Start,
                         @Date,
@@ -118,11 +118,11 @@ public class ShiftController : BaseController
                         RETURNING *;",
                 new
                 {
-                    UserID = shift.UiD,
-                    Date = shift.Date,
-                    Start = shift.Start,
-                    End = shift.End,
-                    JobID = shift.JobID
+                    Start = shift.ShiftStartTime,
+                    Date = shift.ShiftDate,
+                    End = shift.ShiftEndTime,
+                    UiD = shift.uiD,
+                    JobID = shift.JobbID
                 });
 
         return result;
@@ -138,20 +138,20 @@ public class ShiftController : BaseController
         var result = connection.Execute(
             @"UPDATE Shifts
                     SET
-                        Start = @Start,
-                        Date = @Date,
-                        End = @End,
+                        ShiftStartTime = @Start,
+                        ShiftDate = @Date,
+                        ShiftEndTime = @End,
                         UiD = @UiD,
-                        JobID = @JobID
+                        JobbID = @JobID
                     WHERE ShiftId = @IdInsert;",
             new
             {
                 IdInsert = id,
-                UserID = shift.UiD,
-                Date = shift.Date,
-                Start = shift.Start,
-                End = shift.End,
-                JobID = shift.JobID
+                UserID = shift.uiD,
+                Date = shift.ShiftDate,
+                Start = shift.ShiftStartTime,
+                End = shift.ShiftEndTime,
+                JobID = shift.JobbID
             });
 
         return result == 1;

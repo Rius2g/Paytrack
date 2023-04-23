@@ -65,23 +65,23 @@ public class UserController : BaseController
     }
 
     [HttpPost("login")]
-    public User loginUser(string email, string password)
+    public User loginUser(User user)
     {
         using var connection = new SqliteConnection(_db.Name);
 
         var PW = new PasswordHash();
 
-        var correct = PW.VerifyPassword(password, email, _db.Name);
+        var correct = PW.VerifyPassword(user.Password, user.Email, _db.Name);
 
         if(correct)
         {
-            var user = connection.QueryFirstOrDefault<User>(@"
+            var use = connection.QueryFirstOrDefault<User>(@"
             SELECT * FROM Users WHERE Email = @Email;",
             new
             {
-                Email = email
+                Email = user.Email
             });
-            return user;
+            return use;
         }
         User falseUser = new User();
         return falseUser;

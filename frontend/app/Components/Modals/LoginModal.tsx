@@ -18,6 +18,7 @@ import { FcGoogle } from "react-icons/fc";
 import CustomButton from '../Button';
 import Cookies from "js-cookie";
 import { v4 as uuidv4 } from "uuid";
+import { IBackEndUser } from '@/app/Helper/Modules';
 
 
 const style = {
@@ -74,13 +75,19 @@ export default function LoginModal() {
       return;
     }
 
-    userAPI.loginUser(email, password).then((res) => {
+    var user:IBackEndUser = {
+      Email: email,
+      Password: password,
+      UiD: 0
+    }
+
+    userAPI.loginUser(user).then((res) => {
       if(res.ok)
       {
         if(res.status === 200)
         {
           res.json().then((data) => {
-            if(data.UserID === 0)
+            if(data.uiD === 0)
             {
               alert("Invalid email or password");
               Cookies.set("failedLoginAttempts", (failedLoginAttempts + 1).toString());
@@ -91,7 +98,7 @@ export default function LoginModal() {
             Cookies.set("failedLoginAttempts", "0");
             const cookie = uuidv4();
             Cookies.set("loggedIn", cookie, { expires: 7 });
-            Cookies.set("userID", data.userID, { expires: 7 });
+            Cookies.set("userID", data.uiD, { expires: 7 });
           })
         }
         else {

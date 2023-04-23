@@ -8,9 +8,7 @@ import { Stack } from '@mui/material';
 
 
 const Shift = (props: { shift: IShift }) => {
-    const [jobb, setJobb] = useState<string>(props.shift.JobName);
-    const [startTime, setStartTime] = useState<Dayjs>(dayjs(number_to_timeString(props.shift.ShiftStartTime)));
-    const [endTime, setEndTime] = useState<Dayjs>(dayjs(number_to_timeString(props.shift.ShiftEndTime)));
+    const [jobb, setJobb] = useState<string | null>(props.shift.jobName ?? null);
 
 
   return (
