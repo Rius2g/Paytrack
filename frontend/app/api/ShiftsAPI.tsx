@@ -1,3 +1,5 @@
+import { IShift } from "../Helper/Modules";
+
 export class ShiftsAPI 
 {
     private enviroment = "http://localhost:6032/api/Shift";
@@ -26,7 +28,7 @@ export class ShiftsAPI
         return data;
     }
 
-    public async createShift(shift: any) {
+    public async createShift(shift: IShift) {
         const response = await fetch(this.enviroment, {
             method: "POST",
             headers: {
@@ -51,8 +53,8 @@ export class ShiftsAPI
         return data;
     }
 
-    public async updateShift(shift: any) {
-        const response = await fetch(this.enviroment, {
+    public async updateShift(shift: IShift) {
+        const response = await fetch(this.enviroment + shift.shiftID.toString(), {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",

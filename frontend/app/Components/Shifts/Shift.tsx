@@ -7,7 +7,10 @@ import TimePickers from '../Calender/TimePicker';
 import { Select, Stack } from '@mui/material';
 import { convert_dbDate2Frontend, dayjsTime_toNumber} from '@/app/Helper/Functions';
 import { MenuItem, SelectChangeEvent } from '@mui/material';
+import { ShiftsAPI } from '@/app/api/ShiftsAPI';
 
+
+let api = new ShiftsAPI();
 
 const Shift = (props: { shift: IShift, jobList:IJob[] }) => {
   const [job, setJob] = useState("");
@@ -28,6 +31,7 @@ const Shift = (props: { shift: IShift, jobList:IJob[] }) => {
     props.shift.shiftStartTime = dayjsTime_toNumber(start);
     props.shift.shiftEndTime = dayjsTime_toNumber(end);
     //api call here to change the times
+    api.updateShift(props.shift);
     }
   }
 
@@ -36,13 +40,15 @@ const Shift = (props: { shift: IShift, jobList:IJob[] }) => {
     if(date)
     {
     props.shift.shiftDate = convert_date2db(date);
+    api.updateShift(props.shift);
     }
-    //api call here to change the date
   }
 
   const handleJobChange = (event: SelectChangeEvent) => {
     setJob(event.target.value); //update the state
     props.shift.jobName = event.target.value; //update the actual value in the user
+    props.shift.jobbID = props.jobList.find(job => job.JobName === event.target.value)?.JobID || 0;
+    api.updateShift(props.shift);
   };
 
 
