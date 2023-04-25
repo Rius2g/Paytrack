@@ -60,7 +60,7 @@ export default function Home(props:{uid:number}) {
   const RefreshList = () => {
     //map over the existing list and exclude the shifts no longer in scope
     //set the list to the new list
-    const newShiftList = shiftList.filter((shift) => {
+    const newShiftList:IShift[] = shiftList.filter((shift) => {
       return shift.shiftDate >= convert_date2db(date_instance.startOf)+1 && shift.shiftDate <= convert_date2db(date_instance.endOf)+1
     }
     )
