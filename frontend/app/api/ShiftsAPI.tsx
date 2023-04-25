@@ -54,13 +54,23 @@ export class ShiftsAPI
     }
 
     public async updateShift(shift: IShift) {
-        console.log(shift);
         const response = await fetch(this.enviroment + "/" + shift.shiftID.toString(), {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
                 },
                 body: JSON.stringify(shift),
+            });
+            const data = await response.json();
+            return data;
+    }
+
+    public async deleteShift(shiftID:number) {
+        const response = await fetch(this.enviroment + "/" + shiftID.toString(), {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+                },
             });
             const data = await response.json();
             return data;

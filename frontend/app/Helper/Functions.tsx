@@ -16,7 +16,6 @@ export default function convert_date2db(date:Dayjs){
 
 export function convert_dbDate2Frontend(date:number)
 {
-    console.log("date", date);
     var d = date.toString().slice(6,8);
     var m = date.toString().slice(4,6);
     var y = date.toString().slice(0,4);

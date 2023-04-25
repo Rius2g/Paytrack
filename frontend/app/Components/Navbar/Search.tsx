@@ -32,7 +32,7 @@ const Search = (props:{date:IDate}) => {
                 px-4
               "
             >
-              <WeekPopup date={props.date} Refresh={() => {}} />
+              <WeekPopup date={props.date} />
             </div>
             <div 
               className="

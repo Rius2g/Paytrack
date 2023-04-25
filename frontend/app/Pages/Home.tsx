@@ -4,7 +4,7 @@ import { IShift, IJob } from "../Helper/Modules"
 import { useEffect, useState, useContext } from "react"
 import { Button } from "@mui/material";
 import { Stack } from "@mui/material";
-import convert_date2db from "../Helper/Functions";
+import convert_date2db, { convert_dbDate2Frontend } from "../Helper/Functions";
 import { Paper, Box, Grid } from "@mui/material";
 import ReturnWorkDay from "../Components/Shifts/WorkDay";
 import { ShiftsAPI } from "../api/ShiftsAPI";
@@ -12,6 +12,7 @@ import { DateContext } from "../page";
 
 
 const shiftsAPI = new ShiftsAPI();
+let gotJobs = false;
 export default function Home(props:{uid:number}) {
   const date_instance = useContext(DateContext);
   const [ shiftList, setShiftList ] = useState<IShift[]>([])
@@ -60,13 +61,21 @@ export default function Home(props:{uid:number}) {
   const RefreshList = () => {
     //map over the existing list and exclude the shifts no longer in scope
     //set the list to the new list
-    const newShiftList:IShift[] = shiftList.filter((shift) => {
-      return shift.shiftDate >= convert_date2db(date_instance.startOf)+1 && shift.shiftDate <= convert_date2db(date_instance.endOf)+1
+   const this_weeksShifts:IShift[] = [];
+   shiftList.map((shift) => {
+    var date = convert_dbDate2Frontend(shift.shiftDate);
+    if(date.week() === date_instance.date.week() && date.year() === date_instance.date.year())
+    {
+      this_weeksShifts.push(shift);
     }
-    )
-    setShiftList(newShiftList)
-    
+    else if(date.week() === date_instance.week+1 && date.year() === date_instance.year && date.day() === 0)
+    {
+      this_weeksShifts.push(shift);
+    }
+    });
+  setShiftList(this_weeksShifts);
   }
+
 
   const getJobs = () => {
     if(props.uid !== 0)
@@ -79,8 +88,13 @@ export default function Home(props:{uid:number}) {
 
   useEffect(() => {
     getShifts();
-    getJobs();
-  }, [])
+    if(gotJobs === false)
+    {
+      getJobs();
+      gotJobs = true;
+    }
+
+  }, [date_instance.date])
 
 
   return (

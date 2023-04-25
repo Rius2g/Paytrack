@@ -4,7 +4,7 @@ import { Dayjs } from 'dayjs';
 import convert_date2db from '@/app/Helper/Functions';
 import DatePick from '../Calender/DatePicker';
 import TimePickers from '../Calender/TimePicker';
-import { Select, Stack } from '@mui/material';
+import { IconButton, Select, Stack } from '@mui/material';
 import { dayjsTime_toNumber} from '@/app/Helper/Functions';
 import { MenuItem, SelectChangeEvent } from '@mui/material';
 import { ShiftsAPI } from '@/app/api/ShiftsAPI';
@@ -12,7 +12,7 @@ import { ShiftsAPI } from '@/app/api/ShiftsAPI';
 
 let api = new ShiftsAPI();
 
-const Shift = (props: { shift: IShift, jobList:IJob[], Refresh:() => void}) => {
+const Shift = (props: { shiftList:IShift[], shift: IShift, jobList:IJob[], Refresh:() => void}) => {
   const [job, setJob] = useState("");
 
   const findJob = () => {
@@ -40,7 +40,6 @@ const Shift = (props: { shift: IShift, jobList:IJob[], Refresh:() => void}) => {
     if(date)
     {
     props.shift.shiftDate = convert_date2db(date);
-    console.log(props.shift.shiftDate);
     api.updateShift(props.shift);
     }
   }
@@ -51,6 +50,12 @@ const Shift = (props: { shift: IShift, jobList:IJob[], Refresh:() => void}) => {
     props.shift.jobbID = props.jobList.find(job => job.JobName === event.target.value)?.JobID || 0;
     api.updateShift(props.shift);
   };
+
+  const deleteShift = () => {
+    props.shiftList.filter((shift) => shift.shiftID !== props.shift.shiftID);
+    api.deleteShift(props.shift.shiftID);
+  }
+
 
 
   //set the job name
@@ -79,6 +84,8 @@ const Shift = (props: { shift: IShift, jobList:IJob[], Refresh:() => void}) => {
         <DatePick shift={props.shift} handleChange={changeDate} />
         <TimePickers shift={props.shift} handleChange={changeTimes} />
       </Stack>
+      <IconButton onClick={() => {deleteShift(); props.Refresh();}}>Delete</IconButton>
+
     </div>
   );
 };

@@ -8,7 +8,7 @@ import Button from '@mui/material/Button';
 import { IDate } from '../../Helper/Modules';
 
 //own popup component that displays a weekpicker when clicked, weekpicker is used to change the week
-export default function WeekPopup(props:{date:IDate, Refresh:() => void}){
+export default function WeekPopup(props:{date:IDate}){
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -17,7 +17,6 @@ export default function WeekPopup(props:{date:IDate, Refresh:() => void}){
 
     const handleClose = () => {
         setAnchorEl(null);
-        props.Refresh( );
     };
 
     const open = Boolean(anchorEl);
