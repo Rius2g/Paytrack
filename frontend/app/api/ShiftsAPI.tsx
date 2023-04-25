@@ -54,7 +54,8 @@ export class ShiftsAPI
     }
 
     public async updateShift(shift: IShift) {
-        const response = await fetch(this.enviroment + shift.shiftID.toString(), {
+        console.log(shift);
+        const response = await fetch(this.enviroment + "/" + shift.shiftID.toString(), {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",

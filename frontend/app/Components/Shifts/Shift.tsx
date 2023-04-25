@@ -1,27 +1,27 @@
 import React, { useEffect, useState } from 'react';
 import { IJob, IShift } from '@/app/Helper/Modules';
-import dayjs, { Dayjs } from 'dayjs';
-import convert_date2db, { number_to_timeString } from '@/app/Helper/Functions';
+import { Dayjs } from 'dayjs';
+import convert_date2db from '@/app/Helper/Functions';
 import DatePick from '../Calender/DatePicker';
 import TimePickers from '../Calender/TimePicker';
 import { Select, Stack } from '@mui/material';
-import { convert_dbDate2Frontend, dayjsTime_toNumber} from '@/app/Helper/Functions';
+import { dayjsTime_toNumber} from '@/app/Helper/Functions';
 import { MenuItem, SelectChangeEvent } from '@mui/material';
 import { ShiftsAPI } from '@/app/api/ShiftsAPI';
 
 
 let api = new ShiftsAPI();
 
-const Shift = (props: { shift: IShift, jobList:IJob[] }) => {
+const Shift = (props: { shift: IShift, jobList:IJob[], Refresh:() => void}) => {
   const [job, setJob] = useState("");
 
   const findJob = () => {
     let job = props.jobList.find(job => job.JobID === props.shift.jobbID);
     if (job) {
-      return job.JobName;
+      setJob(job.JobName);
     }
     else {
-      return "No job";
+      setJob("No job");
     }
   }
 
@@ -40,6 +40,7 @@ const Shift = (props: { shift: IShift, jobList:IJob[] }) => {
     if(date)
     {
     props.shift.shiftDate = convert_date2db(date);
+    console.log(props.shift.shiftDate);
     api.updateShift(props.shift);
     }
   }
@@ -54,7 +55,7 @@ const Shift = (props: { shift: IShift, jobList:IJob[] }) => {
 
   //set the job name
   useEffect(() => {
-    setJob(findJob());
+    findJob();
   }, [])
 
 

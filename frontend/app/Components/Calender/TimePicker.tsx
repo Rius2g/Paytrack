@@ -32,13 +32,16 @@ export default function TimePickers(props:{shift:IShift, handleChange: (start: D
           value={startValue}
           onChange={(newValue) => {
             setStartValue(newValue)
-          props.handleChange(startValue, endValue);
+          props.handleChange(newValue, endValue);
           }}
         />
         <TimePicker
           label="End time"
           value={endValue}
-          onChange={(newValue) => setEndValue(newValue)}
+          onChange={(newValue) => { 
+            setEndValue(newValue)
+            props.handleChange(startValue, newValue);
+          }}
         />
     </LocalizationProvider>
     </Stack>

@@ -30,7 +30,7 @@ export default function Home(props:{uid:number}) {
       shiftStartTime: 1030,
       shiftEndTime: 1030,
       uiD: props.uid,
-      jobbID: 0
+      jobbID: 1
     }
     setShiftList([...shiftList, newShift])
     shiftsAPI.createShift(newShift)
@@ -49,12 +49,23 @@ export default function Home(props:{uid:number}) {
   const getShifts = () => {
     if(props.uid !== 0)
     {
-      shiftsAPI.getShiftsInRange(convert_date2db(date_instance.startOf), convert_date2db(date_instance.endOf), props.uid).then((data) => {
+      shiftsAPI.getShiftsInRange(convert_date2db(date_instance.startOf)+1, convert_date2db(date_instance.endOf)+1, props.uid).then((data) => {
         setShiftList(data)
       })
   
     }
     //call api to get shifts with date
+  }
+
+  const RefreshList = () => {
+    //map over the existing list and exclude the shifts no longer in scope
+    //set the list to the new list
+    const newShiftList = shiftList.filter((shift) => {
+      return shift.shiftDate >= convert_date2db(date_instance.startOf)+1 && shift.shiftDate <= convert_date2db(date_instance.endOf)+1
+    }
+    )
+    setShiftList(newShiftList)
+    
   }
 
   const getJobs = () => {
@@ -101,7 +112,7 @@ export default function Home(props:{uid:number}) {
                 padding: "1cm",
                 height: "100%", // Added height property to allow the Box component to stretch to fill the available space
               }} alignSelf="stretch">
-                <ReturnWorkDay shiftList={shiftList} jobList={jobList} day={dayIndex} date={date_instance} Refresh={() => { }} Delete={() => { }} />
+                <ReturnWorkDay shiftList={shiftList} jobList={jobList} day={dayIndex} date={date_instance} Refresh={RefreshList} Delete={() => { }} />
               </Box>
             </Grid>
           ))}

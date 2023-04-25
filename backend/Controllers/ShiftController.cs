@@ -118,11 +118,11 @@ public class ShiftController : BaseController
                         RETURNING *;",
                 new
                 {
-                    Start = shift.ShiftStartTime,
-                    Date = shift.ShiftDate,
-                    End = shift.ShiftEndTime,
+                    Start = shift.shiftStartTime,
+                    Date = shift.shiftDate,
+                    End = shift.shiftEndTime,
                     UiD = shift.uiD,
-                    JobID = shift.JobbID
+                    JobID = shift.jobbID
                 });
 
         return result;
@@ -143,15 +143,15 @@ public class ShiftController : BaseController
                         ShiftEndTime = @End,
                         UiD = @UiD,
                         JobbID = @JobID
-                    WHERE ShiftId = @IdInsert;",
+                    WHERE ShiftID = @ID;",
             new
             {
-                IdInsert = id,
-                UserID = shift.uiD,
-                Date = shift.ShiftDate,
-                Start = shift.ShiftStartTime,
-                End = shift.ShiftEndTime,
-                JobID = shift.JobbID
+                ID = id,
+                UiD = shift.uiD,
+                Date = shift.shiftDate,
+                Start = shift.shiftStartTime,
+                End = shift.shiftEndTime,
+                JobID = shift.jobbID
             });
 
         return result == 1;
