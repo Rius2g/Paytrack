@@ -7,7 +7,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { IShift } from '@/app/Helper/Modules';
 import convert_date2db, { convert_dbDate2Frontend } from '@/app/Helper/Functions';
 
-export default function DatePick(props:{shift:IShift}) {
+export default function DatePick(props:{shift:IShift, handleChange: (date: Dayjs | null) => void }) {
   const [value, setValue] = React.useState<Dayjs | null>(dayjs(convert_dbDate2Frontend(props.shift.shiftDate)));
 
   const handleDateChange = (newValue: Dayjs, shiftID: number) => {
@@ -21,7 +21,10 @@ export default function DatePick(props:{shift:IShift}) {
         <DatePicker
           label="Shift Date"
           value={value}
-          onChange={(newValue) => setValue(newValue)}
+          onChange={(newValue) => {
+            setValue(newValue)
+            props.handleChange(newValue);
+          }}
         />
     </LocalizationProvider>
   );

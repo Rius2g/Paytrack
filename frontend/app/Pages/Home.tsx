@@ -1,6 +1,6 @@
 'use client';
 
-import { IShift } from "../Helper/Modules"
+import { IShift, IJob } from "../Helper/Modules"
 import { useEffect, useState, useContext } from "react"
 import { Button } from "@mui/material";
 import { Stack } from "@mui/material";
@@ -14,7 +14,8 @@ import { DateContext } from "../page";
 const shiftsAPI = new ShiftsAPI();
 export default function Home(props:{uid:number}) {
   const date_instance = useContext(DateContext);
-  const [shiftList, setShiftList] = useState<IShift[]>([])
+  const [ shiftList, setShiftList ] = useState<IShift[]>([])
+  const [ jobList, setJobList ] = useState<IJob[]>([])
 
   const addShift = () => {
     if(props.uid === 0)
@@ -29,7 +30,7 @@ export default function Home(props:{uid:number}) {
       shiftStartTime: 1030,
       shiftEndTime: 1030,
       uiD: props.uid,
-      jobbID: 1
+      jobbID: 0
     }
     setShiftList([...shiftList, newShift])
     shiftsAPI.createShift(newShift)
@@ -56,8 +57,18 @@ export default function Home(props:{uid:number}) {
     //call api to get shifts with date
   }
 
+  const getJobs = () => {
+    if(props.uid !== 0)
+    {
+      //api call here
+
+    }
+  }
+
+
   useEffect(() => {
     getShifts();
+    getJobs();
   }, [])
 
 
@@ -90,7 +101,7 @@ export default function Home(props:{uid:number}) {
                 padding: "1cm",
                 height: "100%", // Added height property to allow the Box component to stretch to fill the available space
               }} alignSelf="stretch">
-                <ReturnWorkDay shiftList={shiftList} day={dayIndex} date={date_instance} Refresh={() => { }} Delete={() => { }} />
+                <ReturnWorkDay shiftList={shiftList} jobList={jobList} day={dayIndex} date={date_instance} Refresh={() => { }} Delete={() => { }} />
               </Box>
             </Grid>
           ))}

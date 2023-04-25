@@ -9,7 +9,7 @@ import { Stack } from '@mui/material';
 import { IShift } from '@/app/Helper/Modules';
 import { dayjsTime_toNumber, numberto_DayjsTime } from '@/app/Helper/Functions';
 
-export default function TimePickers(props:{shift:IShift}) {
+export default function TimePickers(props:{shift:IShift, handleChange: (start: Dayjs | null, end: Dayjs | null) => void}) {
   const [ startValue, setStartValue] = React.useState<Dayjs | null>(numberto_DayjsTime(props.shift.shiftStartTime));
   const [ endValue, setEndValue] = React.useState<Dayjs | null>(numberto_DayjsTime(props.shift.shiftEndTime));
 
@@ -30,7 +30,10 @@ export default function TimePickers(props:{shift:IShift}) {
         <TimePicker
           label="Start Time"
           value={startValue}
-          onChange={(newValue) => setStartValue(newValue)}
+          onChange={(newValue) => {
+            setStartValue(newValue)
+          props.handleChange(startValue, endValue);
+          }}
         />
         <TimePicker
           label="End time"
