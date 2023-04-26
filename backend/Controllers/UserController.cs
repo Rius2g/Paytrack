@@ -89,6 +89,24 @@ public class UserController : BaseController
 
     }
 
+    [HttpPut("{uid}")]
+    public bool putUser(int uid, [FromQuery]decimal TaxRate)
+    {
+        using var connection = new SqliteConnection(_db.Name);
+
+        var res = connection.Execute(@"
+        UPDATE Users SET
+            TaxRate = @TaxRate
+        WHERE UiD = @UiD;",
+        new
+        {
+            TaxRate = TaxRate,
+            UiD = uid
+        });
+
+        return res > 0;
+    }
+
 
 
     

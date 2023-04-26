@@ -28,4 +28,15 @@ export class UserAPI {
             });
     }
 
+    public async changeSettings(uid:number, taxRate: number)
+    {
+        return await fetch(this.enviroment + "/" + uid.toString() + "?TaxRate=" + taxRate.toString(), {
+            method: "PUT",
+            mode: "cors",
+            headers: {
+                "Content-Type": "application/json",
+                },
+            });
+    }
+
 }
