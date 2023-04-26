@@ -42,10 +42,10 @@ interface IDate
 };
 
 interface IJob {
-    JobID: number;
-    JobName: string;
-    PayRate: number;
-    UiD: number;
+    jobID: number;
+    jobName: string;
+    payRate: number;
+    uiD: number;
 }
 
 interface IRule {

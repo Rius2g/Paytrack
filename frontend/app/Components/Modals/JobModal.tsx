@@ -10,6 +10,8 @@ import JobList from '../Jobs/JobsList';
 import { IJob } from '@/app/Helper/Modules';
 import { Stack } from '@mui/material';
 import Cookies from "js-cookie";
+import { JobsAPI } from '@/app/api/JobsAPI';
+import { useEffect } from 'react';
 
 const style = {
   position: 'absolute' as 'absolute',
@@ -25,6 +27,7 @@ const style = {
   pb: 3,
 };
 
+var api = new JobsAPI();
 export default function JobModal() {
   const [ open, setOpen ] = useState(false);
   const [ jobs, setJobs ] = useState<IJob[]>([]);
@@ -52,13 +55,33 @@ export default function JobModal() {
       return;
     }
     var newJob: IJob = {
-      JobID: jobs.length + 1,
-      JobName: "New Job",
-      PayRate: 0,
-      UiD: 1
+      jobID: jobs.length + 1,
+      jobName: "New Job",
+      payRate: 0,
+      uiD: 1
     }
     setJobs([...jobs, newJob]);
+    const response = api.postJob(newJob);
+    response.then((data) => {
+      newJob.jobID = data;
+    }
+    )
   }
+
+  const handleDelete = (job: IJob) => {
+    var newJobs = jobs.filter((item) => item.jobID !== job.jobID);
+    setJobs(newJobs);
+  }
+    
+  useEffect(() => {
+    api.getJobs(userId).then((data) => {
+      console.log(data)
+      setJobs(data);
+    }
+    )
+  }, [userId])
+
+
   
 
   return (
@@ -84,7 +107,7 @@ export default function JobModal() {
       >
         <Box sx={{ ...style, width: 400 }}>
           <Stack spacing={1} >
-        <JobList joblist={jobs} />
+        <JobList joblist={jobs} Delete={handleDelete}/>
          <CustomButton
             onClick={handleNewJob}
             label="Add new job"

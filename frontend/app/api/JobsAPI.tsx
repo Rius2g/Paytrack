@@ -1,3 +1,5 @@
+import { IJob } from "../Helper/Modules";
+
 export class JobsAPI {
     private enviroment = "http://localhost:6032/api/Job";
     
@@ -12,7 +14,7 @@ export class JobsAPI {
         return data;
     }
 
-    public async postJob(job: any){
+    public async postJob(job: IJob){
         const response = await fetch(this.enviroment, {
             method: "POST",
             headers: {
@@ -24,7 +26,8 @@ export class JobsAPI {
         return data;
     }
 
-    public async updateJob(job: any){
+    public async updateJob(job: IJob){
+        console.log(job)
         const response = await fetch(this.enviroment, {
             method: "PUT",
             headers: {
@@ -36,7 +39,7 @@ export class JobsAPI {
         return data;
     }
 
-    public async deleteJob(job: any){
+    public async deleteJob(job: IJob){
         const response = await fetch(this.enviroment, {
             method: "DELETE",
             headers: {

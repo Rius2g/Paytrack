@@ -5,7 +5,7 @@ import { useEffect, useState, useContext } from "react"
 import { Button } from "@mui/material";
 import { Stack } from "@mui/material";
 import convert_date2db, { convert_dbDate2Frontend } from "../Helper/Functions";
-import { Paper, Box, Grid } from "@mui/material";
+import { Box, Grid } from "@mui/material";
 import ReturnWorkDay from "../Components/Shifts/WorkDay";
 import { ShiftsAPI } from "../api/ShiftsAPI";
 import { DateContext } from "../page";

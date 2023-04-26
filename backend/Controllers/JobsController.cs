@@ -26,15 +26,6 @@ public class JobController : BaseController
         return jobs;
     }
 
-    [HttpGet("{id}")]
-    public Job GetJob(int id)
-    {
-        using var connection = new SqliteConnection(_db.Name);
-
-        var job = connection.QueryFirstOrDefault<Job>($"SELECT * FROM Jobs WHERE JobID = {id};");
-        return job;
-    }
-
     [HttpGet("{uid}")]
     public IEnumerable<Job> GetJobsByUser(int uid)
     {
@@ -50,11 +41,11 @@ public class JobController : BaseController
         using var connection = new SqliteConnection(_db.Name);
 
         var newJob = connection.QueryFirstOrDefault<Job>(
-            @"INSERT INTO Jobs (Name, Rate, UiD) VALUES (@Name, @Rate, @UiD);
+            @"INSERT INTO Jobs (jobName, payRate, UiD) VALUES (@jobName, @payRate, @uiD);
             SELECT * FROM Jobs WHERE JobID = last_insert_rowid();",
             job);
 
-        return newJob.JobID;
+        return newJob.jobID;
     }
 
 
@@ -63,11 +54,19 @@ public class JobController : BaseController
     {
         using var connection = new SqliteConnection(_db.Name);
 
-        var updatedJob = connection.Execute(
-            @"UPDATE Jobs SET Name = @Name, Rate = @Rate, UiD = @UiD WHERE JobID = @JobID;",
-            job);
+        var result = connection.Execute(
+                @"UPDATE Jobs SET
+                            jobName = @Name,
+                            payRate = @Rate
+                        WHERE JobID = @JobID;",
+                        new
+                        {
+                            Name = job.jobName,
+                            Rate = job.payRate,
+                            JobID = job.jobID
+                        });
 
-        return updatedJob == 1;
+        return result == 1;
     }
 
 
@@ -77,7 +76,7 @@ public class JobController : BaseController
         using var connection = new SqliteConnection(_db.Name);
 
         var deletedJob = connection.Execute(
-            @"DELETE FROM Jobs WHERE JobID = @JobID;",
+            @"DELETE FROM Jobs WHERE JobID = @jobID;",
             job);
 
         return deletedJob == 1;

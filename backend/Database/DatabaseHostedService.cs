@@ -32,8 +32,8 @@ namespace Paytrack.Database
 
                             CREATE TABLE IF NOT EXISTS Jobs (
                                 JobID INTEGER PRIMARY KEY AUTOINCREMENT,
-                                Name TEXT NOT NULL,
-                                Rate INTEGER NOT NULL,
+                                jobName TEXT,
+                                payRate INTEGER,
                                 UiD INTEGER NOT NULL
                             );
 
