@@ -34,7 +34,12 @@ export default function Home(props:{uid:number}) {
       jobbID: 1
     }
     setShiftList([...shiftList, newShift])
-    shiftsAPI.createShift(newShift)
+    const response = shiftsAPI.createShift(newShift);
+    response.then((data) => {
+      newShift.shiftID = data;
+    }
+    )
+
   }
 
   const daysOfWeek = [
@@ -74,6 +79,14 @@ export default function Home(props:{uid:number}) {
     }
     });
   setShiftList(this_weeksShifts);
+  }
+
+  const handleDelete = (id:number) => {
+    //delete shift from list
+    
+    const newShiftList = shiftList.filter((shift) => shift.shiftID !== id);
+    setShiftList(newShiftList);
+    //delete shift from db
   }
 
 
@@ -126,7 +139,7 @@ export default function Home(props:{uid:number}) {
                 padding: "1cm",
                 height: "100%", // Added height property to allow the Box component to stretch to fill the available space
               }} alignSelf="stretch">
-                <ReturnWorkDay shiftList={shiftList} jobList={jobList} day={dayIndex} date={date_instance} Refresh={RefreshList} Delete={() => { }} />
+                <ReturnWorkDay shiftList={shiftList} jobList={jobList} day={dayIndex} date={date_instance} Refresh={RefreshList} Delete={handleDelete} />
               </Box>
             </Grid>
           ))}

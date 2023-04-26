@@ -12,7 +12,7 @@ import { ShiftsAPI } from '@/app/api/ShiftsAPI';
 
 let api = new ShiftsAPI();
 
-const Shift = (props: { shiftList:IShift[], shift: IShift, jobList:IJob[], Refresh:() => void}) => {
+const Shift = (props: { shiftList:IShift[], shift: IShift, jobList:IJob[], Refresh:() => void, Delete:(id:number) => void}) => {
   const [job, setJob] = useState("");
 
   const findJob = () => {
@@ -41,6 +41,7 @@ const Shift = (props: { shiftList:IShift[], shift: IShift, jobList:IJob[], Refre
     {
     props.shift.shiftDate = convert_date2db(date);
     api.updateShift(props.shift);
+    props.Refresh();
     }
   }
 
@@ -52,8 +53,8 @@ const Shift = (props: { shiftList:IShift[], shift: IShift, jobList:IJob[], Refre
   };
 
   const deleteShift = () => {
-    props.shiftList.filter((shift) => shift.shiftID !== props.shift.shiftID);
-    api.deleteShift(props.shift.shiftID);
+    api.deleteShift(props.shift.shiftID, props.shift.uiD);
+    props.Delete(props.shift.shiftID);
   }
 
 
@@ -61,14 +62,14 @@ const Shift = (props: { shiftList:IShift[], shift: IShift, jobList:IJob[], Refre
   //set the job name
   useEffect(() => {
     findJob();
-  }, [])
+  })
 
 
 
   return (
     <div style={{ width: '180px' }}>
       <Stack spacing={1}>
-       <div className="font-bold text-black text-center flex-center">
+       {/* <div className="font-bold text-black text-center flex-center">
        <Select 
               labelId="demo-simple-select-label"
               id="demo-simple-select"
@@ -80,11 +81,11 @@ const Shift = (props: { shiftList:IShift[], shift: IShift, jobList:IJob[], Refre
               <MenuItem key={job.JobID} value={job.JobID}>{job.JobName}</MenuItem>
             ))}
               </Select>
-        </div>
+        </div> */}
         <DatePick shift={props.shift} handleChange={changeDate} />
         <TimePickers shift={props.shift} handleChange={changeTimes} />
       </Stack>
-      <IconButton onClick={() => {deleteShift(); props.Refresh();}}>Delete</IconButton>
+      <IconButton onClick={deleteShift}>Delete</IconButton>
 
     </div>
   );

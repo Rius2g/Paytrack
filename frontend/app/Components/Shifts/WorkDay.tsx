@@ -19,14 +19,14 @@ export default function ReturnWorkDay(props:{shiftList:IShift[], jobList:IJob[],
                 if (date.day() === props.day && date.week() === props.date.week && date.year() === props.date.year){
                     return (
                         <div key={shift.shiftID + shift.shiftDate}>
-                            <Shift shiftList={props.shiftList} shift={shift} jobList={props.jobList} Refresh={props.Refresh}/>
+                            <Shift shiftList={props.shiftList} shift={shift} jobList={props.jobList} Refresh={props.Refresh} Delete={props.Delete}/>
                         </div>
                     )
                 }
                 else if (date.day() === props.day && date.week() === props.date.week+1 && date.year() === props.date.year){
                     return (
                         <div key={shift.shiftID + shift.shiftDate}>
-                        <Shift shiftList={props.shiftList} shift={shift} jobList={props.jobList} Refresh={props.Refresh}/>
+                        <Shift shiftList={props.shiftList} shift={shift} jobList={props.jobList} Refresh={props.Refresh} Delete={props.Delete}/>
                     </div>
                     )
                 }

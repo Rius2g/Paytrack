@@ -65,8 +65,8 @@ export class ShiftsAPI
             return data;
     }
 
-    public async deleteShift(shiftID:number) {
-        const response = await fetch(this.enviroment + "/" + shiftID.toString(), {
+    public async deleteShift(shiftID:number, uid:number) {
+        const response = await fetch(this.enviroment + "?id=" + shiftID.toString() + "&uID=" + uid.toString(), {
             method: "DELETE",
             headers: {
                 "Content-Type": "application/json",
