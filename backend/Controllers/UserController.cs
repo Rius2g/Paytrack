@@ -107,6 +107,21 @@ public class UserController : BaseController
         return res > 0;
     }
 
+    [HttpGet("{uid}")]
+    public User getUser(int uid)
+    {
+        using var connection = new SqliteConnection(_db.Name);
+
+        var res = connection.QueryFirstOrDefault<User>(@"
+        SELECT * FROM Users WHERE UiD = @UiD;",
+        new
+        {
+            UiD = uid
+        });
+
+        return res;
+    }
+
 
 
     

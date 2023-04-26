@@ -6,7 +6,9 @@ import Modal from '@mui/material/Modal';
 import Button from '@mui/material/Button';
 import { useState } from 'react';
 import CustomButton from '../Button';
-import { Stack, TextField } from '@mui/material';
+import { InputAdornment, Stack, TextField } from '@mui/material';
+import { UserAPI } from '@/app/api/UserAPI';
+import { useEffect } from 'react';
 
 const style = {
   position: 'absolute' as 'absolute',
@@ -21,6 +23,9 @@ const style = {
   px: 4,
   pb: 3,
 };
+
+var api = new UserAPI();
+var uid = Number(localStorage.getItem("userID"));
 
 export default function SettingsModal() {
     const [ open, setOpen ] = useState(false);
@@ -38,6 +43,7 @@ export default function SettingsModal() {
 
     const handleSubmitChanges = () => {
         //api call here
+        api.changeSettings(uid, taxRate);
 
         }
 
@@ -45,6 +51,13 @@ export default function SettingsModal() {
         setTaxRate(Number(event.target.value));
         };
 
+      
+      useEffect(() => {
+        api.getUser(uid).then((data) => {
+            setTaxRate(data.taxRate);
+        }
+        );
+      }, []);
 
   return (
     <div>
@@ -69,7 +82,9 @@ export default function SettingsModal() {
       >
         <Box sx={{ ...style, width: 400 }}>
           <Stack spacing={1} >
-          <TextField id="outlined-basic" label="Tax Rate" variant="outlined" value={taxRate} onChange={handleTaxRateChange}/> 
+          <TextField id="outlined-basic" label="Tax Rate" variant="outlined" value={taxRate} onChange={handleTaxRateChange} 
+          InputProps={{ endAdornment: <InputAdornment position="end">%</InputAdornment> 
+          }}/> 
          <CustomButton
             onClick={handleSubmitChanges}
             label="Submit Changes"
