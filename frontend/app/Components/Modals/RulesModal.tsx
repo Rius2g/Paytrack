@@ -10,6 +10,7 @@ import { IJob, IRule } from '@/app/Helper/Modules';
 import { Stack } from '@mui/material';
 import RuleList from '../Rules/RuleList';
 import Cookies from "js-cookie";
+import { JobsAPI } from '@/app/api/JobsAPI';
 
 
 const style = {
@@ -26,9 +27,11 @@ const style = {
   pb: 3,
 };
 
+var jobsAPI = new JobsAPI();
 export default function RulesModal() {
   const [ open, setOpen ] = useState(false);
   const [ rules, setRules ] = useState<IRule[]>([]);
+  const [ jobs, setJobs ] = useState<IJob[]>([]);
   const [userId, setuserId] = React.useState<number>(() =>
   Cookies.get("userID") !== undefined
     ? (Cookies.get("userID") as unknown as number)
@@ -46,7 +49,7 @@ export default function RulesModal() {
 
   const handleNewRule = () => {
     //api call here
-    if(userId === 0)
+    if(userId === 0 || userId === undefined)
     {
       alert("You must be logged in to add a rule");
       return;
@@ -61,6 +64,15 @@ export default function RulesModal() {
     }
     setRules([...rules, newRule])
   }
+
+  React.useEffect(() => {
+    //api call to fetch rules
+    jobsAPI.getJobs(userId).then((res) => {
+      setJobs(res.data);
+    }
+    );
+
+  }, []);
   
 
   return (
@@ -86,7 +98,7 @@ export default function RulesModal() {
       >
         <Box sx={{ ...style, width: 400 }}>
           <Stack spacing={1} >
-            <RuleList ruleList={rules} />
+            <RuleList ruleList={rules} jobList={jobs}/>
          <CustomButton
             onClick={handleNewRule}
             label="Add new Rule"

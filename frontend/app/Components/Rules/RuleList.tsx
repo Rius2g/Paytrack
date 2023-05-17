@@ -1,14 +1,14 @@
 'use client';
 
 
-import { IRule } from "@/app/Helper/Modules"
+import { IJob, IRule } from "@/app/Helper/Modules"
 import Rule from "./Rule";
 
-const RuleList = (props:{ruleList:IRule[]}) => {
+const RuleList = (props:{ruleList:IRule[], jobList:IJob[]}) => {
     return (
         <div>
             {props.ruleList.map((rule:IRule) => {
-                return <Rule key={rule.JobID} rule={rule}/>
+                return <Rule key={rule.JobID} rule={rule} jobList={props.jobList}/>
             })
             }
         </div>

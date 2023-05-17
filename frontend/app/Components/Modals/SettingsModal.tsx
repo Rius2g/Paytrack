@@ -9,6 +9,7 @@ import CustomButton from '../Button';
 import { InputAdornment, Stack, TextField } from '@mui/material';
 import { UserAPI } from '@/app/api/UserAPI';
 import { useEffect } from 'react';
+import Cookies from "js-cookie";
 
 const style = {
   position: 'absolute' as 'absolute',
@@ -25,9 +26,14 @@ const style = {
 };
 
 var api = new UserAPI();
-var uid = Number(localStorage.getItem("userID"));
-
 export default function SettingsModal() {
+
+  const [uid, setuid] = React.useState<number>(() =>
+  Cookies.get("userID") !== undefined
+    ? (Cookies.get("userID") as unknown as number)
+    : 0
+  );
+
     const [ open, setOpen ] = useState(false);
     const [ taxRate, setTaxRate ] = useState(0);
 
@@ -71,7 +77,7 @@ export default function SettingsModal() {
      hover:bg-gray-300
      flex-center 
      text-center 
-     border-x-[1px] 
+     border-x-[2px] 
      sm:block
      w-24"  onClick={handleOpen}>Settings</Button>
       <Modal
@@ -81,8 +87,8 @@ export default function SettingsModal() {
         aria-describedby="parent-modal-description"
       >
         <Box sx={{ ...style, width: 400 }}>
-          <Stack spacing={1} >
-          <TextField id="outlined-basic" label="Tax Rate" variant="outlined" value={taxRate} onChange={handleTaxRateChange} 
+          <Stack spacing={1} className="flex items-center justify-center">
+          <TextField className="w-28" id="outlined-basic" label="Tax Rate" variant="outlined" value={taxRate} onChange={handleTaxRateChange} 
           InputProps={{ endAdornment: <InputAdornment position="end">%</InputAdornment> 
           }}/> 
          <CustomButton
