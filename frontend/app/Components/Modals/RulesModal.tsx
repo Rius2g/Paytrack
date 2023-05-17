@@ -68,11 +68,11 @@ export default function RulesModal() {
   React.useEffect(() => {
     //api call to fetch rules
     jobsAPI.getJobs(userId).then((res) => {
-      setJobs(res.data);
+      setJobs(res);
     }
     );
 
-  }, []);
+  }, [open]);
   
 
   return (
@@ -96,7 +96,7 @@ export default function RulesModal() {
         aria-labelledby="parent-modal-title"
         aria-describedby="parent-modal-description"
       >
-        <Box sx={{ ...style, width: 400 }}>
+        <Box sx={{ ...style, width: 700 }}>
           <Stack spacing={1} >
             <RuleList ruleList={rules} jobList={jobs}/>
          <CustomButton

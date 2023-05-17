@@ -75,11 +75,10 @@ export default function JobModal() {
     
   useEffect(() => {
     api.getJobs(userId).then((data) => {
-      console.log(data)
       setJobs(data);
     }
     )
-  }, [userId])
+  }, [open])
 
 
   

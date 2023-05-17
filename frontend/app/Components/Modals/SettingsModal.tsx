@@ -63,7 +63,7 @@ export default function SettingsModal() {
             setTaxRate(data.taxRate);
         }
         );
-      }, []);
+      }, [open]);
 
   return (
     <div>

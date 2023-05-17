@@ -16,9 +16,9 @@ const Shift = (props: { shiftList:IShift[], shift: IShift, jobList:IJob[], Refre
   const [job, setJob] = useState("");
 
   const findJob = () => {
-    let job = props.jobList.find(job => job.JobID === props.shift.jobbID);
+    let job = props.jobList.find(job => job.jobID === props.shift.jobbID);
     if (job) {
-      setJob(job.JobName);
+      setJob(job.jobName);
     }
     else {
       setJob("No job");
@@ -48,7 +48,7 @@ const Shift = (props: { shiftList:IShift[], shift: IShift, jobList:IJob[], Refre
   const handleJobChange = (event: SelectChangeEvent) => {
     setJob(event.target.value); //update the state
     props.shift.jobName = event.target.value; //update the actual value in the user
-    props.shift.jobbID = props.jobList.find(job => job.JobName === event.target.value)?.JobID || 0;
+    props.shift.jobbID = props.jobList.find(job => job.jobName === event.target.value)?.jobID || 0;
     api.updateShift(props.shift);
   };
 
