@@ -54,7 +54,7 @@ interface IRule {
     UiD: number;
     RuleType: number;
     Rate: number;
-    Date?: Dayjs;
+    Date?: number;
     StartTime?: number;
     Day?: number;
     RateType?: number;

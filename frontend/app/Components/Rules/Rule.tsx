@@ -14,23 +14,22 @@ import { Button } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
 
 
+var ruleAPI = new RulesAPI();
+
+
 
 const Rule = (props:{rule:IRule, jobList:IJob[]}) => {
     const [ jobName, setJobName ] = useState(props.rule.jobName);
-    const [ jobList, setJobList ] = useState<IJob[]>(props.jobList);
     const [ ruleType, setRuleType ] = useState(props.rule.RuleType);
     const [ compansationType, setCompansationType ] = useState(props.rule.RateType);
     const [ compansationValue, setCompansationValue ] = useState(props.rule.Rate);
     const [ ruleDay, setRuleDay ] = useState(props.rule.Day);
-    const [ ruleDate, setRuleDate ] = useState<Dayjs | null>(props.rule.Date ?? null);
+    const [ ruleDate, setRuleDate ] = useState<Dayjs | null>(props.rule.Date !== undefined ? numberto_DayjsTime(props.rule.Date) : null);
     const [ruleStartTime, setRuleStartTime] = useState<Dayjs | null>(
         props.rule && props.rule.StartTime !== undefined
           ? numberto_DayjsTime(props.rule.StartTime)
           : null
       );
-
-
-
 
     const handleChange = (event: SelectChangeEvent) => {
         //set jobrate as well
@@ -61,17 +60,14 @@ const Rule = (props:{rule:IRule, jobList:IJob[]}) => {
 
     const saveChanges = () => {
         // lots of checks for different types and all
-        const rule: IRule = {
-            RuleID: props.rule.RuleID,
-            JobID: props.rule.JobID,
-            UiD: props.rule.UiD,
-            RuleType: ruleType,
-            Rate: compansationValue,
-            Date: ruleDate !== null ? ruleDate : undefined,
-            StartTime: ruleStartTime !== null ? dayjsTime_toNumber(ruleStartTime): undefined,
-            Day: ruleDay,
-            RateType: compansationType
-        }
+        //set the rule on the client and then send it to the server
+        props.rule.RuleType = ruleType;
+        props.rule.RateType = compansationType;
+        props.rule.Rate = compansationValue;
+        props.rule.Day = ruleDay;
+        props.rule.Date = ruleDate !== null ? dayjsTime_toNumber(ruleDate): undefined;
+        props.rule.StartTime = ruleStartTime !== null ? dayjsTime_toNumber(ruleStartTime): undefined;
+        ruleAPI.updateRule(props.rule);
     }
 
     const options: { [key: string ]: number} = {
@@ -108,7 +104,7 @@ const Rule = (props:{rule:IRule, jobList:IJob[]}) => {
                 label="Job"
                 onChange={handleChange}
                 >
-                {jobList.map((job) => (
+                {props.jobList.map((job) => (
                     <MenuItem key={job.jobName} value={job.jobName}>
                     {job.jobName}
                 </MenuItem>
