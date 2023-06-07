@@ -11,6 +11,7 @@ import { Stack } from '@mui/material';
 import RuleList from '../Rules/RuleList';
 import Cookies from "js-cookie";
 import { JobsAPI } from '@/app/api/JobsAPI';
+import { RulesAPI } from '@/app/api/RulesAPI';
 
 
 const style = {
@@ -28,6 +29,7 @@ const style = {
 };
 
 var jobsAPI = new JobsAPI();
+var rulesAPI = new RulesAPI();
 export default function RulesModal() {
   const [ open, setOpen ] = useState(false);
   const [ rules, setRules ] = useState<IRule[]>([]);
@@ -76,7 +78,11 @@ export default function RulesModal() {
   }
 
   React.useEffect(() => {
-    //api call to get the rules as well
+    //api call to get rules and the jobs for the list
+    rulesAPI.getRules(userId).then((res) => {
+      setRules(res);
+    }
+    );
     jobsAPI.getJobs(userId).then((res) => {
       setJobs(res);
     }
