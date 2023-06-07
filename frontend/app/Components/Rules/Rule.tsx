@@ -6,16 +6,29 @@ import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { InputLabel } from '@mui/material';
 import MenuItem from '@mui/material/MenuItem';
 import { useState } from 'react';
+import { TimePicker} from '@mui/x-date-pickers/TimePicker';
+import { Dayjs } from 'dayjs';
+import { dayjsTime_toNumber, numberto_DayjsTime } from '@/app/Helper/Functions';
+import { RulesAPI } from '@/app/api/RulesAPI';
+import { Button } from '@mui/material';
+import { DatePicker } from '@mui/x-date-pickers';
 
 
 
 const Rule = (props:{rule:IRule, jobList:IJob[]}) => {
-    const [ jobName, setJobName ] = useState("");
+    const [ jobName, setJobName ] = useState(props.rule.jobName);
     const [ jobList, setJobList ] = useState<IJob[]>(props.jobList);
-    const [ ruleType, setRuleType ] = useState(0);
-    const [ compansationType, setCompansationType ] = useState(0);
-    const [ compansationValue, setCompansationValue ] = useState(0);
-    const [ ruleValue, setRuleValue ] = useState(0);
+    const [ ruleType, setRuleType ] = useState(props.rule.RuleType);
+    const [ compansationType, setCompansationType ] = useState(props.rule.RateType);
+    const [ compansationValue, setCompansationValue ] = useState(props.rule.Rate);
+    const [ ruleDay, setRuleDay ] = useState(props.rule.Day);
+    const [ ruleDate, setRuleDate ] = useState<Dayjs | null>(props.rule.Date ?? null);
+    const [ruleStartTime, setRuleStartTime] = useState<Dayjs | null>(
+        props.rule && props.rule.StartTime !== undefined
+          ? numberto_DayjsTime(props.rule.StartTime)
+          : null
+      );
+
 
 
 
@@ -39,9 +52,27 @@ const Rule = (props:{rule:IRule, jobList:IJob[]}) => {
     const handleCompansationValue = (event: React.ChangeEvent<HTMLInputElement>) => {
         const selectedCompansationValue = event.target.value as string;
         setCompansationValue(Number(selectedCompansationValue));
+    }     
+
+    const handleDayChange = (event: SelectChangeEvent) => {
+        const selectedDay = event.target.value as string;
+        setRuleDay(days[selectedDay]);
     }
 
-        
+    const saveChanges = () => {
+        // lots of checks for different types and all
+        const rule: IRule = {
+            RuleID: props.rule.RuleID,
+            JobID: props.rule.JobID,
+            UiD: props.rule.UiD,
+            RuleType: ruleType,
+            Rate: compansationValue,
+            Date: ruleDate !== null ? ruleDate : undefined,
+            StartTime: ruleStartTime !== null ? dayjsTime_toNumber(ruleStartTime): undefined,
+            Day: ruleDay,
+            RateType: compansationType
+        }
+    }
 
     const options: { [key: string ]: number} = {
         "Time": 0,
@@ -53,6 +84,16 @@ const Rule = (props:{rule:IRule, jobList:IJob[]}) => {
     const compansationOptions: { [key: string ]: number} = {
         "%": 0,
         "Flat": 1
+    }
+
+    const days: { [key: string ]: number} = {
+        "Monday": 0,
+        "Tuesday": 1,
+        "Wednesday": 2,
+        "Thursday": 3,
+        "Friday": 4,
+        "Saturday": 5,
+        "Sunday": 6
     }
 
     return (
@@ -86,6 +127,62 @@ const Rule = (props:{rule:IRule, jobList:IJob[]}) => {
                         ))}
                 </Select>
               </Stack>
+              {ruleType === 0 ? (
+                <Stack spacing={2}>
+                    <TimePicker
+                    label="Extra after:"
+                    value={ruleStartTime}
+                    onChange={(newValue) => {
+                        setRuleStartTime(newValue);
+                    }}
+                    />
+                </Stack>
+                ) : ruleType === 1 ? (
+                <Stack spacing={2}>
+                    <Select 
+                    label="Day"
+                    onChange={handleDayChange}>
+                        {Object.keys(days).map((option) => (
+                            <MenuItem key={option} value={option}>
+                                {option}
+                            </MenuItem>
+                        ))}
+                        </Select>
+                </Stack>
+                ) : ruleType === 2 ? (
+                <Stack spacing={2}>
+                    time and day rule: 
+                    <TimePicker
+                    label="Extra after:"
+                    value={ruleStartTime}
+                    onChange={(newValue) => {
+                        setRuleStartTime(newValue);
+                    }}
+                    />
+                    <Select 
+                    label="Day"
+                    onChange={handleDayChange}>
+                        {Object.keys(days).map((option) => (
+                            <MenuItem key={option} value={option}>
+                                {option}
+                            </MenuItem>
+                        ))}
+                        </Select>
+                </Stack>
+                ) : ruleType === 3 ? (
+                <Stack spacing={2}>
+                    <DatePicker
+                    label="Date"
+                    value={ruleDate}
+                    onChange={(newValue) => {
+                        setRuleDate(newValue);
+                    }
+                    }
+                    />
+                </Stack>
+                ) : null}
+
+            
             <Stack spacing={2}>
                 <InputLabel id="demo-simple-select-label">Compansation type</InputLabel>
                 <Select
@@ -102,6 +199,9 @@ const Rule = (props:{rule:IRule, jobList:IJob[]}) => {
                 <InputLabel id="demo-simple-select-label">Rule value</InputLabel>
                 <TextField className="w-28" id="outlined-basic" variant="outlined" value={compansationValue} onChange={handleCompansationValue} />
             </Stack>
+            <Button variant="contained" color="primary" onClick={saveChanges}>
+                Save
+            </Button>
             </Stack>
         </div>
 

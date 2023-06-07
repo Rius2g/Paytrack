@@ -52,13 +52,13 @@ interface IRule {
     RuleID: number;
     JobID: number;
     UiD: number;
-    RuleType: string;
+    RuleType: number;
     Rate: number;
-    Date?: number;
+    Date?: Dayjs;
     StartTime?: number;
-    EndTime?: number;
     Day?: number;
-    RateType?: string;
+    RateType?: number;
+    jobName?: string;
 
 }
 

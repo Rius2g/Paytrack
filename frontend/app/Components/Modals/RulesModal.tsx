@@ -47,6 +47,16 @@ export default function RulesModal() {
     setOpen(false);
   };
 
+  const mapRuleToJobName = () => {
+    rules.map((rule) => {
+      const job = jobs.find((job) => job.jobID === rule.JobID);
+      if(job) {
+        rule.jobName = job.jobName;
+      }
+    })
+  }
+
+
   const handleNewRule = () => {
     //api call here
     if(userId === 0 || userId === undefined)
@@ -58,7 +68,7 @@ export default function RulesModal() {
     var newRule: IRule = {
         RuleID: rules.length + 1,
         JobID: 0,
-        RuleType: "",
+        RuleType: 0,
         UiD: 0,
         Rate: 0,
     }
@@ -66,11 +76,12 @@ export default function RulesModal() {
   }
 
   React.useEffect(() => {
-    //api call to fetch rules
+    //api call to get the rules as well
     jobsAPI.getJobs(userId).then((res) => {
       setJobs(res);
     }
     );
+    mapRuleToJobName();
 
   }, [open]);
   
