@@ -70,12 +70,18 @@ export default function RulesModal() {
     
     var newRule: IRule = {
         RuleID: rules.length + 1,
-        JobID: 0,
-        RuleType: 0,
-        UiD: 0,
-        Rate: 0,
+        JobID: 1,
+        RuleType: 1,
+        UiD: Number(userId),
+        Rate: 10,
+        Date: 0,
+        Start: 0,
+        Day: 0,
+        RateType: 1,
+        jobName: "Job Name"
     }
     setRules([...rules, newRule])
+    rulesAPI.postRule(newRule);
   }
 
   React.useEffect(() => {
@@ -85,6 +91,7 @@ export default function RulesModal() {
     }
     //api call to get rules and the jobs for the list
     rulesAPI.getRules(userId).then((res) => {
+      console.log(res);
       setRules(res);
     }
     );

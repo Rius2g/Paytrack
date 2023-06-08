@@ -18,6 +18,27 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
 var ruleAPI = new RulesAPI();
 
+const options: { [key: string ]: number} = {
+    "Time": 0,
+    "Day": 1,
+    "Time and Day": 2,
+    "Date": 3
+}
+
+const compansationOptions: { [key: string ]: number} = {
+    "%": 0,
+    "Flat": 1
+}
+
+const days: { [key: string ]: number} = {
+    "Monday": 0,
+    "Tuesday": 1,
+    "Wednesday": 2,
+    "Thursday": 3,
+    "Friday": 4,
+    "Saturday": 5,
+    "Sunday": 6
+}
 
 
 const Rule = (props:{rule:IRule, jobList:IJob[]}) => {
@@ -26,6 +47,7 @@ const Rule = (props:{rule:IRule, jobList:IJob[]}) => {
     const [ compansationType, setCompansationType ] = useState(props.rule.RateType);
     const [ compansationValue, setCompansationValue ] = useState(props.rule.Rate);
     const [ ruleDay, setRuleDay ] = useState(props.rule.Day);
+    const [ ruleTypeString, setRuleTypeString ] = useState(Object.keys(options)[props.rule.RuleType]);
     const [ ruleDate, setRuleDate ] = useState<Dayjs | null>(props.rule.Date !== undefined ? numberto_DayjsTime(props.rule.Date) : null);
     const [ruleStartTime, setRuleStartTime] = useState<Dayjs | null>(
         props.rule && props.rule.StartTime !== undefined
@@ -43,6 +65,7 @@ const Rule = (props:{rule:IRule, jobList:IJob[]}) => {
     const handleRuleTypeChange = (event: SelectChangeEvent) => {
         const selectedRuleType = event.target.value as string;
         setRuleType(options[selectedRuleType]);
+        setRuleTypeString(selectedRuleType);
     }
 
     const handleCompansationTypeChange = (event: SelectChangeEvent) => {
@@ -72,28 +95,6 @@ const Rule = (props:{rule:IRule, jobList:IJob[]}) => {
         ruleAPI.updateRule(props.rule);
     }
 
-    const options: { [key: string ]: number} = {
-        "Time": 0,
-        "Day": 1,
-        "Time and Day": 2,
-        "Date": 3
-    }
-
-    const compansationOptions: { [key: string ]: number} = {
-        "%": 0,
-        "Flat": 1
-    }
-
-    const days: { [key: string ]: number} = {
-        "Monday": 0,
-        "Tuesday": 1,
-        "Wednesday": 2,
-        "Thursday": 3,
-        "Friday": 4,
-        "Saturday": 5,
-        "Sunday": 6
-    }
-
     return (
         <div className="
         flex-center
@@ -120,7 +121,7 @@ const Rule = (props:{rule:IRule, jobList:IJob[]}) => {
               <Stack spacing={2}>
                 <InputLabel id="demo-simple-select-label">Rule type</InputLabel>
                 <Select
-                label="Rule type"
+                value={ruleTypeString}
                 onChange={handleRuleTypeChange}>
                         {Object.keys(options).map((option) => (
                             <MenuItem key={option} value={option}>

@@ -49,11 +49,10 @@ namespace Paytrack.Database
                                 RuleID INTEGER PRIMARY KEY AUTOINCREMENT,
                                 UiD INTEGER NOT NULL,
                                 JobID INTEGER NOT NULL,
-                                Start INTEGER NOT NULL,
-                                End INTEGER NOT NULL,
+                                Start INTEGER,
                                 Rate INTEGER NOT NULL,
-                                RateType TEXT,
-                                RuleType TEXT,
+                                RateType INTEGER NOT NULL,
+                                RuleType INTEGER NOT NULL,
                                 Day INTEGER,
                                 Date INTEGER
                             );
