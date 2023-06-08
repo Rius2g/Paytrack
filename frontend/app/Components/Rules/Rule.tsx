@@ -50,8 +50,8 @@ const Rule = (props:{rule:IRule, jobList:IJob[]}) => {
     const [ ruleTypeString, setRuleTypeString ] = useState(Object.keys(options)[props.rule.RuleType]);
     const [ ruleDate, setRuleDate ] = useState<Dayjs | null>(props.rule.Date !== undefined ? numberto_DayjsTime(props.rule.Date) : null);
     const [ruleStartTime, setRuleStartTime] = useState<Dayjs | null>(
-        props.rule && props.rule.StartTime !== undefined
-          ? numberto_DayjsTime(props.rule.StartTime)
+        props.rule && props.rule.Start !== undefined
+          ? numberto_DayjsTime(props.rule.Start)
           : null
       );
 
@@ -91,7 +91,7 @@ const Rule = (props:{rule:IRule, jobList:IJob[]}) => {
         props.rule.Rate = compansationValue;
         props.rule.Day = ruleDay;
         props.rule.Date = ruleDate !== null ? dayjsTime_toNumber(ruleDate): undefined;
-        props.rule.StartTime = ruleStartTime !== null ? dayjsTime_toNumber(ruleStartTime): undefined;
+        props.rule.Start = ruleStartTime !== null ? dayjsTime_toNumber(ruleStartTime): undefined;
         ruleAPI.updateRule(props.rule);
     }
 
