@@ -41,7 +41,8 @@ namespace Paytrack.Database
                                 UiD INTEGER PRIMARY KEY AUTOINCREMENT,
                                 Email TEXT NOT NULL,
                                 Password TEXT NOT NULL,
-                                TaxRate INTEGER
+                                TaxRate INTEGER,
+                                Currency TEXT
                             );
 
                             CREATE TABLE IF NOT EXISTS Rules (
@@ -65,7 +66,6 @@ namespace Paytrack.Database
                                 UNIQUE(UiD),
                                 UNIQUE(UiD,Salt)
                                 );
-
             ");
 
             return Task.CompletedTask;

@@ -28,9 +28,9 @@ export class UserAPI {
             });
     }
 
-    public async changeSettings(uid:number, taxRate: number)
+    public async changeSettings(uid:number, taxRate: number, currency: string)
     {
-        return await fetch(this.enviroment + "/" + uid.toString() + "?TaxRate=" + taxRate.toString(), {
+        return await fetch(this.enviroment + "/" + uid.toString() + "?TaxRate=" + taxRate.toString() + "?=Currency" + currency, {
             method: "PUT",
             mode: "cors",
             headers: {

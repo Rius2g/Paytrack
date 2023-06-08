@@ -22,7 +22,7 @@ const UserMenu = () => {
 
     return (
         <div className="relative">
-            <div className="flex flex-row items-center gap-3">
+            <div className="flex flex-row items-center gap-5">
                 <div>
                 </div>
                 <div
@@ -51,30 +51,18 @@ const UserMenu = () => {
                 </div>
             </div>
             {isOpen && (
-                <div
-                className="
-                absolute
-                rounded-xl
-                shadow-md
-                w-[40vw]
-                md:w-3/4
-                bg-white
-                overflow-hidden
-                right-0
-                top-12
-                text-sm
-                ">
-                <div className="flex flex-col cursor-pointer">
-                    <>
-                <LoginModal />
-                <RegisterModal />
-                <JobModal />
-                <RulesModal />
-                <SettingsModal />
-                    </>
-                </div>
-                </div>
-            )}
+       <div className="absolute rounded-xl shadow-md max-w-[90vw] bg-white overflow-hidden right-0 top-12 text-sm">
+       <div
+         className="flex flex-col cursor-pointer h-[calc(100vh-4rem)] overflow-y-auto p-4"
+       >
+            <LoginModal />
+            <RegisterModal />
+            <JobModal />
+            <RulesModal />
+            <SettingsModal />
+          </div>
+        </div>
+      )}
         </div>
     )
 }

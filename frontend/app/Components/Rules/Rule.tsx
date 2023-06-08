@@ -12,6 +12,8 @@ import { dayjsTime_toNumber, numberto_DayjsTime } from '@/app/Helper/Functions';
 import { RulesAPI } from '@/app/api/RulesAPI';
 import { Button } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
 
 var ruleAPI = new RulesAPI();
@@ -93,7 +95,11 @@ const Rule = (props:{rule:IRule, jobList:IJob[]}) => {
     }
 
     return (
-        <div>
+        <div className="
+        flex-center
+        text-center
+        sm:block
+        px-4">
             <Stack spacing={2} direction="row">
             <Stack spacing={2} >
                 <InputLabel id="demo-simple-select-label">Job</InputLabel>
@@ -124,19 +130,21 @@ const Rule = (props:{rule:IRule, jobList:IJob[]}) => {
                 </Select>
               </Stack>
               {ruleType === 0 ? (
-                <Stack spacing={2}>
-                    <TimePicker
-                    label="Extra after:"
-                    value={ruleStartTime}
-                    onChange={(newValue) => {
-                        setRuleStartTime(newValue);
-                    }}
-                    />
+                <Stack spacing={2} maxWidth={100}>
+                    <InputLabel id="demo-simple-select-label">Extra after</InputLabel>
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <TimePicker
+                        value={ruleStartTime}
+                        onChange={(newValue) => {
+                            setRuleStartTime(newValue);
+                        }}
+                        />
+                    </LocalizationProvider>
                 </Stack>
                 ) : ruleType === 1 ? (
-                <Stack spacing={2}>
+                    <Stack spacing={2}>
+                    <InputLabel id="demo-simple-select-label">Day</InputLabel> 
                     <Select 
-                    label="Day"
                     onChange={handleDayChange}>
                         {Object.keys(days).map((option) => (
                             <MenuItem key={option} value={option}>
@@ -144,19 +152,12 @@ const Rule = (props:{rule:IRule, jobList:IJob[]}) => {
                             </MenuItem>
                         ))}
                         </Select>
-                </Stack>
+                    </Stack>
                 ) : ruleType === 2 ? (
+                <Stack direction="row"> 
                 <Stack spacing={2}>
-                    time and day rule: 
-                    <TimePicker
-                    label="Extra after:"
-                    value={ruleStartTime}
-                    onChange={(newValue) => {
-                        setRuleStartTime(newValue);
-                    }}
-                    />
-                    <Select 
-                    label="Day"
+                    <InputLabel id="demo-simple-select-label">Day</InputLabel>
+                <Select 
                     onChange={handleDayChange}>
                         {Object.keys(days).map((option) => (
                             <MenuItem key={option} value={option}>
@@ -164,18 +165,32 @@ const Rule = (props:{rule:IRule, jobList:IJob[]}) => {
                             </MenuItem>
                         ))}
                         </Select>
+                    </Stack>
+                    <Stack spacing={2} maxWidth={100}>
+                    <InputLabel id="demo-simple-select-label">Extra after</InputLabel>
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <TimePicker
+                        value={ruleStartTime}
+                        onChange={(newValue) => {
+                            setRuleStartTime(newValue);
+                        }}
+                        />
+                    </LocalizationProvider>
+                    </Stack>
                 </Stack>
                 ) : ruleType === 3 ? (
-                <Stack spacing={2}>
-                    <DatePicker
-                    label="Date"
-                    value={ruleDate}
-                    onChange={(newValue) => {
-                        setRuleDate(newValue);
-                    }
-                    }
-                    />
-                </Stack>
+                    <Stack spacing={2} maxWidth={100}>
+                        <InputLabel id="demo-simple-select-label">Date</InputLabel> 
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                            <DatePicker
+                            label="Date"
+                            value={ruleDate}
+                            onChange={(newValue) => {
+                                setRuleDate(newValue);
+                            }}
+                            />
+                        </LocalizationProvider>
+                    </Stack>
                 ) : null}
 
             

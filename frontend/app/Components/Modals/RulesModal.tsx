@@ -61,6 +61,7 @@ export default function RulesModal() {
 
   const handleNewRule = () => {
     //api call here
+    console.log("new rule");
     if(userId === 0 || userId === undefined)
     {
       alert("You must be logged in to add a rule");
@@ -78,6 +79,10 @@ export default function RulesModal() {
   }
 
   React.useEffect(() => {
+    if(userId === 0 || userId === undefined || userId === null || open === false)
+    {
+      return;
+    }
     //api call to get rules and the jobs for the list
     rulesAPI.getRules(userId).then((res) => {
       setRules(res);
@@ -113,8 +118,8 @@ export default function RulesModal() {
         aria-labelledby="parent-modal-title"
         aria-describedby="parent-modal-description"
       >
-        <Box sx={{ ...style, width: 700 }}>
-          <Stack spacing={1} >
+        <Box sx={{ ...style, width: 900 }}>
+          <Stack spacing={1} style={{justifyContent: "center"}}>
             <RuleList ruleList={rules} jobList={jobs}/>
          <CustomButton
             onClick={handleNewRule}

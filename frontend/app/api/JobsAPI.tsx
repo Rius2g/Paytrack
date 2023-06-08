@@ -27,7 +27,6 @@ export class JobsAPI {
     }
 
     public async updateJob(job: IJob){
-        console.log(job)
         const response = await fetch(this.enviroment, {
             method: "PUT",
             headers: {

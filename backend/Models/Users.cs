@@ -8,5 +8,7 @@ namespace Paytrack.Models
 
         public decimal TaxRate { get; set; }
 
+        public string? Currency { get; set; }
+
     }
 }
