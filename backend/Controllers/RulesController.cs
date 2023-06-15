@@ -68,7 +68,7 @@ public class RulesController : BaseController
     }
 
     [HttpPut]
-    public void PutRule(Rules rule)
+    public IActionResult PutRule(Rules rule)
     {
         using var connection = new SqliteConnection(_db.Name);
         connection.Execute(@"
@@ -80,10 +80,12 @@ public class RulesController : BaseController
             RuleType = @RuleType,
             Day = @Day,
             Start = @Start,
-            End = @End,
             Date = @Date
         WHERE RuleID = @RuleID;",
         rule);
+
+
+        return Ok();
     }
 
 

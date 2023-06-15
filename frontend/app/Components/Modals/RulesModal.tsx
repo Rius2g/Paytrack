@@ -12,6 +12,8 @@ import RuleList from '../Rules/RuleList';
 import Cookies from "js-cookie";
 import { JobsAPI } from '@/app/api/JobsAPI';
 import { RulesAPI } from '@/app/api/RulesAPI';
+import dayjs from 'dayjs';
+import convert_date2db from '@/app/Helper/Functions';
 
 
 const style = {
@@ -49,16 +51,6 @@ export default function RulesModal() {
     setOpen(false);
   };
 
-  const mapRuleToJobName = () => {
-    rules.map((rule) => {
-      const job = jobs.find((job) => job.jobID === rule.JobID);
-      if(job) {
-        rule.jobName = job.jobName;
-      }
-    })
-  }
-
-
   const handleNewRule = () => {
     //api call here
     console.log("new rule");
@@ -71,14 +63,14 @@ export default function RulesModal() {
     var newRule: IRule = {
         RuleID: rules.length + 1,
         JobID: 1,
-        RuleType: 1,
+        RuleType: "Time",
         UiD: Number(userId),
         Rate: 10,
-        Date: 0,
+        Date: convert_date2db(dayjs()),
         Start: 0,
-        Day: 0,
-        RateType: 1,
-        jobName: "Job Name"
+        Day: "Monday",
+        RateType: "%",
+        jobName: ""
     }
     setRules([...rules, newRule])
     rulesAPI.postRule(newRule);
@@ -91,15 +83,14 @@ export default function RulesModal() {
     }
     //api call to get rules and the jobs for the list
     rulesAPI.getRules(userId).then((res) => {
-      console.log(res);
       setRules(res);
+      jobsAPI.getJobs(userId).then((res) => {
+        setJobs(res);
+      }
+      );
+
     }
     );
-    jobsAPI.getJobs(userId).then((res) => {
-      setJobs(res);
-    }
-    );
-    mapRuleToJobName();
 
   }, [open]);
   

@@ -5,7 +5,7 @@ import { Stack, TextField } from '@mui/material';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { InputLabel } from '@mui/material';
 import MenuItem from '@mui/material/MenuItem';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { TimePicker} from '@mui/x-date-pickers/TimePicker';
 import { Dayjs } from 'dayjs';
 import { dayjsTime_toNumber, numberto_DayjsTime } from '@/app/Helper/Functions';
@@ -18,27 +18,27 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
 var ruleAPI = new RulesAPI();
 
-const options: { [key: string ]: number} = {
-    "Time": 0,
-    "Day": 1,
-    "Time and Day": 2,
-    "Date": 3
-}
+const options: string[] = [
+    "Time",
+    "Day",
+    "Time and Day",
+    "Date",
+  ];
 
-const compansationOptions: { [key: string ]: number} = {
-    "%": 0,
-    "Flat": 1
-}
-
-const days: { [key: string ]: number} = {
-    "Monday": 0,
-    "Tuesday": 1,
-    "Wednesday": 2,
-    "Thursday": 3,
-    "Friday": 4,
-    "Saturday": 5,
-    "Sunday": 6
-}
+  const compansationOptions: string[] = [
+    "%",
+    "Flat",
+  ];
+  
+  const days: string[] = [
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+    "Sunday",
+  ];
 
 
 const Rule = (props:{rule:IRule, jobList:IJob[]}) => {
@@ -47,7 +47,6 @@ const Rule = (props:{rule:IRule, jobList:IJob[]}) => {
     const [ compansationType, setCompansationType ] = useState(props.rule.RateType);
     const [ compansationValue, setCompansationValue ] = useState(props.rule.Rate);
     const [ ruleDay, setRuleDay ] = useState(props.rule.Day);
-    const [ ruleTypeString, setRuleTypeString ] = useState(Object.keys(options)[props.rule.RuleType]);
     const [ ruleDate, setRuleDate ] = useState<Dayjs | null>(props.rule.Date !== undefined ? numberto_DayjsTime(props.rule.Date) : null);
     const [ruleStartTime, setRuleStartTime] = useState<Dayjs | null>(
         props.rule && props.rule.Start !== undefined
@@ -64,13 +63,12 @@ const Rule = (props:{rule:IRule, jobList:IJob[]}) => {
 
     const handleRuleTypeChange = (event: SelectChangeEvent) => {
         const selectedRuleType = event.target.value as string;
-        setRuleType(options[selectedRuleType]);
-        setRuleTypeString(selectedRuleType);
+        setRuleType(selectedRuleType);
     }
 
     const handleCompansationTypeChange = (event: SelectChangeEvent) => {
         const selectedCompansationType = event.target.value as string;
-        setCompansationType(compansationOptions[selectedCompansationType]);
+        setCompansationType(selectedCompansationType);
     }
 
     const handleCompansationValue = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -80,7 +78,7 @@ const Rule = (props:{rule:IRule, jobList:IJob[]}) => {
 
     const handleDayChange = (event: SelectChangeEvent) => {
         const selectedDay = event.target.value as string;
-        setRuleDay(days[selectedDay]);
+        setRuleDay(selectedDay);
     }
 
     const saveChanges = () => {
@@ -121,7 +119,7 @@ const Rule = (props:{rule:IRule, jobList:IJob[]}) => {
               <Stack spacing={2}>
                 <InputLabel id="demo-simple-select-label">Rule type</InputLabel>
                 <Select
-                value={ruleTypeString}
+                value={ruleType}
                 onChange={handleRuleTypeChange}>
                         {Object.keys(options).map((option) => (
                             <MenuItem key={option} value={option}>
@@ -130,7 +128,7 @@ const Rule = (props:{rule:IRule, jobList:IJob[]}) => {
                         ))}
                 </Select>
               </Stack>
-              {ruleType === 0 ? (
+              {ruleType === "Time" ? (
                 <Stack spacing={2} maxWidth={100}>
                     <InputLabel id="demo-simple-select-label">Extra after</InputLabel>
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -142,7 +140,7 @@ const Rule = (props:{rule:IRule, jobList:IJob[]}) => {
                         />
                     </LocalizationProvider>
                 </Stack>
-                ) : ruleType === 1 ? (
+                ) : ruleType === "Day" ? (
                     <Stack spacing={2}>
                     <InputLabel id="demo-simple-select-label">Day</InputLabel> 
                     <Select 
@@ -154,7 +152,7 @@ const Rule = (props:{rule:IRule, jobList:IJob[]}) => {
                         ))}
                         </Select>
                     </Stack>
-                ) : ruleType === 2 ? (
+                ) : ruleType === "Time and Day" ? (
                 <Stack direction="row"> 
                 <Stack spacing={2}>
                     <InputLabel id="demo-simple-select-label">Day</InputLabel>
@@ -179,7 +177,7 @@ const Rule = (props:{rule:IRule, jobList:IJob[]}) => {
                     </LocalizationProvider>
                     </Stack>
                 </Stack>
-                ) : ruleType === 3 ? (
+                ) : ruleType === "Date" ? (
                     <Stack spacing={2} maxWidth={100}>
                         <InputLabel id="demo-simple-select-label">Date</InputLabel> 
                         <LocalizationProvider dateAdapter={AdapterDayjs}>

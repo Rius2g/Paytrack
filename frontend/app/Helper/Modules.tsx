@@ -53,9 +53,9 @@ interface IRule {
     JobID: number;
     Rate: number;
     UiD: number;
-    RateType: number;
-    RuleType: number;
-    Day?: number;
+    RateType: string;
+    RuleType: string;
+    Day?: string;
     Start?: number;
     Date?: number;
     jobName?: string;

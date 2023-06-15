@@ -36,8 +36,6 @@ export class RulesAPI
             },
             body: JSON.stringify(rule),
         });
-        const data = await response.json();
-        return data;
     }
 
     public async deleteRule(rule: IRule){
