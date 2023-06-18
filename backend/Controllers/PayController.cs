@@ -17,9 +17,9 @@ public class PayController : BaseController
     }
 
     [HttpGet]
-   public double ExpectedPay(int userID, int startTime, int endTime)
+   public decimal ExpectedPay(int userID, int startTime, int endTime)
 {
-    double ExpectedPay = 0;
+    decimal ExpectedPay = 0;
     using var connection = new SqliteConnection(_db.Name);
     var shifts_with_jobs = connection.Query<dynamic>(@"
         SELECT * FROM Shifts NATURAL JOIN Jobs WHERE UiD = @userID AND ShiftStartTime >= @startTime AND ShiftEndTime <= @endTime;",
@@ -35,6 +35,9 @@ public class PayController : BaseController
         SELECT * FROM Rules WHERE UiD = @userID;",
         new { userID }).ToArray();
 
+    var user = connection.QuerySingleOrDefault<User>(@"
+        SELECT * FROM Users WHERE UiD = @userID;",
+        new { userID });
     
     foreach(var shift in shifts_with_jobs)
     {
@@ -46,7 +49,7 @@ public class PayController : BaseController
 
     // Access the data in the shifts_with_jobs and rules variables as needed
 
-    return 0;
+    return ExpectedPay * (1 - user.TaxRate);
 }
 
     public double CalculateExtraFromRules(Rules[] rules, Shift shift, int basePay) //call this with each individual shift to find the extra pay
@@ -173,11 +176,11 @@ public class PayController : BaseController
 
     if(rule.RateType == "%")
     {
-        return hours_worked * basePay * ((rule.Rate / 100) + 1); // Return the calculated hours_worked instead of 0
+        return hours_worked * (basePay * ((rule.Rate / 100) + 1) - basePay); // Return the calculated hours_worked instead of 0
     }
     else
     {
-        return hours_worked * (basePay + rule.Rate); // Return the calculated hours_worked instead of 0
+        return hours_worked * rule.Rate; // Return the calculated hours_worked instead of 0
     }
 }
 
