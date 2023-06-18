@@ -63,7 +63,7 @@ public class PayController : BaseController
                     case "Date":
                         return CalculateDateRule(rule, shift, basePay);
                     case "Time":
-                        return CalculateStartRule(rule, shift, basePay);
+                        return CalculateTimeRule(rule, shift, basePay);
                     case "Time and Day":
                         return CalculateDayAndTimeRule(rule, shift, basePay);
                     default:
@@ -123,35 +123,81 @@ public class PayController : BaseController
 
     public double CalculateDateRule(Rules rule, Shift shift, int basePay)
     {
-        //calculate the extra pay for a shift based on the date rule
+        string dateString = shift.shiftDate.ToString();
+        string ruleDateString = rule.Date.ToString();
 
-        //create 2 dateTime objects to check the date
-        // if(rule.Date == shift.shiftStartTime.Date)
-        // {
-        //     return basePay * rule.Rate;
-        // }
-        return 0;
-    }
+        int year = int.Parse(dateString.Substring(0, 4));
+        int ruleYear = int.Parse(ruleDateString.Substring(0, 4));
+        // Accessing the month
+        int month = int.Parse(dateString.Substring(4, 2));
+        int ruleMonth = int.Parse(ruleDateString.Substring(4, 2));
+        // Accessing the date
+        int day = int.Parse(dateString.Substring(6, 2));
+        int ruleDay = int.Parse(ruleDateString.Substring(6, 2));
 
-    public double CalculateStartRule(Rules rule, Shift shift, int basePay)
-    {
-        //calculate the extra pay for a shift based on the start rule
-        if(rule.Start == shift.shiftStartTime)
+        DateTime date = new DateTime(year, month, day);
+        DateTime ruleDate = new DateTime(ruleYear, ruleMonth, ruleDay);
+
+        if(ruleDate == date)
         {
-            return basePay * rule.Rate;
+            //check rate type
+            if(rule.RateType == "%")
+            {
+                return CalculateBasePayHours(shift, basePay * ((rule.Rate / 100) + 1)) - CalculateBasePayHours(shift, basePay);
+            }
+            else
+            {
+                return CalculateBasePayHours(shift, basePay+rule.Rate) - CalculateBasePayHours(shift, basePay);
+            }
         }
         return 0;
     }
 
+    public double CalculateTimeRule(Rules rule, Shift shift, int basePay)
+{
+    var hours_worked = (int)Math.Floor((shift.shiftEndTime - rule.Start) / 100.0);
+    var minutes_worked = (shift.shiftEndTime - rule.Start) % 100;
+
+    if (minutes_worked > 50)
+    {
+        // Then we need to take 100 - minutes worked and we get minutes
+        // Here 30 = 0.5 hours
+        var minutes = 100 - minutes_worked;
+        hours_worked += minutes / 60; // Use 60.0 instead of 60 to perform floating-point division
+    }
+    else if (minutes_worked > 0 && minutes_worked < 50) // Use && instead of || in the condition
+    {
+        // Here 30 = 0.5 hours
+        hours_worked += minutes_worked / 60; // Use 60.0 instead of 60 to perform floating-point division
+    }
+
+    if(rule.RateType == "%")
+    {
+        return hours_worked * basePay * ((rule.Rate / 100) + 1); // Return the calculated hours_worked instead of 0
+    }
+    else
+    {
+        return hours_worked * (basePay + rule.Rate); // Return the calculated hours_worked instead of 0
+    }
+}
+
+
     public double CalculateDayAndTimeRule(Rules rule, Shift shift, int basePay)
     {
-        //calculate the extra pay for a shift based on the day and time rule
-        //create dateTime object with the string to check the day
+        string dateString = shift.shiftDate.ToString();
+        int year = int.Parse(dateString.Substring(0, 4));
+        // Accessing the month
+        int month = int.Parse(dateString.Substring(4, 2));
+        // Accessing the date
+        int day = int.Parse(dateString.Substring(6, 2));
 
-        // if(rule.Day == shift.shiftStartTime.DayOfWeek.ToString() && rule.Start == shift.shiftStartTime)
-        // {
-        //     return basePay * rule.Rate;
-        // }
+        DateTime date = new DateTime(year, month, day);
+
+        if(rule.Day == date.DayOfWeek.ToString())
+        {
+            return CalculateTimeRule(rule, shift, basePay);
+        }
+       //just check if the Day is right and if it iss call the time Rule
         return 0;
     }
     
