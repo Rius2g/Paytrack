@@ -1,11 +1,11 @@
 'use client';
 
 import { IJob, IRule } from '@/app/Helper/Modules';
-import { Stack, TextField } from '@mui/material';
+import { Icon, IconButton, Stack, TextField } from '@mui/material';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { InputLabel } from '@mui/material';
 import MenuItem from '@mui/material/MenuItem';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { TimePicker} from '@mui/x-date-pickers/TimePicker';
 import { Dayjs } from 'dayjs';
 import { dayjsTime_toNumber, numberto_DayjsTime } from '@/app/Helper/Functions';
@@ -14,6 +14,8 @@ import { Button } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import DeleteIcon from '@mui/icons-material/Delete';
+
 
 
 var ruleAPI = new RulesAPI();
@@ -221,6 +223,9 @@ const Rule = (props:{rule:IRule, jobList:IJob[]}) => {
             <Button variant="contained" color="primary" onClick={saveChanges} style={{ maxHeight: 40}}>
                 Save
             </Button>
+            <IconButton aria-label="delete" onClick={() => ruleAPI.deleteRule(props.rule)}>
+                <DeleteIcon />
+            </IconButton>
             </Stack>
         </div>
 

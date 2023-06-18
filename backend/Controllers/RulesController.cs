@@ -89,7 +89,16 @@ public class RulesController : BaseController
         return Ok();
     }
 
+    [HttpDelete("{id}")]
+    public IActionResult DeleteRule(int id)
+    {
+        using var connection = new SqliteConnection(_db.Name);
+        connection.Execute(@"
+        DELETE FROM Rules
+        WHERE RuleID = @RuleID;",
+        new {RuleID = id});
 
-
+        return Ok();
+    }
     
 }

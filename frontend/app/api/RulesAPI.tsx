@@ -39,15 +39,12 @@ export class RulesAPI
     }
 
     public async deleteRule(rule: IRule){
-        const response = await fetch(this.enviroment, {
+        const response = await fetch(`${this.enviroment}/${rule.ruleID}`, {
             method: "DELETE",
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify(rule),
         });
-        const data = await response.json();
-        return data;
     }
 
 }
