@@ -38,9 +38,16 @@ export default function SettingsModal() {
 
     const [ open, setOpen ] = useState(false);
     const [ taxRate, setTaxRate ] = useState(0);
-    const [ currency, setCurrency ] = useState("$");
+    const [ currency, setCurrency ] = useState('USD');
 
 
+    const getUserId = () => {
+      if (Cookies.get("userID") !== undefined) {
+        return Cookies.get("userID") as unknown as number;
+      } else {
+        return 0;
+      }
+    };
 
 
     const handleCurrencyChange = (event: SelectChangeEvent) => {
@@ -76,6 +83,7 @@ export default function SettingsModal() {
 
       
       useEffect(() => {
+        getUserId();
         if(uid === 0 || uid === undefined || uid === null || open === false) 
         {
           return;
@@ -140,6 +148,7 @@ export default function SettingsModal() {
           <Stack>
             <InputLabel id="demo-simple-select-label">Currency</InputLabel>
             <Select
+                  value={currency}
                   label="Rule type"
                   onChange={handleCurrencyChange}>
                           {Object.keys(currencyOptions).map((option) => (

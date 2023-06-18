@@ -49,17 +49,17 @@ interface IJob {
 }
 
 interface IRule {
-    RuleID: number;
-    JobID: number;
-    Rate: number;
-    UiD: number;
-    RateType: string;
-    RuleType: string;
-    Day?: string;
-    Start?: number;
-    Date?: number;
-    jobName?: string;
-  }
+  ruleID: number;
+  jobID: number;
+  rate: number;
+  uiD: number;
+  rateType: string;
+  ruleType: string;
+  day?: string;
+  start?: number;
+  date?: number;
+  jobName?: string;
+}
 
 interface IUser {
     UiD: number;

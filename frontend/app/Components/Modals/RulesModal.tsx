@@ -42,6 +42,15 @@ export default function RulesModal() {
     : 0
   );
 
+  const getUserId = () => {
+    if (Cookies.get("userID") !== undefined) {
+      return Cookies.get("userID") as unknown as number;
+    } else {
+      return 0;
+    }
+  };
+
+
   const handleOpen = () => {
     //api call to fetch jobs
     setOpen(true);
@@ -77,6 +86,7 @@ export default function RulesModal() {
   }
 
   React.useEffect(() => {
+    getUserId();
     if(userId === 0 || userId === undefined || userId === null || open === false)
     {
       return;

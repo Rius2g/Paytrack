@@ -54,7 +54,8 @@ namespace Paytrack.Database
                                 RateType Text NOT NULL,
                                 RuleType Text NOT NULL,
                                 Day Text,
-                                Date INTEGER
+                                Date INTEGER,
+                                jobName Text
                             );
 
                             CREATE TABLE IF NOT EXISTS Salts (

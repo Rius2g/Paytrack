@@ -80,7 +80,8 @@ public class RulesController : BaseController
             RuleType = @RuleType,
             Day = @Day,
             Start = @Start,
-            Date = @Date
+            Date = @Date,
+            jobName = @jobName
         WHERE RuleID = @RuleID;",
         rule);
 
