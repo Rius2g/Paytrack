@@ -97,8 +97,8 @@ export default function LoginModal() {
             //successfull login
             Cookies.set("failedLoginAttempts", "0");
             const cookie = uuidv4();
-            Cookies.set("loggedIn", cookie, { expires: 7 });
-            Cookies.set("userID", data.uiD, { expires: 7 });
+            Cookies.set("loggedIn", cookie, { expires: 30 }); //change later
+            Cookies.set("userID", data.uiD, { expires: 30 }); //change later
           })
         }
         else {

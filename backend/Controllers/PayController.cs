@@ -16,13 +16,13 @@ public class PayController : BaseController
     {
     }
 
-    [HttpGet]
-   public decimal ExpectedPay(int userID, int startTime, int endTime)
+[HttpGet]
+public decimal ExpectedPay(int userID, int startTime, int endTime)
 {
     decimal ExpectedPay = 0;
     using var connection = new SqliteConnection(_db.Name);
     var shifts_with_jobs = connection.Query<dynamic>(@"
-        SELECT * FROM Shifts NATURAL JOIN Jobs WHERE UiD = @userID AND ShiftStartTime >= @startTime AND ShiftEndTime <= @endTime;",
+        SELECT * FROM Shifts NATURAL JOIN Jobs WHERE UiD = @userID AND ShiftDate>= @startTime AND ShiftDate <= @endTime;",
         new { userID, startTime, endTime }).ToArray();
 
     if (shifts_with_jobs.Count() == 0)
@@ -42,17 +42,15 @@ public class PayController : BaseController
     foreach(var shift in shifts_with_jobs)
     {
         ExpectedPay += CalculateBasePayHours(shift, shift.payRate);
-        if (rules != null)
+        if (rules.Length != 0)
             ExpectedPay += CalculateExtraFromRules(rules, shift, shift.payRate);
 
     }
 
-    // Access the data in the shifts_with_jobs and rules variables as needed
-
-    return ExpectedPay * (1 - user.TaxRate);
+    return 1 * (1 - user.TaxRate);
 }
 
-    public double CalculateExtraFromRules(Rules[] rules, Shift shift, int basePay) //call this with each individual shift to find the extra pay
+    private double CalculateExtraFromRules([FromBody] Rules[] rules, [FromBody] Shift shift, int basePay)
     {
         //case switch for each rule type and then call the appropriate method
         foreach(var rule in rules)
@@ -98,7 +96,7 @@ public class PayController : BaseController
         return basepay * hours_worked;
     }
 
-    public double CalculateDayRule(Rules rule, Shift shift, int basePay)
+    private double CalculateDayRule(Rules rule, Shift shift, int basePay)
     {
         string dateString = shift.shiftDate.ToString();
         int year = int.Parse(dateString.Substring(0, 4));
@@ -124,7 +122,7 @@ public class PayController : BaseController
         return 0;
     }
 
-    public double CalculateDateRule(Rules rule, Shift shift, int basePay)
+    private double CalculateDateRule(Rules rule, Shift shift, int basePay)
     {
         string dateString = shift.shiftDate.ToString();
         string ruleDateString = rule.Date.ToString();
@@ -156,8 +154,8 @@ public class PayController : BaseController
         return 0;
     }
 
-    public double CalculateTimeRule(Rules rule, Shift shift, int basePay)
-{
+    private double CalculateTimeRule(Rules rule, Shift shift, int basePay)
+    {
     var hours_worked = (int)Math.Floor((shift.shiftEndTime - rule.Start) / 100.0);
     var minutes_worked = (shift.shiftEndTime - rule.Start) % 100;
 
@@ -182,10 +180,10 @@ public class PayController : BaseController
     {
         return hours_worked * rule.Rate; // Return the calculated hours_worked instead of 0
     }
-}
+    }
 
 
-    public double CalculateDayAndTimeRule(Rules rule, Shift shift, int basePay)
+    private double CalculateDayAndTimeRule(Rules rule, Shift shift, int basePay)
     {
         string dateString = shift.shiftDate.ToString();
         int year = int.Parse(dateString.Substring(0, 4));
