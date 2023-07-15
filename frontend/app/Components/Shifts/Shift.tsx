@@ -14,6 +14,7 @@ let api = new ShiftsAPI();
 
 const Shift = (props: { shiftList:IShift[], shift: IShift, jobList:IJob[], Refresh:() => void, Delete:(id:number) => void}) => {
   const [job, setJob] = useState("");
+  const [jobName, setJobName] = useState(props.shift.jobName);
 
   const findJob = () => {
     let job = props.jobList.find(job => job.jobID === props.shift.jobbID);
@@ -24,6 +25,13 @@ const Shift = (props: { shiftList:IShift[], shift: IShift, jobList:IJob[], Refre
       setJob("No job");
     }
   }
+
+  const handleChange = (event: SelectChangeEvent) => {
+    //set jobrate as well
+    const selectedJobName = event.target.value as string;
+    props.shift.jobName = selectedJobName;
+    setJobName(selectedJobName);
+    };
 
   const changeTimes = (start: Dayjs | null, end: Dayjs | null) => {
     if(start && end)
@@ -67,21 +75,21 @@ const Shift = (props: { shiftList:IShift[], shift: IShift, jobList:IJob[], Refre
 
 
   return (
-    <div style={{ width: '180px' }}>
+    <div style={{ width: '190px' }}>
       <Stack spacing={1}>
-       {/* <div className="font-bold text-black text-center flex-center">
-       <Select 
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              value={job}
-              label="Exercise Name"
-              onChange={handleJobChange}
-              >
-              {Object.values(props.jobList).map((job: IJob) => (
-              <MenuItem key={job.JobID} value={job.JobID}>{job.JobName}</MenuItem>
-            ))}
-              </Select>
-        </div> */}
+      <Select 
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={jobName}
+                label="Job"
+                onChange={handleChange}
+                >
+                {props.jobList.map((job) => (
+                    <MenuItem key={job.jobName} value={job.jobName}>
+                    {job.jobName}
+                </MenuItem>
+                ))}
+                </Select>
         <DatePick shift={props.shift} handleChange={changeDate} />
         <TimePickers shift={props.shift} handleChange={changeTimes} />
       </Stack>

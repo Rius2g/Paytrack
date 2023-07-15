@@ -84,13 +84,14 @@ export default function JobModal() {
   }
     
   useEffect(() => {
-    getUserId();
-    if(userId === 0 || userId === undefined || userId === null || open === false)
+    var uid = getUserId();
+    setuserId(uid);
+    if(uid === 0 || uid === undefined || uid === null || open === false)
     {
       return;
     }
 
-    api.getJobs(userId).then((data) => {
+    api.getJobs(uid).then((data) => {
       setJobs(data);
     }
     )

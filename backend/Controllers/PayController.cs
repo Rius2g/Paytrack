@@ -82,7 +82,7 @@ public decimal ExpectedPay(int userID, int startTime, int endTime)
         var minutes_worked = (shift.shiftEndTime - shift.shiftStartTime) % 100;
         if(minutes_worked > 50)
         {
-            //then wee need to take 100 - minutes worked and we get minutes
+            //then we need to take 100 - minutes worked and we get minutes
             //here 30 = 0.5 hours
             var minutes = 100 - minutes_worked;
             hours_worked += minutes / 60;

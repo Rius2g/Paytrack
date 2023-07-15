@@ -14,6 +14,7 @@ import { JobsAPI } from '@/app/api/JobsAPI';
 import { RulesAPI } from '@/app/api/RulesAPI';
 import dayjs from 'dayjs';
 import convert_date2db from '@/app/Helper/Functions';
+import { setuid } from 'process';
 
 
 const style = {
@@ -70,15 +71,15 @@ export default function RulesModal() {
     }
     
     var newRule: IRule = {
-        RuleID: rules.length + 1,
-        JobID: 1,
-        RuleType: "Time",
-        UiD: Number(userId),
-        Rate: 10,
-        Date: convert_date2db(dayjs()),
-        Start: 0,
-        Day: "Monday",
-        RateType: "%",
+        ruleID: rules.length + 1,
+        jobID: 1,
+        ruleType: "Time",
+        uiD: Number(userId),
+        rate: 10,
+        date: convert_date2db(dayjs()),
+        start: 0,
+        day: "Monday",
+        rateType: "%",
         jobName: ""
     }
     setRules([...rules, newRule])
@@ -86,15 +87,16 @@ export default function RulesModal() {
   }
 
   React.useEffect(() => {
-    getUserId();
-    if(userId === 0 || userId === undefined || userId === null || open === false)
+    var uid = getUserId();
+    setuserId(uid);
+    if(uid === 0 || uid === undefined || uid === null || open === false)
     {
       return;
     }
     //api call to get rules and the jobs for the list
-    rulesAPI.getRules(userId).then((res) => {
+    rulesAPI.getRules(uid).then((res) => {
       setRules(res);
-      jobsAPI.getJobs(userId).then((res) => {
+      jobsAPI.getJobs(uid).then((res) => {
         setJobs(res);
       }
       );

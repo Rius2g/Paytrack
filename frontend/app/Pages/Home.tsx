@@ -9,9 +9,11 @@ import { Box, Grid } from "@mui/material";
 import ReturnWorkDay from "../Components/Shifts/WorkDay";
 import { ShiftsAPI } from "../api/ShiftsAPI";
 import { DateContext } from "../page";
+import { JobsAPI } from "../api/JobsAPI";
 
 
 const shiftsAPI = new ShiftsAPI();
+const jobsAPI = new JobsAPI();
 let gotJobs = false;
 export default function Home(props:{uid:number}) {
   const date_instance = useContext(DateContext);
@@ -90,13 +92,15 @@ export default function Home(props:{uid:number}) {
   }
 
 
-  const getJobs = () => {
+  let getJobs = () => {
     if(props.uid !== 0)
     {
       //api call here
-
+      jobsAPI.getJobs(props.uid).then((data) => {
+        setJobList(data);
+      });
     }
-  }
+}
 
 
   useEffect(() => {

@@ -11,7 +11,6 @@ import { UserAPI } from '@/app/api/UserAPI';
 import { useEffect } from 'react';
 import Cookies from "js-cookie";
 import { SelectChangeEvent } from '@mui/material/Select';
-import { UserId } from '@/app/page';
 
 const style = {
   position: 'absolute' as 'absolute',
@@ -83,13 +82,14 @@ export default function SettingsModal() {
 
       
       useEffect(() => {
-        getUserId();
-        if(uid === 0 || uid === undefined || uid === null || open === false) 
+        var userID = getUserId();
+        setuid(userID);
+        if(userID === 0 || userID === undefined || userID === null || open === false) 
         {
           return;
         }
         if(open)
-          api.getUser(uid).then((data) => {
+          api.getUser(userID).then((data) => {
             setTaxRate(data.taxRate);
             console.log(data.currency)
             setCurrency(data.currency);

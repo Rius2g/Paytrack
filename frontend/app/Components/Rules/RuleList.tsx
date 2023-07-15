@@ -11,7 +11,7 @@ const RuleList = (props:{ruleList:IRule[], jobList:IJob[]}) => {
                 <h1 className="text-2xl font-bold">Rules</h1>
             </div>
             {props.ruleList.map((rule:IRule) => {
-                return <Rule key={rule.JobID} rule={rule} jobList={props.jobList}/>
+                return <Rule key={rule.jobID} rule={rule} jobList={props.jobList}/>
             })
             }
         </div>
