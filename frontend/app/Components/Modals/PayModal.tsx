@@ -13,6 +13,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { PayAPI } from '@/app/api/PayAPI';
 import Cookies from "js-cookie";
+import { setuid } from 'process';
 
 
 var api = new PayAPI();
@@ -32,15 +33,9 @@ const style = {
 
 export default function PayModal() {
     const [open, setOpen] = useState(false);
-    const [ startDate, setStartDate ] = useState<Dayjs | null>(dayjs());
-    const [ endDate, setEndDate ] = useState<Dayjs | null>(dayjs());
+    const [ startDate, setStartDate ] = useState<Dayjs | null>(dayjs().add(-5, 'day'));
+    const [ endDate, setEndDate ] = useState<Dayjs | null>(dayjs().add(7, 'day'));
     const [ expectedPay, setExpectedPay ] = useState(0);
-
-    const [userId, setuserId] = useState<number>(() =>
-  Cookies.get("userID") !== undefined
-    ? (Cookies.get("userID") as unknown as number)
-    : 0
-  );
 
 
   const getUserId = () => {
@@ -78,7 +73,8 @@ export default function PayModal() {
 
   useEffect(() => {
     //api call
-    api.getPay(userId, start, end).then((resp) => {
+    var uid = getUserId();
+    api.getPay(uid, start, end).then((resp) => {
         setExpectedPay(resp);
     });
     
