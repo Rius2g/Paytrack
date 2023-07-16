@@ -25,7 +25,7 @@ export default function TimePickers(props:{shift:IShift, handleChange: (start: D
 
 
   return (
-    <Stack direction="row">
+    <Stack direction="column">
     <LocalizationProvider dateAdapter={AdapterDayjs}>
         <TimePicker
           label="Start Time"

@@ -13,7 +13,7 @@ export default function ReturnWorkDay(props:{shiftList:IShift[], jobList:IJob[],
     
     return (
         <div>
-            <Stack justifyContent="center" alignItems="center" spacing={6}>
+            <Stack justifyContent="center" alignItems="center">
             {props.shiftList.map((shift) => {
                 let date = convert_dbDate2Frontend(shift.shiftDate);
                 if (date.day() === props.day && date.week() === props.date.week && date.year() === props.date.year){

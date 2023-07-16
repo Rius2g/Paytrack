@@ -13,24 +13,16 @@ import { ShiftsAPI } from '@/app/api/ShiftsAPI';
 let api = new ShiftsAPI();
 
 const Shift = (props: { shiftList:IShift[], shift: IShift, jobList:IJob[], Refresh:() => void, Delete:(id:number) => void}) => {
-  const [job, setJob] = useState("");
   const [jobName, setJobName] = useState(props.shift.jobName);
-
-  const findJob = () => {
-    let job = props.jobList.find(job => job.jobID === props.shift.jobbID);
-    if (job) {
-      setJob(job.jobName);
-    }
-    else {
-      setJob("No job");
-    }
-  }
 
   const handleChange = (event: SelectChangeEvent) => {
     //set jobrate as well
+    console.log(event.target.value);
     const selectedJobName = event.target.value as string;
     props.shift.jobName = selectedJobName;
     setJobName(selectedJobName);
+    props.shift.jobbID = props.jobList.find((job) => job.jobName === selectedJobName)?.jobID as number;
+    api.updateShift(props.shift);
     };
 
   const changeTimes = (start: Dayjs | null, end: Dayjs | null) => {
@@ -53,33 +45,16 @@ const Shift = (props: { shiftList:IShift[], shift: IShift, jobList:IJob[], Refre
     }
   }
 
-  const handleJobChange = (event: SelectChangeEvent) => {
-    setJob(event.target.value); //update the state
-    props.shift.jobName = event.target.value; //update the actual value in the user
-    props.shift.jobbID = props.jobList.find(job => job.jobName === event.target.value)?.jobID || 0;
-    api.updateShift(props.shift);
-  };
-
   const deleteShift = () => {
     api.deleteShift(props.shift.shiftID, props.shift.uiD);
     props.Delete(props.shift.shiftID);
   }
 
 
-
-  //set the job name
-  useEffect(() => {
-    findJob();
-  })
-
-
-
   return (
-    <div style={{ width: '190px' }}>
-      <Stack spacing={1}>
-      <Select 
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
+    <div style={{ width: '200px' }}>
+      <Stack spacing={1} direction="column">
+      <Select
                 value={jobName}
                 label="Job"
                 onChange={handleChange}
