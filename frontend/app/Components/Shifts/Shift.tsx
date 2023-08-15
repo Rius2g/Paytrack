@@ -13,15 +13,15 @@ import { ShiftsAPI } from '@/app/api/ShiftsAPI';
 let api = new ShiftsAPI();
 
 const Shift = (props: { shiftList:IShift[], shift: IShift, jobList:IJob[], Refresh:() => void, Delete:(id:number) => void}) => {
+  console.log(props.shift);
   const [jobName, setJobName] = useState(props.shift.jobName);
 
   const handleChange = (event: SelectChangeEvent) => {
-    //set jobrate as well
-    console.log(event.target.value);
     const selectedJobName = event.target.value as string;
-    props.shift.jobName = selectedJobName;
+    props.shift.jobName = event.target.value as string;
     setJobName(selectedJobName);
-    props.shift.jobbID = props.jobList.find((job) => job.jobName === selectedJobName)?.jobID as number;
+    var jobID = props.jobList.find((job) => job.jobName === event.target.value)?.jobID;
+    props.shift.jobbID = jobID as number;
     api.updateShift(props.shift);
     };
 

@@ -33,7 +33,8 @@ export default function Home(props:{uid:number}) {
       shiftStartTime: 1030,
       shiftEndTime: 1030,
       uiD: props.uid,
-      jobbID: 1
+      jobbID: 1,
+      jobName: "",
     }
     setShiftList([...shiftList, newShift])
     const response = shiftsAPI.createShift(newShift);

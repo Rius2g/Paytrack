@@ -12,8 +12,10 @@ namespace backend.Controllers;
 [Route("api/[controller]")]
 public class PayController : BaseController
 {
-    public PayController(DatabaseConfig dbConfig) : base(dbConfig)
+    private readonly MyDbContext _db;
+    public PayController(DatabaseConfig dbConfig, MyDbContext myDbContext) : base(dbConfig)
     {
+        _db = myDbContext;
     }
 
 [HttpGet]

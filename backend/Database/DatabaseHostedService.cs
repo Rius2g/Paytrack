@@ -27,6 +27,7 @@ namespace Paytrack.Database
                                 ShiftEndTime INTEGER NOT NULL,
                                 UiD INTEGER NOT NULL,
                                 JobbID INTEGER NOT NULL,
+                                JobName TEXT,
                                 FOREIGN KEY(UiD) REFERENCES Users(UiD)
                             );
 
@@ -34,7 +35,8 @@ namespace Paytrack.Database
                                 JobID INTEGER PRIMARY KEY AUTOINCREMENT,
                                 jobName TEXT,
                                 payRate INTEGER,
-                                UiD INTEGER NOT NULL
+                                UiD INTEGER NOT NULL,
+                                FOREIGN KEY(JobID) REFERENCES Rules(JobID)
                             );
 
                             CREATE TABLE IF NOT EXISTS Users (
@@ -55,7 +57,8 @@ namespace Paytrack.Database
                                 RuleType Text NOT NULL,
                                 Day Text,
                                 Date INTEGER,
-                                jobName Text
+                                jobName Text,
+                                FOREGIN KEY(JobID) REFERENCES Jobs(JobID)
                             );
 
                             CREATE TABLE IF NOT EXISTS Salts (
@@ -82,7 +85,6 @@ namespace Paytrack.Database
                             DELETE TABLE IF EXISTS Rules;
                             DELETE TABLE IF EXISTS Salts;
             ");
-
             return Task.CompletedTask;
         }
     }

@@ -13,7 +13,6 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { PayAPI } from '@/app/api/PayAPI';
 import Cookies from "js-cookie";
-import { setuid } from 'process';
 
 
 var api = new PayAPI();

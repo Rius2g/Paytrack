@@ -19,6 +19,7 @@ import CustomButton from '../Button';
 import Cookies from "js-cookie";
 import { v4 as uuidv4 } from "uuid";
 import { IBackEndUser } from '@/app/Helper/Modules';
+import { Console } from 'console';
 
 
 const style = {
@@ -97,6 +98,7 @@ export default function LoginModal() {
             //successfull login
             Cookies.set("failedLoginAttempts", "0");
             const cookie = uuidv4();
+            console.log("Heia");
             Cookies.set("loggedIn", cookie, { expires: 30 }); //change later
             Cookies.set("userID", data.uiD, { expires: 30 }); //change later
           })

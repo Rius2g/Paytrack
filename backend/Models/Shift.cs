@@ -12,6 +12,7 @@ namespace Paytrack.Models
 
         public int shiftDate { get; set; }
 
+        public string? jobName { get; set; }
       
     }
 }

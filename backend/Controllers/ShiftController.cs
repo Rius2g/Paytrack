@@ -107,13 +107,15 @@ public class ShiftController : BaseController
                         ShiftDate,
                         ShiftEndTime,
                         UiD,
-                        JobbID
+                        JobbID,
+                        JobName
                     ) VALUES (
                         @Start,
                         @Date,
                         @End,
                         @UiD,
-                        @JobID
+                        @JobID,
+                        @JobName
                         )
                         RETURNING *;",
                 new
@@ -122,7 +124,8 @@ public class ShiftController : BaseController
                     Date = shift.shiftDate,
                     End = shift.shiftEndTime,
                     UiD = shift.uiD,
-                    JobID = shift.jobbID
+                    JobID = shift.jobbID,
+                    JobName = shift.jobName
                 });
 
         return result;
@@ -142,7 +145,8 @@ public class ShiftController : BaseController
                         ShiftDate = @Date,
                         ShiftEndTime = @End,
                         UiD = @UiD,
-                        JobbID = @JobID
+                        JobbID = @JobID,
+                        JobName = @JobName
                     WHERE ShiftID = @ID;",
             new
             {
@@ -151,7 +155,8 @@ public class ShiftController : BaseController
                 Date = shift.shiftDate,
                 Start = shift.shiftStartTime,
                 End = shift.shiftEndTime,
-                JobID = shift.jobbID
+                JobID = shift.jobbID,
+                JobName = shift.jobName
             });
 
         return result == 1;
