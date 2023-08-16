@@ -12,7 +12,7 @@ namespace backend.Controllers;
 [Route("api/[controller]")]
 public class JobController : BaseController
 {
-        public JobController(DatabaseConfig dbConfig) : base(dbConfig)
+        public JobController(MyDbContext _context) : base(_context)
         {
         }
 
@@ -20,32 +20,24 @@ public class JobController : BaseController
     [HttpGet]
     public IEnumerable<Job> GetJobs()
     {
-        using var connection = new SqliteConnection(_db.Name);
 
-        var jobs = connection.Query<Job>("SELECT * FROM Jobs;");
+        var jobs = _context.Jobs.ToArray();
         return jobs;
     }
 
     [HttpGet("{uid}")]
     public IEnumerable<Job> GetJobsByUser(int uid)
     {
-        using var connection = new SqliteConnection(_db.Name);
-
-        var jobs = connection.Query<Job>($"SELECT * FROM Jobs WHERE UiD = {uid};");
+        var jobs = _context.Jobs.Where(t => t.uiD == uid).ToArray();
         return jobs;
     }
 
     [HttpPost]
     public int PostJob(Job job)
     {
-        using var connection = new SqliteConnection(_db.Name);
-
-        var newJob = connection.QueryFirstOrDefault<Job>(
-            @"INSERT INTO Jobs (jobName, payRate, UiD) VALUES (@jobName, @payRate, @uiD);
-            SELECT * FROM Jobs WHERE JobID = last_insert_rowid();",
-            job);
-
-        return newJob.jobID;
+        _context.Add(job);
+        _context.SaveChanges();
+        return job.jobID;
     }
 
 

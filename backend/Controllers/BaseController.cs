@@ -8,11 +8,11 @@ namespace backend.Controllers;
 
 public class BaseController : ControllerBase
 {
-    protected readonly DatabaseConfig _db;
+    protected readonly MyDbContext _context;
 
-    public BaseController(DatabaseConfig config)
+    public BaseController(MyDbContext context)
     {
-        _db = config;
+        _context = context;
     }
 
 }

@@ -14,7 +14,7 @@ namespace backend.Controllers;
 public class UserController : BaseController
 {
 
-    public UserController(DatabaseConfig dbConfig) : base(dbConfig)
+    public UserController(MyDbContext _context) : base(_context)
     {
     }
 

@@ -12,7 +12,7 @@ namespace backend.Controllers;
 [Route("api/[controller]")]
 public class RulesController : BaseController
 {
-    public RulesController(DatabaseConfig dbConfig) : base(dbConfig)
+    public RulesController(MyDbContext context) : base(context)
     {
     }
 

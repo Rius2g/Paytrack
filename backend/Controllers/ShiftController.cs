@@ -11,7 +11,7 @@ namespace backend.Controllers;
 [Route("api/[controller]")]
 public class ShiftController : BaseController
 {
-    public ShiftController(DatabaseConfig dbConfig) : base(dbConfig)
+    public ShiftController(MyDbContext _context) : base(_context)
     {
     }
 
