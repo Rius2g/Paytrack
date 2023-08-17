@@ -28,7 +28,7 @@ public class JobController : BaseController
     [HttpGet("{uid}")]
     public IEnumerable<Job> GetJobsByUser(int uid)
     {
-        var jobs = _context.Jobs.Where(t => t.uiD == uid).ToArray();
+        var jobs = _context.Jobs.Where(t => t.UiD == uid).ToArray();
         return jobs;
     }
 
@@ -37,42 +37,44 @@ public class JobController : BaseController
     {
         _context.Add(job);
         _context.SaveChanges();
-        return job.jobID;
+        return job.ID;
     }
 
 
     [HttpPut]
     public bool PutJob(Job job)
     {
-        using var connection = new SqliteConnection(_db.Name);
+        var jobs = _context.Jobs.Find(job.ID);
+        if (jobs == null)
+        {
+            return false;
+        }
 
-        var result = connection.Execute(
-                @"UPDATE Jobs SET
-                            jobName = @Name,
-                            payRate = @Rate
-                        WHERE JobID = @JobID;",
-                        new
-                        {
-                            Name = job.jobName,
-                            Rate = job.payRate,
-                            JobID = job.jobID
-                        });
+        jobs.jobName = job.jobName;
+        jobs.payRate = job.payRate;
+        
+        _context.SaveChanges();
+        return true;
 
-        return result == 1;
     }
 
 
     [HttpDelete]
-    public bool DeleteJob(Job job)
+    public bool DeleteJob(int jobID)
     {
-        using var connection = new SqliteConnection(_db.Name);
+        var jobToDelete = _context.Jobs.FirstOrDefault(j => j.ID == jobID);
 
-        var deletedJob = connection.Execute(
-            @"DELETE FROM Jobs WHERE JobID = @jobID;",
-            job);
+        if (jobToDelete != null)
+        {
+            _context.Jobs.Remove(jobToDelete);
+            _context.SaveChanges();
 
-        return deletedJob == 1;
+            return true; // Successful deletion
+        }
+
+        return false; // Job not found
     }
+
 
 
 

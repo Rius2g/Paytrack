@@ -2,7 +2,7 @@ namespace Paytrack.Models
 {
     public class Shift
     {
-        public int shiftID { get; set; }
+        public int ID { get; set; }
         public int shiftStartTime { get; set; }
         public int shiftEndTime { get; set; }
 

@@ -3,6 +3,7 @@ using System.Security.Cryptography;
 using System.Text;
 using Microsoft.Data.Sqlite;
 using Dapper;
+using Paytrack.Models;
 
 namespace backend.Security;
 
@@ -11,6 +12,12 @@ public class PasswordHash
 	const int keySize = 64;
 	const int iterations = 300000;
 	HashAlgorithmName hashAlgorithm = HashAlgorithmName.SHA512;
+	private readonly MyDbContext _context;
+
+	public PasswordHash(MyDbContext context)
+	{
+		_context = context;
+	}
 
 	public string CreateHashPassword(string password, out byte[] salt)
 	{
@@ -34,122 +41,77 @@ public class PasswordHash
         return hashToCompare.SequenceEqual(Convert.FromHexString(hash));
     }
 
-	public string GetPasswordForUser(string email, string DBname)
+	public string GetPasswordForUser(string email)
 	{
-        using var connection = new SqliteConnection(DBname);
-		var password = connection.QuerySingleOrDefault<string>(@"
-			SELECT Password
-				FROM Users
-				WHERE Email = @Email;",
-				new
-				{
-					Email = email,
-				});
+		var user = _context.Users.FirstOrDefault(u => u.Email == email);
 
-		return password;
+		return user.Password;
     }
 
-	public int GetIDForUSer(string email, string DBname)
+	public int GetIDForUSer(string email)
 	{
-        using var connection = new SqliteConnection(DBname);
-		var id = connection.QuerySingleOrDefault<int>(@"
-			SELECT UiD
-				FROM Users
-				WHERE Email = @Email;",
-				new
-				{
-					Email = email
-				});
+		var user = _context.Users.FirstOrDefault(u => u.Email == email);
 
-        return id;
+        return user.ID;
     }
 
-	public string GetSaltForUser(string username, string DBname)
+	public string GetSaltForUser(string username)
 	{
-		var id = GetIDForUSer(username, DBname);
+		var id = GetIDForUSer(username);
+		var salt = _context.Salts.FirstOrDefault(s => s.UiD == id);
 
-        using var connection = new SqliteConnection(DBname);
-        var salt = connection.QuerySingleOrDefault<string>(@"
-			SELECT Salt
-				FROM Salts
-				WHERE UiD = @Id;",
-				new
-				{
-					Id = id,
-				});
-
-		return salt;
+		return salt.Salt;
     }
 
-	public bool PostSalt(int uID, byte[] salt_hex, string DBname)
+	public bool PostSalt(int uID, byte[] salt_hex)
 	{
 		var salt = Convert.ToHexString(salt_hex);
-		using var connection = new SqliteConnection(DBname);
-		var result = connection.Execute(@"
-                INSERT OR IGNORE INTO Salts (
-                        UiD,
-                        Salt
-                    ) VALUES (
-                        @UiD,
-                        @Salt
-                        )
-                        RETURNING *;",
+		_context.Salts.Add(new Salts { UiD = uID, Salt = salt });
+		_context.SaveChanges();
 
-                new
-                {
-                    UiD = uID,
-					Salt = salt,
-                });
-
-        return result == 1;
+		return true;
     }
 
-	public bool PostSalt(string username, byte[] salt_hex, string DBname)
+	public bool PostSalt(string username, byte[] salt_hex)
 	{
-		var UiD = GetIDForUSer(username, DBname);
-		return PostSalt(UiD, salt_hex, DBname);
+		var UiD = GetIDForUSer(username);
+		return PostSalt(UiD, salt_hex);
 
 	}
 
-	public string HashPassword(string password, string username, string DBname)
+	public string HashPassword(string password, string username)
 	{
 		var hash = CreateHashPassword(password, out var salt);
-		var UiD = GetIDForUSer(username, DBname);
-		var result = PostSalt(UiD, salt, DBname);
+		var UiD = GetIDForUSer(username);
+		var result = PostSalt(UiD, salt);
 
 		return hash;
 	}
 
-	public bool VerifyPassword(string password, string username, string DBname)
+	public bool VerifyPassword(string password, string username)
 	{
-		var salt = GetSaltForUser(username, DBname);
-		var hash = GetPasswordForUser(username, DBname);
+		var salt = GetSaltForUser(username);
+		var hash = GetPasswordForUser(username);
 
 		return VerifyPasswordHash(password, hash, Convert.FromHexString(salt));
 	}
 
-	public bool DeleteSalt(int id, string DBname)
+	public bool DeleteSalt(int id)
 	{
-		var connection = new SqliteConnection(DBname);
-        var result = connection.Execute(                                                                                                                             // query the database to delete a user
-            @"DELETE FROM Salts
-                    WHERE UiD = @IdInsert;",
-            new { IdInsert = id });
+		var salt = _context.Salts.FirstOrDefault(s => s.ID == id);
+		_context.Salts.Remove(salt);
+		_context.SaveChanges();
 
-		return result == 1;
+		return true;
     }
 
-    public bool DeleteSalt(string username, string DBname)
+    public bool DeleteSalt(string username)
     {
-        var id = GetIDForUSer(username, DBname);
-
-        var connection = new SqliteConnection(DBname);
-        var result = connection.Execute(                                                                                                                             // query the database to delete a user
-            @"DELETE FROM Salts
-                    WHERE UiD = @IdInsert;",
-            new { IdInsert = id });
-
-        return result == 1;
+        var id = GetIDForUSer(username);
+		var salt = _context.Salts.FirstOrDefault(s => s.UiD == id);
+		_context.Salts.Remove(salt);
+		_context.SaveChanges();
+		return true;
     }
 }
 

@@ -3,7 +3,6 @@ using Paytrack.Models;
 
 public class MyDbContext: DbContext
 {
-
     public DbSet<Job> Jobs { get; set; }
     public DbSet<Shift> Shifts { get; set; }
     public DbSet<User> Users { get; set; }

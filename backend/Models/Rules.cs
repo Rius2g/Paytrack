@@ -2,7 +2,7 @@ namespace Paytrack.Models
 {
    public class Rules
     {
-        public int RuleID { get; set; }
+        public int ID { get; set; }
         public int JobID { get; set; }
         public int Rate { get; set; }
         public int UiD { get; set; }

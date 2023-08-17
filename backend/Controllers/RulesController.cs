@@ -19,9 +19,7 @@ public class RulesController : BaseController
     [HttpGet] //returns all rules
     public IEnumerable<Rules> GetRules()
     {
-        using var connection = new SqliteConnection(_db.Name);
-
-        var rules = connection.Query<Rules>("SELECT * FROM Rules");
+        var rules = _context.Rules.ToArray();
 
         return rules;
     }
@@ -29,11 +27,7 @@ public class RulesController : BaseController
     [HttpGet("{id}")] //returns all rules for a user
     public IEnumerable<Rules> GetUsersRules(int id)
     {
-        using var connection = new SqliteConnection(_db.Name);
-
-        var rules = connection.Query<Rules>(
-            @"SELECT * FROM Rules WHERE UiD = @userID;",
-            new {userID = id});
+        var rules = _context.Rules.Where(r => r.UiD == id).ToArray();
 
         return rules;
     }
@@ -41,64 +35,49 @@ public class RulesController : BaseController
     [HttpPost]
     public int PostRule(Rules rule)
     {
-        using var connection = new SqliteConnection(_db.Name);
-        var result = connection.QuerySingleOrDefault<int>(@"
-        INSERT INTO Rules (
-            JobID,
-            Rate,
-            UiD,
-            RateType,
-            RuleType,
-            Day,
-            Start,
-            Date
-        ) VALUES (
-            @JobID,
-            @Rate,
-            @UiD,
-            @RateType,
-            @RuleType,
-            @Day,
-            @Start,
-            @Date
-        );
-        SELECT last_insert_rowid();",
-        rule);
-        return result;
+        _context.Rules.Add(rule);
+        _context.SaveChanges();
+        return 1;
     }
 
     [HttpPut]
     public IActionResult PutRule(Rules rule)
     {
-        using var connection = new SqliteConnection(_db.Name);
-        connection.Execute(@"
-        UPDATE Rules SET
-            JobID = @JobID,
-            Rate = @Rate,
-            UiD = @UiD,
-            RateType = @RateType,
-            RuleType = @RuleType,
-            Day = @Day,
-            Start = @Start,
-            Date = @Date,
-            jobName = @jobName
-        WHERE RuleID = @RuleID;",
-        rule);
-
-
-        return Ok();
+        var rule_to_update = _context.Rules.Find(rule.ID);
+        if (rule_to_update == null)
+        {
+            return NotFound();
+        }
+        else
+        {
+            rule_to_update.JobID = rule.JobID;
+            rule_to_update.Rate = rule.Rate;
+            rule_to_update.UiD = rule.UiD;
+            rule_to_update.RateType = rule.RateType;
+            rule_to_update.RuleType = rule.RuleType;
+            rule_to_update.Day = rule.Day;
+            rule_to_update.Start = rule.Start;
+            rule_to_update.Date = rule.Date;
+            rule_to_update.jobName = rule.jobName;
+            _context.SaveChanges();
+            return Ok();
+        }
     }
 
     [HttpDelete("{id}")]
     public IActionResult DeleteRule(int id)
     {
-        using var connection = new SqliteConnection(_db.Name);
-        connection.Execute(@"
-        DELETE FROM Rules
-        WHERE RuleID = @RuleID;",
-        new {RuleID = id});
-
-        return Ok();
+        var rule_to_delete = _context.Rules.Find(id);
+        if (rule_to_delete == null)
+        {
+            return NotFound();
+        }
+        else
+        {
+            _context.Rules.Remove(rule_to_delete);
+            _context.SaveChanges();
+            return Ok();
+        }
     }
     
 }

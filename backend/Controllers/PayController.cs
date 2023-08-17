@@ -19,33 +19,30 @@ public class PayController : BaseController
 [HttpGet]
 public decimal ExpectedPay(int userID, int startTime, int endTime)
 {
-    decimal ExpectedPay = 0;
-    using var connection = new SqliteConnection(_db.Name);
-    var shifts_with_jobs = connection.Query<dynamic>(@"
-        SELECT * FROM Shifts NATURAL JOIN Jobs WHERE UiD = @userID AND ShiftDate>= @startTime AND ShiftDate <= @endTime;",
-        new { userID, startTime, endTime }).ToArray();
+    double ExpectedPay = 0;
+    var shifts = _context.Shifts.Where(t => t.uiD == userID && t.shiftDate >= startTime && t.shiftDate <= endTime).ToArray();
+    var jobs = _context.Jobs.Where(t => t.ID == userID).ToArray();
+    var rules = _context.Rules.Where(t => t.ID == userID).ToArray();
+
+    var shifts_with_jobs = shifts.Join(jobs, s => s.jobbID, j => j.ID, (s, j) => new { s, j }).ToArray();
+
+    var user = _context.Users.Where(t => t.ID == userID).FirstOrDefault();
 
     if (shifts_with_jobs.Count() == 0)
     {
         return 0;
     }
     
-    //get all the rules to pass in so we dont have to qeury the database for each shift
-    var rules = connection.Query<Rules>(@"
-        SELECT * FROM Rules WHERE UiD = @userID;",
-        new { userID }).ToArray();
-
-    var user = connection.QuerySingleOrDefault<User>(@"
-        SELECT * FROM Users WHERE UiD = @userID;",
-        new { userID });
-    
     foreach(var shift in shifts_with_jobs)
     {
-        ExpectedPay += CalculateBasePayHours(shift, shift.payRate);
+        var payRate = shift.j.payRate; // Access payRate from the Job object
+        ExpectedPay += CalculateBasePayHours(shift.s, payRate);
         if (rules.Length != 0)
-            ExpectedPay += CalculateExtraFromRules(rules, shift, shift.payRate);
+            ExpectedPay += CalculateExtraFromRules(rules, shift.s, payRate); // Pass payRate here
 
+        // ...
     }
+
 
     return 1 * (1 - user.TaxRate);
 }

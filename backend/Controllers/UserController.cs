@@ -22,43 +22,30 @@ public class UserController : BaseController
     [HttpPost("register")]
     public int RegisterUser(User user)
     {
-        using var connection = new SqliteConnection(_db.Name);
+        var newuser = _context.Users.FirstOrDefault(u => u.Email == user.Email);
 
-       var resGet = connection.QuerySingleOrDefault<int>(@"
-            SELECT UiD FROM Users WHERE Email = @Email;",
-            new
-            {
-                Email = user.Email
-            });
-
-        if (resGet != 0)
+        if (newuser != null)
         {
             return 0;
         }
 
-        var passwordHash = new PasswordHash();
+        var passwordHash = new PasswordHash(_context);
 
         var hash = passwordHash.CreateHashPassword(user.Password, out var salt);
 
-        var result = connection.QuerySingleOrDefault<int>(@"
-        INSERT OR IGNORE INTO Users (
-            Email,
-            Password,
-            TaxRate
-        ) VALUES (
-            @Email,
-            @Password,
-            @TaxRate
-        );
-        SELECT last_insert_rowid();",
-        new
-        {
-            Password = hash,
+        newuser = new User {
             Email = user.Email,
+            Password = hash,
             TaxRate = 0
-        });
+        };
+        
+        _context.Users.Add(newuser);
+        _context.SaveChanges();
 
-       var res = passwordHash.PostSalt(result, salt, _db.Name);
+       //a way to get the ID of the new post
+        var result = newuser.ID;
+
+       var res = passwordHash.PostSalt(result, salt);
 
         return result;
 
@@ -67,22 +54,17 @@ public class UserController : BaseController
     [HttpPost("login")]
     public User loginUser(User user)
     {
-        using var connection = new SqliteConnection(_db.Name);
 
-        var PW = new PasswordHash();
+        var PW = new PasswordHash(_context);
 
-        var correct = PW.VerifyPassword(user.Password, user.Email, _db.Name);
+        var correct = PW.VerifyPassword(user.Password, user.Email);
 
         if(correct)
         {
-            var use = connection.QueryFirstOrDefault<User>(@"
-            SELECT * FROM Users WHERE Email = @Email;",
-            new
-            {
-                Email = user.Email
-            });
+            var use = _context.Users.FirstOrDefault(u => u.Email == user.Email);
             return use;
         }
+
         User falseUser = new User();
         return falseUser;
 
@@ -92,36 +74,19 @@ public class UserController : BaseController
     [HttpPut("{uid}")]
     public bool putUser(int uid, [FromQuery]decimal TaxRate, [FromQuery]string Currency)
     {
-        using var connection = new SqliteConnection(_db.Name);
-
-        var res = connection.Execute(@"
-        UPDATE Users SET
-            TaxRate = @TaxRate,
-            Currency = @Currency
-        WHERE UiD = @UiD;",
-        new
-        {
-            TaxRate = TaxRate,
-            UiD = uid,
-            Currency = Currency
-        });
-
-        return res > 0;
+        var user = _context.Users.FirstOrDefault(u => u.ID == uid);
+        user.Currency = Currency;
+        user.TaxRate = TaxRate;
+        _context.SaveChanges();
+        return true;
     }
 
     [HttpGet("{uid}")]
     public User getUser(int uid)
     {
-        using var connection = new SqliteConnection(_db.Name);
-
-        var res = connection.QueryFirstOrDefault<User>(@"
-        SELECT * FROM Users WHERE UiD = @UiD;",
-        new
-        {
-            UiD = uid
-        });
-
-        return res;
+        var user = _context.Users.FirstOrDefault(u => u.ID == uid);
+        
+        return user;
     }
     
 }
