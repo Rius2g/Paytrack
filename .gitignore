@@ -7,3 +7,4 @@ bin
 backend/.vs/
 *.vscode
 *.DS_Store
+*.json

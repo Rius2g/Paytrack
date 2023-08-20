@@ -13,15 +13,25 @@ public class MyDbContext: DbContext
     
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseSqlite("Data Source=db.sqlite"); //change to azure server
+        if (!optionsBuilder.IsConfigured)
+            {
+                IConfigurationRoot configuration = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json")
+                .Build();
+                // Replace {your_username} and {your_password} with actual values
+                string connectionString = configuration.GetConnectionString("AZURE_SQL_CONNECTIONSTRING");
+                
+                optionsBuilder.UseSqlServer(connectionString);
+            }
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Job>().ToTable("Jobs").HasKey(j => j.jobID);
-        modelBuilder.Entity<Shift>().ToTable("Shift").HasKey(s => s.shiftID);
-        modelBuilder.Entity<User>().ToTable("Users").HasKey(u => u.UiD);
-        modelBuilder.Entity<Rules>().ToTable("Rules").HasKey(r => r.RuleID);
-        modelBuilder.Entity<Salts>().ToTable("Salts").HasKey(s => s.SaltID);
+        modelBuilder.Entity<Job>().ToTable("Jobs").HasKey(j => j.ID);
+        modelBuilder.Entity<Shift>().ToTable("Shift").HasKey(s => s.ID);
+        modelBuilder.Entity<User>().ToTable("Users").HasKey(u => u.ID);
+        modelBuilder.Entity<Rules>().ToTable("Rules").HasKey(r => r.ID);
+        modelBuilder.Entity<Salts>().ToTable("Salts").HasKey(s => s.ID);
     }
 }
