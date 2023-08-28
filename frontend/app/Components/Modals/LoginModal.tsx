@@ -88,7 +88,8 @@ export default function LoginModal() {
         if(res.status === 200)
         {
           res.json().then((data) => {
-            if(data.uiD === 0)
+            console.log(data);
+            if(data.id === 0)
             {
               alert("Invalid email or password");
               Cookies.set("failedLoginAttempts", (failedLoginAttempts + 1).toString());
@@ -100,7 +101,7 @@ export default function LoginModal() {
             const cookie = uuidv4();
             console.log("Heia");
             Cookies.set("loggedIn", cookie, { expires: 30 }); //change later
-            Cookies.set("userID", data.uiD, { expires: 30 }); //change later
+            Cookies.set("userID", data.id, { expires: 30 }); //change later
           })
         }
         else {

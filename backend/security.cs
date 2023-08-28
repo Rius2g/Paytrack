@@ -1,8 +1,5 @@
-using System;
 using System.Security.Cryptography;
 using System.Text;
-using Microsoft.Data.Sqlite;
-using Dapper;
 using Paytrack.Models;
 
 namespace backend.Security;
@@ -44,20 +41,27 @@ public class PasswordHash
 	public string GetPasswordForUser(string email)
 	{
 		var user = _context.Users.FirstOrDefault(u => u.Email == email);
-
+		if(user == null)
+		{
+			return "";
+		}
 		return user.Password;
     }
 
-	public int GetIDForUSer(string email)
+	public int GetIDForUser(string email)
 	{
-		var user = _context.Users.FirstOrDefault(u => u.Email == email);
-
-        return user.ID;
+		int userid = _context.Users.Where(u => u.Email == email).Select(u => u.ID).FirstOrDefault();
+		
+		if(userid == null)
+		{
+			return 0;
+		}
+		return userid;
     }
 
 	public string GetSaltForUser(string username)
 	{
-		var id = GetIDForUSer(username);
+		var id = GetIDForUser(username);
 		var salt = _context.Salts.FirstOrDefault(s => s.UiD == id);
 
 		return salt.Salt;
@@ -74,7 +78,7 @@ public class PasswordHash
 
 	public bool PostSalt(string username, byte[] salt_hex)
 	{
-		var UiD = GetIDForUSer(username);
+		var UiD = GetIDForUser(username);
 		return PostSalt(UiD, salt_hex);
 
 	}
@@ -82,7 +86,7 @@ public class PasswordHash
 	public string HashPassword(string password, string username)
 	{
 		var hash = CreateHashPassword(password, out var salt);
-		var UiD = GetIDForUSer(username);
+		var UiD = GetIDForUser(username);
 		var result = PostSalt(UiD, salt);
 
 		return hash;
@@ -107,7 +111,7 @@ public class PasswordHash
 
     public bool DeleteSalt(string username)
     {
-        var id = GetIDForUSer(username);
+        var id = GetIDForUser(username);
 		var salt = _context.Salts.FirstOrDefault(s => s.UiD == id);
 		_context.Salts.Remove(salt);
 		_context.SaveChanges();

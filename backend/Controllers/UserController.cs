@@ -32,19 +32,21 @@ public class UserController : BaseController
         newuser = new User {
             Email = user.Email,
             Password = hash,
-            TaxRate = 0
+            Taxrate = 10,
+            Currency = "USD",
+
         };
         
         _context.Users.Add(newuser);
         _context.SaveChanges();
 
        //a way to get the ID of the new post
+       Console.WriteLine(newuser.ID);
         var result = newuser.ID;
 
-       var res = passwordHash.PostSalt(result, salt);
+        var res = passwordHash.PostSalt(result, salt);
 
         return result;
-
     }
 
     [HttpPost("login")]
@@ -53,26 +55,28 @@ public class UserController : BaseController
 
         var PW = new PasswordHash(_context);
 
-        var correct = PW.VerifyPassword(user.Password, user.Email);
+        var correct = PW.VerifyPassword(user.Password!, user.Email!);
 
         if(correct)
         {
             var use = _context.Users.FirstOrDefault(u => u.Email == user.Email);
+            if(use == null)
+            {
+                return new User();
+            }
             return use;
         }
 
-        User falseUser = new User();
-        return falseUser;
-
+        return new User();
 
     }
 
     [HttpPut("{uid}")]
-    public bool putUser(int uid, [FromQuery]decimal TaxRate, [FromQuery]string Currency)
+    public bool putUser(int uid, [FromQuery]int TaxRate, [FromQuery]string Currency)
     {
         var user = _context.Users.FirstOrDefault(u => u.ID == uid);
         user.Currency = Currency;
-        user.TaxRate = TaxRate;
+        user.Taxrate = TaxRate;
         _context.SaveChanges();
         return true;
     }

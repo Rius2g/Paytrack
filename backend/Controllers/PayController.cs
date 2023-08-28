@@ -39,7 +39,7 @@ public decimal ExpectedPay(int userID, int startTime, int endTime)
     }
 
 
-    return 1 * (1 - user.TaxRate);
+    return 1 * (1 - user.Taxrate);
 }
 
     private double CalculateExtraFromRules([FromBody] Rules[] rules, [FromBody] Shift shift, int basePay)

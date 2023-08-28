@@ -1,7 +1,13 @@
+using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
+
+
 namespace Paytrack.Models
 {
    public class Rules
     {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ID { get; set; }
         public int JobID { get; set; }
         public int Rate { get; set; }

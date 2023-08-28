@@ -1,7 +1,12 @@
+using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
+
 namespace Paytrack.Models
 {
     public class Shift
     {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ID { get; set; }
         public int shiftStartTime { get; set; }
         public int shiftEndTime { get; set; }

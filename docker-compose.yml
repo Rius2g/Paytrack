@@ -14,15 +14,7 @@ services:
     build: 
       context: backend
       dockerfile: .docker/Dockerfile
-    volumes:
-      - type: bind
-        source: ./backend/db.sqlite
-        target: /app/db.sqlite
+    environment:
+      - ASPNETCORE_URLS=http://+:6032 # Set the port for the backend service
     ports:
-      - 6032:5001
-
-
-
-
-
-
+      - 6032:6032 # Map the host port to the container port

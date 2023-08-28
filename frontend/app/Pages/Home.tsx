@@ -10,18 +10,32 @@ import ReturnWorkDay from "../Components/Shifts/WorkDay";
 import { ShiftsAPI } from "../api/ShiftsAPI";
 import { DateContext } from "../page";
 import { JobsAPI } from "../api/JobsAPI";
+import Cookies from "js-cookie";
+import { get } from "http";
 
 
 const shiftsAPI = new ShiftsAPI();
 const jobsAPI = new JobsAPI();
+
+const getUiD = () => {
+  const uid = Cookies.get("userID");
+  if (uid === undefined) {
+    return 0;
+  }
+  return parseInt(uid);
+}
+
 let gotJobs = false;
-export default function Home(props:{uid:number}) {
+export default function Home() {
   const date_instance = useContext(DateContext);
   const [ shiftList, setShiftList ] = useState<IShift[]>([])
   const [ jobList, setJobList ] = useState<IJob[]>([])
+  const [uid, setUid] = useState(getUiD());
+
+
 
   const addShift = () => {
-    if(props.uid === 0)
+    if(uid === 0)
     {
       alert("Please login to add a shift");
       return;
@@ -32,7 +46,7 @@ export default function Home(props:{uid:number}) {
       shiftDate: convert_date2db(date_instance.date),
       shiftStartTime: 1030,
       shiftEndTime: 1030,
-      uiD: props.uid,
+      uiD: uid,
       jobbID: 1,
       jobName: "",
     }
@@ -56,9 +70,9 @@ export default function Home(props:{uid:number}) {
   ];
 
   const getShifts = () => {
-    if(props.uid !== 0)
+    if(uid !== 0)
     {
-      shiftsAPI.getShiftsInRange(convert_date2db(date_instance.startOf)+1, convert_date2db(date_instance.endOf)+1, props.uid).then((data) => {
+      shiftsAPI.getShiftsInRange(convert_date2db(date_instance.startOf)+1, convert_date2db(date_instance.endOf)+1, uid).then((data) => {
         setShiftList(data)
       })
   
@@ -94,10 +108,10 @@ export default function Home(props:{uid:number}) {
 
 
   let getJobs = () => {
-    if(props.uid !== 0)
+    if(uid !== 0)
     {
       //api call here
-      jobsAPI.getJobs(props.uid).then((data) => {
+      jobsAPI.getJobs(uid).then((data) => {
         setJobList(data);
       });
     }

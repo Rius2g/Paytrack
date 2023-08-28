@@ -3,6 +3,9 @@ export class PayAPI  {
 
 
     public async getPay(UiD: number, start:number, end:number){
+        if(UiD == 0 || start == null || end == null){
+            return null;
+        }
         const response = await fetch(this.enviroment + "?" +  new URLSearchParams({
             UiD: UiD.toString(),
             start: start.toString(),

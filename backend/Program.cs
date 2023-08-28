@@ -1,20 +1,19 @@
-using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-
+builder.Services.AddDbContext<MyDbContext>(options =>
+{
+    options.UseSqlServer("Server=tcp:paytrack.database.windows.net,1433;Initial Catalog=paytrack;Persist Security Info=False;User ID=azureuser;Password=%tJM0*XgXzUlzs@z;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
+});
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-
 app.UseSwagger();
 app.UseSwaggerUI();
 
@@ -25,9 +24,8 @@ app.UseAuthorization();
 app.UseCors(builder => 
 {
     builder.WithOrigins("http://localhost:3000")
-    .AllowAnyHeader()
-    .AllowAnyMethod()
-    .AllowCredentials();
+           .AllowAnyHeader()
+           .AllowAnyMethod();
 });
 
 app.MapControllers();

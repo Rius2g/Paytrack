@@ -73,9 +73,12 @@ export default function PayModal() {
   useEffect(() => {
     //api call
     var uid = getUserId();
+    if(uid != 0)
+    {
     api.getPay(uid, start, end).then((resp) => {
         setExpectedPay(resp);
     });
+  }
     
   }, [startDate, endDate]);
 
