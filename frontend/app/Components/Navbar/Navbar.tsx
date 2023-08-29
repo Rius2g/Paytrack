@@ -4,14 +4,15 @@ import Container from "../Container";
 import Search from "./Search";
 import UserMenu from "./Usermenu";
 import Logo from "./Logo";
-import { IDate } from "@/app/Helper/Modules";
 import { DateContext } from "@/app/page";
 import { useContext } from "react";
+import Cookies from "js-cookie";
 
 
 
 const Navbar = () => {
     const date = useContext(DateContext);
+    const loggedinEmail = Cookies.get("userName");
     return (
         <div className="fixed w-full bg-white z-10 shadow-sm">
             <div
@@ -32,6 +33,7 @@ const Navbar = () => {
                 "
                 >
                 <Logo />
+                {loggedinEmail}
                 <Search date={date} />
                 <UserMenu />
                 </div>

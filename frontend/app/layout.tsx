@@ -2,7 +2,6 @@ import './globals.css'
 import * as React from 'react'
 import Navbar from './Components/Navbar/Navbar'
 import { Nunito } from 'next/font/google';
-import { DateContext } from './page';
 
 export const metadata = {
   title: 'Paytrack',

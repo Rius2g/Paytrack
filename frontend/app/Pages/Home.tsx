@@ -11,7 +11,6 @@ import { ShiftsAPI } from "../api/ShiftsAPI";
 import { DateContext } from "../page";
 import { JobsAPI } from "../api/JobsAPI";
 import Cookies from "js-cookie";
-import { get } from "http";
 
 
 const shiftsAPI = new ShiftsAPI();
@@ -30,11 +29,11 @@ export default function Home() {
   const date_instance = useContext(DateContext);
   const [ shiftList, setShiftList ] = useState<IShift[]>([])
   const [ jobList, setJobList ] = useState<IJob[]>([])
-  const [uid, setUid] = useState(getUiD());
 
 
 
   const addShift = () => {
+    const uid = getUiD();
     if(uid === 0)
     {
       alert("Please login to add a shift");
@@ -70,6 +69,7 @@ export default function Home() {
   ];
 
   const getShifts = () => {
+    const uid = getUiD();
     if(uid !== 0)
     {
       shiftsAPI.getShiftsInRange(convert_date2db(date_instance.startOf)+1, convert_date2db(date_instance.endOf)+1, uid).then((data) => {
@@ -108,6 +108,7 @@ export default function Home() {
 
 
   let getJobs = () => {
+    const uid = getUiD();
     if(uid !== 0)
     {
       //api call here

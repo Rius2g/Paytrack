@@ -47,7 +47,7 @@ export default function Pages() {
   return (
     <>
       <div>
-        <Home uid={userId}/>
+        <Home/>
       </div>
     </>
   )

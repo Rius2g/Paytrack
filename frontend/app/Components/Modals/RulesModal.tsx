@@ -63,7 +63,6 @@ export default function RulesModal() {
 
   const handleNewRule = () => {
     //api call here
-    console.log("new rule");
     if(userId === 0 || userId === undefined)
     {
       alert("You must be logged in to add a rule");
