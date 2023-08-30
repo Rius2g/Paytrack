@@ -100,7 +100,6 @@ export default function LoginModal() {
             const cookie = uuidv4();
             Cookies.set("loggedIn", cookie, { expires: 30 }); //change later
             Cookies.set("userID", data.id, { expires: 30 }); //change later
-            Cookies.set("userName", data.email, { expires: 30 }); //change later
           })
         }
         else {
@@ -133,7 +132,8 @@ export default function LoginModal() {
      text-center 
      border-x-[1px] 
      sm:block
-     w-24"  onClick={handleOpen}>Login</Button>
+     w-24"  onClick={handleOpen}>
+      {Cookies.get("loggedIn") !== undefined ? "Logout" : "Login"}</Button>
       <Modal
         open={open}
         onClose={handleClose}

@@ -12,6 +12,7 @@ import { Stack } from '@mui/material';
 import Cookies from "js-cookie";
 import { JobsAPI } from '@/app/api/JobsAPI';
 import { useEffect } from 'react';
+import { Console } from 'console';
 
 const style = {
   position: 'absolute' as 'absolute',
@@ -65,21 +66,21 @@ export default function JobModal() {
       return;
     }
     var newJob: IJob = {
-      jobID: jobs.length + 1,
+      id: jobs.length + 1,
       jobName: "New Job",
       payRate: 0,
-      uiD: 1
+      uiD: userId,
     }
     setJobs([...jobs, newJob]);
     const response = api.postJob(newJob);
     response.then((data) => {
-      newJob.jobID = data;
+      newJob.id = data;
     }
     )
   }
 
   const handleDelete = (job: IJob) => {
-    var newJobs = jobs.filter((item) => item.jobID !== job.jobID);
+    var newJobs = jobs.filter((item) => item.id !== job.id);
     setJobs(newJobs);
   }
     
@@ -92,6 +93,7 @@ export default function JobModal() {
     }
 
     api.getJobs(uid).then((data) => {
+      console.log(data);
       setJobs(data);
     }
     )

@@ -70,7 +70,7 @@ export default function RulesModal() {
     }
     
     var newRule: IRule = {
-        ruleID: rules.length + 1,
+        id: rules.length + 1,
         jobID: 1,
         ruleType: "Time",
         uiD: Number(userId),

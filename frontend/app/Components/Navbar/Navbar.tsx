@@ -33,7 +33,6 @@ const Navbar = () => {
                 "
                 >
                 <Logo />
-                {loggedinEmail}
                 <Search date={date} />
                 <UserMenu />
                 </div>

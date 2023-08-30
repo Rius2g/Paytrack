@@ -41,7 +41,7 @@ export default function Home() {
     }
 
     const newShift: IShift = {
-      shiftID: shiftList.length + 1,
+      id: shiftList.length + 1,
       shiftDate: convert_date2db(date_instance.date),
       shiftStartTime: 1030,
       shiftEndTime: 1030,
@@ -52,7 +52,7 @@ export default function Home() {
     setShiftList([...shiftList, newShift])
     const response = shiftsAPI.createShift(newShift);
     response.then((data) => {
-      newShift.shiftID = data;
+      newShift.id = data;
     }
     )
 
@@ -101,7 +101,7 @@ export default function Home() {
   const handleDelete = (id:number) => {
     //delete shift from list
     
-    const newShiftList = shiftList.filter((shift) => shift.shiftID !== id);
+    const newShiftList = shiftList.filter((shift) => shift.id !== id);
     setShiftList(newShiftList);
     //delete shift from db
   }
@@ -121,11 +121,7 @@ export default function Home() {
 
   useEffect(() => {
     getShifts();
-    if(gotJobs === false)
-    {
       getJobs();
-      gotJobs = true;
-    }
 
   }, [date_instance.date])
 

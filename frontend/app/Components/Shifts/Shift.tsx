@@ -13,16 +13,23 @@ import { ShiftsAPI } from '@/app/api/ShiftsAPI';
 let api = new ShiftsAPI();
 
 const Shift = (props: { shiftList:IShift[], shift: IShift, jobList:IJob[], Refresh:() => void, Delete:(id:number) => void}) => {
-  console.log(props.shift);
   const [jobName, setJobName] = useState(props.shift.jobName);
 
   const handleChange = (event: SelectChangeEvent) => {
-    const selectedJobName = event.target.value as string;
+
     props.shift.jobName = event.target.value as string;
+    const selectedJobName = event.target.value as string;
     setJobName(selectedJobName);
-    var jobID = props.jobList.find((job) => job.jobName === event.target.value)?.jobID;
-    props.shift.jobbID = jobID as number;
-    api.updateShift(props.shift);
+    const newShift = { ...props.shift, jobName: selectedJobName };
+    console.log(props.jobList);
+    const selectedJob = props.jobList.find((job) => job.jobName === selectedJobName);
+    console
+    if (selectedJob) {
+      newShift.jobbID = selectedJob.id;
+    }
+    console.log(newShift);
+
+    api.updateShift(newShift);
     };
 
   const changeTimes = (start: Dayjs | null, end: Dayjs | null) => {
@@ -46,8 +53,8 @@ const Shift = (props: { shiftList:IShift[], shift: IShift, jobList:IJob[], Refre
   }
 
   const deleteShift = () => {
-    api.deleteShift(props.shift.shiftID, props.shift.uiD);
-    props.Delete(props.shift.shiftID);
+    api.deleteShift(props.shift.id, props.shift.uiD);
+    props.Delete(props.shift.id);
   }
 
 
