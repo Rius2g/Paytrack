@@ -69,6 +69,8 @@ export default function PayModal() {
         //api call
     };
 
+    const start = convert_date2db(startDate ?? dayjs());
+    const end = convert_date2db(endDate ?? dayjs());
 
   useEffect(() => {
     //api call
@@ -80,11 +82,9 @@ export default function PayModal() {
     });
   }
     
-  }, [startDate, endDate]);
+  }, [start, end, open]);
 
 
-  const start = convert_date2db(startDate ?? dayjs());
-  const end = convert_date2db(endDate ?? dayjs());
   
 
     var startFront = convert_dbDate2FrontendString(start);
