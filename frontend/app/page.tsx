@@ -12,7 +12,7 @@ export const UserId = createContext<UserIdType>({
   setuserId: () => { },
 });
 
-var date_instance:IDate = {
+var date_instance: IDate = {
   date: dayjs(),
   week: dayjs().week(),
   month: dayjs().month(),
@@ -31,7 +31,7 @@ export default function Pages() {
   return (
     <>
       <div>
-        <Home/>
+        <Home />
       </div>
     </>
   )
