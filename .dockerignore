@@ -5,3 +5,4 @@ backend/bin
 backend/obj
 backend/.vscode
 backend/db.sqlite
+Configs.json

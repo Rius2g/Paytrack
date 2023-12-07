@@ -8,7 +8,12 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<MyDbContext>(options =>
 {
-    options.UseSqlServer("Server=tcp:paytrack.database.windows.net,1433;Initial Catalog=paytrack;Persist Security Info=False;User ID=azureuser;Password=%tJM0*XgXzUlzs@z;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
+    var config = new ConfigurationBuilder()
+        .SetBasePath(Path.Combine(Directory.GetCurrentDirectory(), ".."))
+        .AddJsonFile("Configs.json")
+        .Build();
+
+    options.UseSqlServer(config["Azure"]);
 });
 
 var app = builder.Build();
