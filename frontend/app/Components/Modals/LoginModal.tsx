@@ -165,13 +165,6 @@ export default function LoginModal() {
             </FormControl>
             <CustomButton
               outline
-              label="Continue with Google"
-              icon={FcGoogle}
-              onClick={() => { }}
-            />
-
-            <CustomButton
-              outline
               label="Login"
               onClick={handleSubmit}
             />
