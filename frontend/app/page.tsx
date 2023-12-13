@@ -7,11 +7,6 @@ import { IDate, UserIdType } from './Helper/Modules';
 import dayjs from "dayjs";
 
 
-export const UserId = createContext<UserIdType>({
-  userId: 0,
-  setuserId: () => { },
-});
-
 var date_instance: IDate = {
   date: dayjs(),
   week: dayjs().week(),

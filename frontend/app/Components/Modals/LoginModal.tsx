@@ -10,11 +10,11 @@ import { Stack, TextField } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { IconButton, InputAdornment, FormControl, InputLabel, OutlinedInput } from '@mui/material';
-import { FcGoogle } from "react-icons/fc";
 import CustomButton from '../Button';
 import Cookies from "js-cookie";
 import { v4 as uuidv4 } from "uuid";
 import { IBackEndUser } from '@/app/Helper/Modules';
+import { get } from 'http';
 
 
 const style = {
@@ -31,15 +31,24 @@ const style = {
   pb: 3,
 };
 
+const getLoggedInCookie = () => {
+  if (Cookies.get("userID") !== undefined) {
+    return true;
+  } else {
+    return false;
+  }
+}
 
 var userAPI = new UserAPI();
 
 export default function LoginModal() {
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loggedIn, setLoggedIn] = useState(getLoggedInCookie());
 
-  const [showPassword, setShowPassword] = React.useState(false);
+
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
@@ -53,6 +62,8 @@ export default function LoginModal() {
   const handleClose = () => {
     setOpen(false);
   };
+
+
 
   const handleSubmit = () => {
     const failedLoginAttemptsCookie = Cookies.get('failedLoginAttempts');
@@ -131,7 +142,20 @@ export default function LoginModal() {
         aria-labelledby="parent-modal-title"
         aria-describedby="parent-modal-description"
       >
-        <Box sx={{ ...style, width: 400 }}>
+        {loggedIn ? <div className="text-center">
+          <div className="text-2xl font-bold">
+            Are you sure you want to logout?
+            </div>
+            <div className="font-light text-neutral-500 mt-2">
+              You will be logged out of all devices
+              </div>
+              <CustomButton
+              outline
+              label="Logout"  
+              onClick={() => {}
+              }
+            />
+        </div> : <Box sx={{ ...style, width: 400 }}>
           <Stack spacing={3} justifyContent="center" alignItems="center">
             <div className="text-center">
               <div className="text-2xl font-bold">
@@ -168,10 +192,8 @@ export default function LoginModal() {
               label="Login"
               onClick={handleSubmit}
             />
-
           </Stack>
-
-        </Box>
+        </Box>}
       </Modal>
     </div>
   );
