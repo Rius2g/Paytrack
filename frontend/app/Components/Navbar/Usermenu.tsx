@@ -8,13 +8,19 @@ import RegisterModal from '../Modals/RegisterModal';
 import JobModal from '../Modals/JobModal';
 import RulesModal from '../Modals/RulesModal';
 import SettingsModal from '../Modals/SettingsModal';
+import Cookies from "js-cookie";
 
+const getLoggedInCookie = () => {
+  if (Cookies.get("userID") !== undefined) {
+    return true;
+  } else {
+    return false;
+  }
+}
 
 const UserMenu = () => {
     const [isOpen, setIsOpen] = useState(false);
-    const [ modalOpen, setModalOpen ] = useState(false);
-    const handleOpen = () => setModalOpen(true);
-    const handleClose = () => setModalOpen(false);
+    const loggedIn = getLoggedInCookie();
 
     const toggleOpen = useCallback(() => {
         setIsOpen((value) => !value);
@@ -56,10 +62,14 @@ const UserMenu = () => {
          className="flex flex-col cursor-pointer h-[calc(100vh-4rem)] overflow-y-auto p-4"
        >
             <LoginModal />
-            <RegisterModal />
-            <JobModal />
-            <RulesModal />
-            <SettingsModal />
+            {loggedIn && ( //only render the others if we are logged in 
+              <div>
+              <RegisterModal />
+              <JobModal />
+              <RulesModal />
+              <SettingsModal />
+              </div>
+            )}
           </div>
         </div>
       )}

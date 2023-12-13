@@ -34,7 +34,7 @@ const getLoggedInCookie = () => {
   if (Cookies.get("userID") !== undefined) {
     return true;
   } else {
-    return true;
+    return false;
   }
 }
 
@@ -44,7 +44,7 @@ export default function LoginModal() {
   const [open, setOpen] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [loggedIn, setLoggedIn] = useState(getLoggedInCookie());
+  const loggedIn = getLoggedInCookie();
 
 
   const [showPassword, setShowPassword] = useState(false);

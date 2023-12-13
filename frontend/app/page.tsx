@@ -25,7 +25,7 @@ export default function Pages() {
 
   return (
     <>
-      <div>
+      <div className="dark">
         <Home />
       </div>
     </>

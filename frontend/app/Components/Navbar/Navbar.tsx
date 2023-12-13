@@ -6,13 +6,11 @@ import UserMenu from "./Usermenu";
 import Logo from "./Logo";
 import { DateContext } from "@/app/page";
 import { useContext } from "react";
-import Cookies from "js-cookie";
 
 
 
 const Navbar = () => {
     const date = useContext(DateContext);
-    const loggedinEmail = Cookies.get("userName");
     return (
         <div className="fixed w-full bg-white z-10 shadow-sm">
             <div

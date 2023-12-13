@@ -30,6 +30,7 @@ const Search = (props:{date:IDate}) => {
             <div 
               className="
                 px-4
+                border-r-[1px] border-gray-300
               "
             >
               <WeekPopup date={props.date} />
@@ -41,7 +42,6 @@ const Search = (props:{date:IDate}) => {
                 text-sm 
                 font-semibold 
                 px-4
-                border-x-[1px] 
                 flex-1 
                 text-center
               "
