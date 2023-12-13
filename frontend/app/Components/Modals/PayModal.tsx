@@ -3,7 +3,7 @@
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import Button from '@mui/material/Button';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Stack } from '@mui/material';
 import dayjs, { Dayjs } from 'dayjs';
 import convert_date2db from '@/app/Helper/Functions';
@@ -11,8 +11,11 @@ import { convert_dbDate2FrontendString } from '@/app/Helper/Functions';
 import { DatePicker } from '@mui/x-date-pickers';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { PayAPI } from '@/app/api/PayAPI';
+import Cookies from "js-cookie";
 
 
+var api = new PayAPI();
 const style = {
   position: 'absolute' as 'absolute',
   top: '50%',
@@ -29,9 +32,18 @@ const style = {
 
 export default function PayModal() {
     const [open, setOpen] = useState(false);
-    const [ startDate, setStartDate ] = useState<Dayjs | null>(dayjs());
-    const [ endDate, setEndDate ] = useState<Dayjs | null>(dayjs());
+    const [ startDate, setStartDate ] = useState<Dayjs | null>(dayjs().add(-5, 'day'));
+    const [ endDate, setEndDate ] = useState<Dayjs | null>(dayjs().add(7, 'day'));
     const [ expectedPay, setExpectedPay ] = useState(0);
+
+
+  const getUserId = () => {
+    if (Cookies.get("userID") !== undefined) {
+      return Cookies.get("userID") as unknown as number;
+    } else {
+      return 0;
+    }
+  };
 
 
   const handleOpen = () => {
@@ -57,9 +69,22 @@ export default function PayModal() {
         //api call
     };
 
+    const start = convert_date2db(startDate ?? dayjs());
+    const end = convert_date2db(endDate ?? dayjs());
 
-  const start = convert_date2db(startDate ?? dayjs());
-  const end = convert_date2db(endDate ?? dayjs());
+  useEffect(() => {
+    //api call
+    var uid = getUserId();
+    if(uid != 0)
+    {
+    api.getPay(uid, start, end).then((resp) => {
+        setExpectedPay(resp);
+    });
+  }
+    
+  }, [start, end, open]);
+
+
   
 
     var startFront = convert_dbDate2FrontendString(start);

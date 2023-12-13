@@ -9,12 +9,7 @@ import { useState } from 'react';
 import { Stack, TextField } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import { IconButton } from '@mui/material';
-import { InputAdornment } from '@mui/material';
-import { FormControl } from '@mui/material';
-import { InputLabel } from '@mui/material';
-import { OutlinedInput } from '@mui/material';
-import { FcGoogle } from "react-icons/fc";
+import { IconButton, InputAdornment, FormControl, InputLabel, OutlinedInput } from '@mui/material';
 import CustomButton from '../Button';
 import Cookies from "js-cookie";
 import { v4 as uuidv4 } from "uuid";
@@ -35,15 +30,24 @@ const style = {
   pb: 3,
 };
 
+const getLoggedInCookie = () => {
+  if (Cookies.get("userID") !== undefined) {
+    return true;
+  } else {
+    return false;
+  }
+}
 
 var userAPI = new UserAPI();
 
 export default function LoginModal() {
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const loggedIn = getLoggedInCookie();
 
-  const [showPassword, setShowPassword] = React.useState(false);
+
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
@@ -58,37 +62,35 @@ export default function LoginModal() {
     setOpen(false);
   };
 
+
+
   const handleSubmit = () => {
     const failedLoginAttemptsCookie = Cookies.get('failedLoginAttempts');
     const failedLoginAttempts = failedLoginAttemptsCookie !== undefined ? parseInt(failedLoginAttemptsCookie) : 0;
 
-    if( failedLoginAttempts >= 5)
-    {
+    if (failedLoginAttempts >= 5) {
       alert("You have exceeded the maximum number of failed login attempts. Please try again later.");
-      Cookies.set("timeOut", "true", { expires: 1/1440 * 3} );
+      Cookies.set("timeOut", "true", { expires: 1 / 1440 * 3 });
       return;
     }
     const cookie = Cookies.get('timeOut');
-    if(cookie !== undefined)
-    {
+    if (cookie !== undefined) {
       alert("You have exceeded the maximum number of failed login attempts. Please try again later.");
       return;
     }
 
-    var user:IBackEndUser = {
+    var user: IBackEndUser = {
       Email: email,
       Password: password,
       UiD: 0
     }
 
     userAPI.loginUser(user).then((res) => {
-      if(res.ok)
-      {
-        if(res.status === 200)
-        {
+      if (res.ok) {
+        if (res.status === 200) {
           res.json().then((data) => {
-            if(data.uiD === 0)
-            {
+            console.log(data);
+            if (data.id === 0) {
               alert("Invalid email or password");
               Cookies.set("failedLoginAttempts", (failedLoginAttempts + 1).toString());
               setPassword("");
@@ -97,8 +99,8 @@ export default function LoginModal() {
             //successfull login
             Cookies.set("failedLoginAttempts", "0");
             const cookie = uuidv4();
-            Cookies.set("loggedIn", cookie, { expires: 7 });
-            Cookies.set("userID", data.uiD, { expires: 7 });
+            Cookies.set("loggedIn", cookie, { expires: 30 }); //change later
+            Cookies.set("userID", data.id, { expires: 30 }); //change later
           })
         }
         else {
@@ -115,11 +117,11 @@ export default function LoginModal() {
 
   const handleNewPassword = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
-}
+  }
 
   return (
     <div>
-       {/* style this button */}
+      {/* style this button */}
       <Button className="bg-rose-300
      text-black 
      font-semibold 
@@ -131,14 +133,29 @@ export default function LoginModal() {
      text-center 
      border-x-[1px] 
      sm:block
-     w-24"  onClick={handleOpen}>Login</Button>
+     w-24"  onClick={handleOpen}>
+        {loggedIn !== false ? "Logout" : "Login"}</Button>
       <Modal
         open={open}
         onClose={handleClose}
         aria-labelledby="parent-modal-title"
         aria-describedby="parent-modal-description"
       >
-        <Box sx={{ ...style, width: 400 }}>
+        {loggedIn ? <div className="text-center">
+          <Box sx={{ ...style, width: 400 }}>
+          <Stack spacing={3} justifyContent="center" alignItems="center">
+          <div className="text-2xl font-bold">
+            Are you sure you want to logout?
+            </div>
+              <CustomButton
+              outline
+              label="Logout"  
+              onClick={() => {}
+              }
+            />
+          </Stack>
+          </Box>
+        </div> : <Box sx={{ ...style, width: 400 }}>
           <Stack spacing={3} justifyContent="center" alignItems="center">
             <div className="text-center">
               <div className="text-2xl font-bold">
@@ -148,44 +165,35 @@ export default function LoginModal() {
                 Login to your account
               </div>
             </div>
-            <TextField sx={{m: 1, width:'35ch' }} value={email} onChange={(e) => setEmail(e.target.value)} label="Email" variant="outlined" />
+            <TextField sx={{ m: 1, width: '35ch' }} value={email} onChange={(e) => setEmail(e.target.value)} label="Email" variant="outlined" />
             <FormControl sx={{ m: 1, width: '35ch' }} variant="outlined">
-          <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
-          <OutlinedInput
-            id="outlined-adornment-password"
-            type={showPassword ? 'text' : 'password'}
-            onChange={handleNewPassword}
-            endAdornment={
-              <InputAdornment position="end">
-                <IconButton
-                  aria-label="toggle password visibility"
-                  onClick={handleClickShowPassword}
-                  onMouseDown={handleMouseDownPassword}
-                  edge="end"
-                >
-                  {showPassword ? <VisibilityOff /> : <Visibility />}
-                </IconButton>
-              </InputAdornment>
-            }
-            label="Password"
-          />
-        </FormControl>
-            <CustomButton 
-            outline 
-            label="Continue with Google"
-            icon={FcGoogle}
-            onClick={() => {}}
-          />
-
-            <CustomButton 
-            outline 
-            label = "Login"
-            onClick={handleSubmit}
-          />
-
+              <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
+              <OutlinedInput
+                id="outlined-adornment-password"
+                type={showPassword ? 'text' : 'password'}
+                onChange={handleNewPassword}
+                endAdornment={
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleClickShowPassword}
+                      onMouseDown={handleMouseDownPassword}
+                      edge="end"
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                }
+                label="Password"
+              />
+            </FormControl>
+            <CustomButton
+              outline
+              label="Login"
+              onClick={handleSubmit}
+            />
           </Stack>
-
-        </Box>
+        </Box>}
       </Modal>
     </div>
   );

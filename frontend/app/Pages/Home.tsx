@@ -9,34 +9,50 @@ import { Box, Grid } from "@mui/material";
 import ReturnWorkDay from "../Components/Shifts/WorkDay";
 import { ShiftsAPI } from "../api/ShiftsAPI";
 import { DateContext } from "../page";
+import { JobsAPI } from "../api/JobsAPI";
+import Cookies from "js-cookie";
 
 
 const shiftsAPI = new ShiftsAPI();
+const jobsAPI = new JobsAPI();
+
+const getUiD = () => {
+  const uid = Cookies.get("userID");
+  if (uid === undefined) {
+    return 0;
+  }
+  return parseInt(uid);
+}
+
 let gotJobs = false;
-export default function Home(props:{uid:number}) {
+export default function Home() {
   const date_instance = useContext(DateContext);
   const [ shiftList, setShiftList ] = useState<IShift[]>([])
   const [ jobList, setJobList ] = useState<IJob[]>([])
 
+
+
   const addShift = () => {
-    if(props.uid === 0)
+    const uid = getUiD();
+    if(uid === 0)
     {
       alert("Please login to add a shift");
       return;
     }
 
     const newShift: IShift = {
-      shiftID: shiftList.length + 1,
+      id: shiftList.length + 1,
       shiftDate: convert_date2db(date_instance.date),
       shiftStartTime: 1030,
       shiftEndTime: 1030,
-      uiD: props.uid,
-      jobbID: 1
+      uiD: uid,
+      jobbID: 1,
+      jobName: "",
     }
     setShiftList([...shiftList, newShift])
     const response = shiftsAPI.createShift(newShift);
     response.then((data) => {
-      newShift.shiftID = data;
+      newShift.id = data;
     }
     )
 
@@ -53,9 +69,10 @@ export default function Home(props:{uid:number}) {
   ];
 
   const getShifts = () => {
-    if(props.uid !== 0)
+    const uid = getUiD();
+    if(uid !== 0)
     {
-      shiftsAPI.getShiftsInRange(convert_date2db(date_instance.startOf)+1, convert_date2db(date_instance.endOf)+1, props.uid).then((data) => {
+      shiftsAPI.getShiftsInRange(convert_date2db(date_instance.startOf)+1, convert_date2db(date_instance.endOf)+1, uid).then((data) => {
         setShiftList(data)
       })
   
@@ -84,28 +101,27 @@ export default function Home(props:{uid:number}) {
   const handleDelete = (id:number) => {
     //delete shift from list
     
-    const newShiftList = shiftList.filter((shift) => shift.shiftID !== id);
+    const newShiftList = shiftList.filter((shift) => shift.id !== id);
     setShiftList(newShiftList);
     //delete shift from db
   }
 
 
-  const getJobs = () => {
-    if(props.uid !== 0)
+  let getJobs = () => {
+    const uid = getUiD();
+    if(uid !== 0)
     {
       //api call here
-
+      jobsAPI.getJobs(uid).then((data) => {
+        setJobList(data);
+      });
     }
-  }
+}
 
 
   useEffect(() => {
     getShifts();
-    if(gotJobs === false)
-    {
       getJobs();
-      gotJobs = true;
-    }
 
   }, [date_instance.date])
 

@@ -9,7 +9,7 @@ dayjs.extend(isBetweenPlugin);
 dayjs.extend(weekOfTheYearPlugin);
 
 interface IShift {
-    shiftID: number;
+    id: number;
     shiftDate: number;
     shiftStartTime: number;
     shiftEndTime: number;
@@ -42,28 +42,27 @@ interface IDate
 };
 
 interface IJob {
-    jobID: number;
+    id: number;
     jobName: string;
     payRate: number;
     uiD: number;
 }
 
 interface IRule {
-    RuleID: number;
-    JobID: number;
-    UiD: number;
-    RuleType: string;
-    Rate: number;
-    Date?: number;
-    StartTime?: number;
-    EndTime?: number;
-    Day?: number;
-    RateType?: string;
-
+  id: number;
+  jobID: number;
+  rate: number;
+  uiD: number;
+  rateType: string;
+  ruleType: string;
+  day?: string;
+  start?: number;
+  date?: number;
+  jobName?: string;
 }
 
 interface IUser {
-    UiD: number;
+    id: number;
     Email: string;
     Password: string;
     loggedIn: boolean;

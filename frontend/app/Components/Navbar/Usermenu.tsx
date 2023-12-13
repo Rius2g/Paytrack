@@ -1,5 +1,6 @@
 'use client';
 
+import React from 'react';
 import { Avatar } from '@mui/material';
 import { AiOutlineMenu } from 'react-icons/ai'
 import { useCallback, useState } from 'react';
@@ -8,36 +9,36 @@ import RegisterModal from '../Modals/RegisterModal';
 import JobModal from '../Modals/JobModal';
 import RulesModal from '../Modals/RulesModal';
 import SettingsModal from '../Modals/SettingsModal';
+import Cookies from "js-cookie";
 
+const getLoggedInCookie = () => {
+  if (Cookies.get("userID") !== undefined) {
+    return true;
+  } else {
+    return false;
+  }
+}
 
 const UserMenu = () => {
     const [isOpen, setIsOpen] = useState(false);
-    const [ modalOpen, setModalOpen ] = useState(false);
-    const handleOpen = () => setModalOpen(true);
-    const handleClose = () => setModalOpen(false);
+    const loggedIn = getLoggedInCookie();
 
     const toggleOpen = useCallback(() => {
         setIsOpen((value) => !value);
     }, []);
 
+    const components = [
+      <LoginModal key="login" />,
+      loggedIn && <RegisterModal />,
+      loggedIn && <JobModal />,
+      loggedIn && <RulesModal />,
+      loggedIn && <SettingsModal />
+    ];
+
     return (
         <div className="relative">
-            <div className="flex flex-row items-center gap-3">
-                <div
-                onClick={() => {}}
-                className="
-                hidden
-                md:block
-                text-sm
-                font-semibold
-                py-3
-                px-4
-                rounded-full
-                hover:bg-neutral-100
-                transition
-                cursor-pointer
-                "
-                >
+            <div className="flex flex-row items-center gap-5">
+                <div>
                 </div>
                 <div
                 onClick={toggleOpen}
@@ -65,29 +66,13 @@ const UserMenu = () => {
                 </div>
             </div>
             {isOpen && (
-                <div
-                className="
-                absolute
-                rounded-xl
-                shadow-md
-                w-[40vw]
-                md:w-3/4
-                bg-white
-                overflow-hidden
-                right-0
-                top-12
-                text-sm
-                ">
-                <div className="flex flex-col cursor-pointer">
-                    <>
-                <LoginModal />
-                <RegisterModal />
-                <JobModal />
-                <RulesModal />
-                <SettingsModal />
-                    </>
+              <div className="absolute rounded-xl shadow-md max-w-[90vw] bg-white overflow-hidden right-0 top-12 text-sm">
+              <div className="flex flex-col cursor-pointer overflow-y-auto p-4">
+                  {components.map((component, index) => (
+                    <React.Fragment key={index}>{component}</React.Fragment>
+                  ))}
                 </div>
-                </div>
+              </div>
             )}
         </div>
     )

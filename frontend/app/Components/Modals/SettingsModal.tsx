@@ -6,10 +6,11 @@ import Modal from '@mui/material/Modal';
 import Button from '@mui/material/Button';
 import { useState } from 'react';
 import CustomButton from '../Button';
-import { InputAdornment, Stack, TextField } from '@mui/material';
+import { InputAdornment, Select, Stack, TextField, MenuItem, InputLabel } from '@mui/material';
 import { UserAPI } from '@/app/api/UserAPI';
 import { useEffect } from 'react';
 import Cookies from "js-cookie";
+import { SelectChangeEvent } from '@mui/material/Select';
 
 const style = {
   position: 'absolute' as 'absolute',
@@ -36,6 +37,24 @@ export default function SettingsModal() {
 
     const [ open, setOpen ] = useState(false);
     const [ taxRate, setTaxRate ] = useState(0);
+    const [ currency, setCurrency ] = useState('USD');
+
+
+    const getUserId = () => {
+      if (Cookies.get("userID") !== undefined) {
+        return Cookies.get("userID") as unknown as number;
+      } else {
+        return 0;
+      }
+    };
+
+
+    const handleCurrencyChange = (event: SelectChangeEvent) => {
+      //set jobrate as well
+      const value = String(event.target.value);
+      setCurrency(value);
+     // props.rule.JobID = Number(event.target.value);
+      };
 
 
     const handleOpen = () => {
@@ -48,10 +67,14 @@ export default function SettingsModal() {
     };
 
     const handleSubmitChanges = () => {
-        //api call here
-        api.changeSettings(uid, taxRate);
-
-        }
+      // api call here
+      const currencyValue = Object.keys(currencyOptions).find(
+        (key) => currencyOptions[key] === currency
+      );
+      if (currencyValue) {
+        api.changeSettings(uid, taxRate, currencyValue);
+      }
+    };
 
     const handleTaxRateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setTaxRate(Number(event.target.value));
@@ -59,11 +82,38 @@ export default function SettingsModal() {
 
       
       useEffect(() => {
-        api.getUser(uid).then((data) => {
+        var userID = getUserId();
+        setuid(userID);
+        if(userID === 0 || userID === undefined || userID === null || open === false) 
+        {
+          return;
+        }
+        if(open)
+          api.getUser(userID).then((data) => {
             setTaxRate(data.taxRate);
+            console.log(data.currency)
+            setCurrency(data.currency);
         }
         );
       }, [open]);
+
+
+
+      interface CurrencyOption {
+        [key: string]: string;
+      }
+
+      const currencyOptions: CurrencyOption = {
+        USD: '$',
+        EUR: '€',
+        GBP: '£',
+        RUB: '₽',
+        BTC: '฿',
+        UAH: '₴',
+        KZT: '₸',
+        NOK: "kr",
+      };
+
 
   return (
     <div>
@@ -88,9 +138,27 @@ export default function SettingsModal() {
       >
         <Box sx={{ ...style, width: 400 }}>
           <Stack spacing={1} className="flex items-center justify-center">
-          <TextField className="w-28" id="outlined-basic" label="Tax Rate" variant="outlined" value={taxRate} onChange={handleTaxRateChange} 
-          InputProps={{ endAdornment: <InputAdornment position="end">%</InputAdornment> 
-          }}/> 
+            <Stack spacing={1} className="flex items-center justify-center" direction="row">
+              <Stack >
+                <InputLabel id="demo-simple-select-label">Tax Rate</InputLabel>
+                <TextField className="w-28" id="outlined-basic" variant="outlined" value={taxRate} onChange={handleTaxRateChange} 
+                InputProps={{ endAdornment: <InputAdornment position="end">%</InputAdornment> 
+                }}/> 
+              </Stack>
+          <Stack>
+            <InputLabel id="demo-simple-select-label">Currency</InputLabel>
+            <Select
+                  value={currency}
+                  label="Rule type"
+                  onChange={handleCurrencyChange}>
+                          {Object.keys(currencyOptions).map((option) => (
+                              <MenuItem key={option} value={option}>
+                              {currencyOptions[option]}
+                            </MenuItem>
+                          ))}
+            </Select>
+          </Stack>
+          </Stack>
          <CustomButton
             onClick={handleSubmitChanges}
             label="Submit Changes"

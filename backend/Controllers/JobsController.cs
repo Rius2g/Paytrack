@@ -1,9 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using System;
-using Dapper;
 using Paytrack.Models;
-using Paytrack.Database;
-using Microsoft.Data.Sqlite;
+
 
 
 namespace backend.Controllers;
@@ -12,7 +9,7 @@ namespace backend.Controllers;
 [Route("api/[controller]")]
 public class JobController : BaseController
 {
-        public JobController(DatabaseConfig dbConfig) : base(dbConfig)
+        public JobController(MyDbContext _context) : base(_context)
         {
         }
 
@@ -20,67 +17,61 @@ public class JobController : BaseController
     [HttpGet]
     public IEnumerable<Job> GetJobs()
     {
-        using var connection = new SqliteConnection(_db.Name);
 
-        var jobs = connection.Query<Job>("SELECT * FROM Jobs;");
+        var jobs = _context.Jobs.ToArray();
         return jobs;
     }
 
     [HttpGet("{uid}")]
     public IEnumerable<Job> GetJobsByUser(int uid)
     {
-        using var connection = new SqliteConnection(_db.Name);
-
-        var jobs = connection.Query<Job>($"SELECT * FROM Jobs WHERE UiD = {uid};");
+        var jobs = _context.Jobs.Where(t => t.UiD == uid).ToArray();
         return jobs;
     }
 
     [HttpPost]
     public int PostJob(Job job)
     {
-        using var connection = new SqliteConnection(_db.Name);
-
-        var newJob = connection.QueryFirstOrDefault<Job>(
-            @"INSERT INTO Jobs (jobName, payRate, UiD) VALUES (@jobName, @payRate, @uiD);
-            SELECT * FROM Jobs WHERE JobID = last_insert_rowid();",
-            job);
-
-        return newJob.jobID;
+        _context.Add(job);
+        _context.SaveChanges();
+        return job.ID;
     }
 
 
     [HttpPut]
     public bool PutJob(Job job)
     {
-        using var connection = new SqliteConnection(_db.Name);
+        var jobs = _context.Jobs.Find(job.ID);
+        if (jobs == null)
+        {
+            return false;
+        }
 
-        var result = connection.Execute(
-                @"UPDATE Jobs SET
-                            jobName = @Name,
-                            payRate = @Rate
-                        WHERE JobID = @JobID;",
-                        new
-                        {
-                            Name = job.jobName,
-                            Rate = job.payRate,
-                            JobID = job.jobID
-                        });
+        jobs.jobName = job.jobName;
+        jobs.payRate = job.payRate;
+        
+        _context.SaveChanges();
+        return true;
 
-        return result == 1;
     }
 
 
     [HttpDelete]
-    public bool DeleteJob(Job job)
+    public bool DeleteJob(int jobID)
     {
-        using var connection = new SqliteConnection(_db.Name);
+        var jobToDelete = _context.Jobs.FirstOrDefault(j => j.ID == jobID);
 
-        var deletedJob = connection.Execute(
-            @"DELETE FROM Jobs WHERE JobID = @jobID;",
-            job);
+        if (jobToDelete != null)
+        {
+            _context.Jobs.Remove(jobToDelete);
+            _context.SaveChanges();
 
-        return deletedJob == 1;
+            return true; // Successful deletion
+        }
+
+        return false; // Job not found
     }
+
 
 
 

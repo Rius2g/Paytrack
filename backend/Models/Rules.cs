@@ -1,22 +1,22 @@
+using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
+
+
 namespace Paytrack.Models
 {
-    public class Rules
+   public class Rules
     {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int ID { get; set; }
         public int JobID { get; set; }
         public int Rate { get; set; }
         public int UiD { get; set; }
-
-        public string? RateType { get; set; } //% or currency
-
-        public string? RuleType { get; set; } //day? time? day and time? date?
-
-        public int? Day { get; set; } //1-7 if day rule
-
-        public int? Start { get; set; } //time if time rule
-
-        public int? End { get; set; } //time if time rule
-
-        public int? Date { get; set; } //date if date rule
-
+        public string RateType { get; set; }
+        public string RuleType { get; set; }
+        public string? Day { get; set; }
+        public int Start { get; set; }
+        public int? Date { get; set; }
+        public string? jobName { get; set; }
     }
 }

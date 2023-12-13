@@ -1,24 +1,24 @@
-using Paytrack.Database;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddSingleton(new DatabaseConfig 
-{Name = builder.Configuration["DatabaseName"]});
+builder.Services.AddDbContext<MyDbContext>(options =>
+{
+    var config = new ConfigurationBuilder()
+        .SetBasePath(Path.Combine(Directory.GetCurrentDirectory(), ".."))
+        .AddJsonFile("Configs.json")
+        .Build();
 
-builder.Services.AddHostedService<DatabaseHostedService>();
-
-
+    options.UseSqlServer(config["Azure"]);
+});
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-
 app.UseSwagger();
 app.UseSwaggerUI();
 
@@ -29,9 +29,8 @@ app.UseAuthorization();
 app.UseCors(builder => 
 {
     builder.WithOrigins("http://localhost:3000")
-    .AllowAnyHeader()
-    .AllowAnyMethod()
-    .AllowCredentials();
+           .AllowAnyHeader()
+           .AllowAnyMethod();
 });
 
 app.MapControllers();

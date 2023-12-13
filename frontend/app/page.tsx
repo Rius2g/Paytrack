@@ -2,18 +2,12 @@
 
 import Home from "./Pages/Home"
 import React from "react";
-import Cookies from "js-cookie";
 import { createContext } from 'react';
-import { IDate, UserIdType } from './Helper/Modules';
+import { IDate} from './Helper/Modules';
 import dayjs from "dayjs";
 
 
-export const UserId = createContext<UserIdType>({
-  userId: 0,
-  setuserId: () => { },
-});
-
-var date_instance:IDate = {
+var date_instance: IDate = {
   date: dayjs(),
   week: dayjs().week(),
   month: dayjs().month(),
@@ -25,30 +19,11 @@ var date_instance:IDate = {
 
 export const DateContext = createContext<IDate>(date_instance);
 
-
-
 export default function Pages() {
 
-  const [userId, setuserId] = React.useState<number>(() =>
-  Cookies.get("userID") !== undefined
-    ? (Cookies.get("userID") as unknown as number)
-    : 0
-  );
-  
-  //Sets the userId for the user that was logged in.
-  const Userfound = React.useCallback(
-  (data: number) => {
-    setuserId(data);
-  },
-  []
-  );
-
-
   return (
-    <>
-      <div>
-        <Home uid={userId}/>
+      <div className="dark">
+        <Home />
       </div>
-    </>
   )
 }

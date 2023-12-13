@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { IJob, IShift } from '@/app/Helper/Modules';
 import { Dayjs } from 'dayjs';
 import convert_date2db from '@/app/Helper/Functions';
@@ -13,17 +13,24 @@ import { ShiftsAPI } from '@/app/api/ShiftsAPI';
 let api = new ShiftsAPI();
 
 const Shift = (props: { shiftList:IShift[], shift: IShift, jobList:IJob[], Refresh:() => void, Delete:(id:number) => void}) => {
-  const [job, setJob] = useState("");
+  const [jobName, setJobName] = useState(props.shift.jobName);
 
-  const findJob = () => {
-    let job = props.jobList.find(job => job.jobID === props.shift.jobbID);
-    if (job) {
-      setJob(job.jobName);
+  const handleChange = (event: SelectChangeEvent) => {
+
+    props.shift.jobName = event.target.value as string;
+    const selectedJobName = event.target.value as string;
+    setJobName(selectedJobName);
+    const newShift = { ...props.shift, jobName: selectedJobName };
+    console.log(props.jobList);
+    const selectedJob = props.jobList.find((job) => job.jobName === selectedJobName);
+    console
+    if (selectedJob) {
+      newShift.jobbID = selectedJob.id;
     }
-    else {
-      setJob("No job");
-    }
-  }
+    console.log(newShift);
+
+    api.updateShift(newShift);
+    };
 
   const changeTimes = (start: Dayjs | null, end: Dayjs | null) => {
     if(start && end)
@@ -45,43 +52,26 @@ const Shift = (props: { shiftList:IShift[], shift: IShift, jobList:IJob[], Refre
     }
   }
 
-  const handleJobChange = (event: SelectChangeEvent) => {
-    setJob(event.target.value); //update the state
-    props.shift.jobName = event.target.value; //update the actual value in the user
-    props.shift.jobbID = props.jobList.find(job => job.jobName === event.target.value)?.jobID || 0;
-    api.updateShift(props.shift);
-  };
-
   const deleteShift = () => {
-    api.deleteShift(props.shift.shiftID, props.shift.uiD);
-    props.Delete(props.shift.shiftID);
+    api.deleteShift(props.shift.id, props.shift.uiD);
+    props.Delete(props.shift.id);
   }
 
 
-
-  //set the job name
-  useEffect(() => {
-    findJob();
-  })
-
-
-
   return (
-    <div style={{ width: '180px' }}>
-      <Stack spacing={1}>
-       {/* <div className="font-bold text-black text-center flex-center">
-       <Select 
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              value={job}
-              label="Exercise Name"
-              onChange={handleJobChange}
-              >
-              {Object.values(props.jobList).map((job: IJob) => (
-              <MenuItem key={job.JobID} value={job.JobID}>{job.JobName}</MenuItem>
-            ))}
-              </Select>
-        </div> */}
+    <div style={{ width: '200px' }}>
+      <Stack spacing={1} direction="column">
+      <Select
+                value={jobName}
+                label="Job"
+                onChange={handleChange}
+                >
+                {props.jobList.map((job) => (
+                    <MenuItem key={job.jobName} value={job.jobName}>
+                    {job.jobName}
+                </MenuItem>
+                ))}
+                </Select>
         <DatePick shift={props.shift} handleChange={changeDate} />
         <TimePickers shift={props.shift} handleChange={changeTimes} />
       </Stack>

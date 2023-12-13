@@ -38,6 +38,16 @@ export default function JobModal() {
     : 0
   );
 
+
+  const getUserId = () => {
+    if (Cookies.get("userID") !== undefined) {
+      return Cookies.get("userID") as unknown as number;
+    } else {
+      return 0;
+    }
+  };
+
+
   const handleOpen = () => {
     //api call to fetch jobs
     setOpen(true);
@@ -55,26 +65,34 @@ export default function JobModal() {
       return;
     }
     var newJob: IJob = {
-      jobID: jobs.length + 1,
+      id: jobs.length + 1,
       jobName: "New Job",
       payRate: 0,
-      uiD: 1
+      uiD: userId,
     }
     setJobs([...jobs, newJob]);
     const response = api.postJob(newJob);
     response.then((data) => {
-      newJob.jobID = data;
+      newJob.id = data;
     }
     )
   }
 
   const handleDelete = (job: IJob) => {
-    var newJobs = jobs.filter((item) => item.jobID !== job.jobID);
+    var newJobs = jobs.filter((item) => item.id !== job.id);
     setJobs(newJobs);
   }
     
   useEffect(() => {
-    api.getJobs(userId).then((data) => {
+    var uid = getUserId();
+    setuserId(uid);
+    if(uid === 0 || uid === undefined || uid === null || open === false)
+    {
+      return;
+    }
+
+    api.getJobs(uid).then((data) => {
+      console.log(data);
       setJobs(data);
     }
     )

@@ -11,6 +11,10 @@ import { Stack } from '@mui/material';
 import RuleList from '../Rules/RuleList';
 import Cookies from "js-cookie";
 import { JobsAPI } from '@/app/api/JobsAPI';
+import { RulesAPI } from '@/app/api/RulesAPI';
+import dayjs from 'dayjs';
+import convert_date2db from '@/app/Helper/Functions';
+import { setuid } from 'process';
 
 
 const style = {
@@ -28,6 +32,7 @@ const style = {
 };
 
 var jobsAPI = new JobsAPI();
+var rulesAPI = new RulesAPI();
 export default function RulesModal() {
   const [ open, setOpen ] = useState(false);
   const [ rules, setRules ] = useState<IRule[]>([]);
@@ -37,6 +42,15 @@ export default function RulesModal() {
     ? (Cookies.get("userID") as unknown as number)
     : 0
   );
+
+  const getUserId = () => {
+    if (Cookies.get("userID") !== undefined) {
+      return Cookies.get("userID") as unknown as number;
+    } else {
+      return 0;
+    }
+  };
+
 
   const handleOpen = () => {
     //api call to fetch jobs
@@ -56,19 +70,36 @@ export default function RulesModal() {
     }
     
     var newRule: IRule = {
-        RuleID: rules.length + 1,
-        JobID: 0,
-        RuleType: "",
-        UiD: 0,
-        Rate: 0,
+        id: rules.length + 1,
+        jobID: 1,
+        ruleType: "Time",
+        uiD: Number(userId),
+        rate: 10,
+        date: convert_date2db(dayjs()),
+        start: 0,
+        day: "Monday",
+        rateType: "%",
+        jobName: ""
     }
     setRules([...rules, newRule])
+    rulesAPI.postRule(newRule);
   }
 
   React.useEffect(() => {
-    //api call to fetch rules
-    jobsAPI.getJobs(userId).then((res) => {
-      setJobs(res);
+    var uid = getUserId();
+    setuserId(uid);
+    if(uid === 0 || uid === undefined || uid === null || open === false)
+    {
+      return;
+    }
+    //api call to get rules and the jobs for the list
+    rulesAPI.getRules(uid).then((res) => {
+      setRules(res);
+      jobsAPI.getJobs(uid).then((res) => {
+        setJobs(res);
+      }
+      );
+
     }
     );
 
@@ -96,8 +127,8 @@ export default function RulesModal() {
         aria-labelledby="parent-modal-title"
         aria-describedby="parent-modal-description"
       >
-        <Box sx={{ ...style, width: 700 }}>
-          <Stack spacing={1} >
+        <Box sx={{ ...style, width: 900 }}>
+          <Stack spacing={1} style={{justifyContent: "center"}}>
             <RuleList ruleList={rules} jobList={jobs}/>
          <CustomButton
             onClick={handleNewRule}

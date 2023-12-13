@@ -1,9 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
 using Paytrack.Models;
-using Paytrack.Database;
-using Microsoft.Data.Sqlite;
-using System;
-using Dapper;
 
 namespace backend.Controllers;
 
@@ -11,7 +7,7 @@ namespace backend.Controllers;
 [Route("api/[controller]")]
 public class ShiftController : BaseController
 {
-    public ShiftController(DatabaseConfig dbConfig) : base(dbConfig)
+    public ShiftController(MyDbContext _context) : base(_context)
     {
     }
 
@@ -20,9 +16,8 @@ public class ShiftController : BaseController
     [HttpGet]
     public IEnumerable<Shift> GetShifts()
     {
-        using var connection = new SqliteConnection(_db.Name);
+        var shifts = _context.Shifts.ToArray();
 
-        var shifts = connection.Query<Shift>("SELECT * FROM Shifts;");
         return shifts;
     }
    
@@ -32,10 +27,12 @@ public class ShiftController : BaseController
    [HttpGet("{id}")]
     public Shift GetShift(int id)
     {
-        using var connection = new SqliteConnection(_db.Name);
+        var shift = _context.Shifts.FirstOrDefault(t => t.ID == id);
+        if(shift == null)
+        {
+            return null;
+        }
 
-        var shift = connection.QueryFirstOrDefault<Shift>($"SELECT * FROM Shifts WHERE Id = {id};");
-        
         return shift;
     }
 
@@ -43,14 +40,9 @@ public class ShiftController : BaseController
     // GET: api/Shift/5
     [HttpGet("weekly/{id}")]
     public IEnumerable<Shift> GetWeeklyShifts([FromQuery]long DateStart, [FromQuery]long DateEnd, int id)
-    {
-        using var connection = new SqliteConnection(_db.Name);                                                                                                 
+    {                                                                                              
         // Execute query to get session with matching SessionID
-        var shifts = connection.Query<Shift>(
-                @"SELECT * FROM Shifts WHERE 
-                ((ShiftDate BETWEEN @dateStart AND @dateEnd)
-                 AND UiD = @UserId);",
-                new {dateStart = DateStart, dateEnd = DateEnd, UserId = id});
+        var shifts = _context.Shifts.Where(t => t.shiftDate >= DateStart && t.shiftDate <= DateEnd && t.uiD == id).ToArray();
 
         return shifts;
     }
@@ -60,14 +52,14 @@ public class ShiftController : BaseController
     public bool Delete(int id)
     // Deletes a specific session from the database, based on SessionID
     {
-        using var connection = new SqliteConnection(_db.Name);                                                                                                     // create connection to sqlite database
-        var result = connection.Execute(                                                                                                                            // Execute query to delete session with matching SessionID
-            @"DELETE FROM Shifts
-                    WHERE ShiftID = @IdInsert;",
-            new { IdInsert = id });
-
-
-        return result == 1;                                                                                                                                          // return true if query was successful
+        var shift = _context.Shifts.FirstOrDefault(t => t.ID == id); 
+        if(shift == null)                                                                                       
+        {
+            return false;                                                                                                                                           
+        }
+        _context.Shifts.Remove(shift);    
+        _context.SaveChanges();
+        return true;                                                                                                                       
     }
 
 
@@ -76,21 +68,17 @@ public class ShiftController : BaseController
 
     // Checks if a user is owner of session, and delete it if called by owner
     {
-        using var connection = new SqliteConnection(_db.Name);
-        int owner = connection.QuerySingleOrDefault<int>(@"
-                    SELECT UiD
-                        FROM Shifts
-                        WHERE ShiftID = @IdInsert;",
-                new { IdInsert = id });
-
-        var result = false;
-
-        if(owner == uID) //check if the user is the owner of the shift
+        var shift = _context.Shifts.FirstOrDefault(t => t.ID == id);
+        if(shift == null)
         {
-            result = Delete(id);
+            return false;
+        }
+        if(shift.uiD == uID) //check if the user is the owner of the shift
+        {
+            return Delete(id);
         }
 
-        return result;
+        return false;
     }
 
 
@@ -99,33 +87,10 @@ public class ShiftController : BaseController
     [HttpPost]
     public int PostShift(Shift shift)
     {
-        using var connection = new SqliteConnection(_db.Name);
+        _context.Shifts.Add(shift);
+        _context.SaveChanges();
 
-         var result = connection.QuerySingleOrDefault<int>(@"
-                INSERT INTO Shifts (
-                        ShiftStartTime,
-                        ShiftDate,
-                        ShiftEndTime,
-                        UiD,
-                        JobbID
-                    ) VALUES (
-                        @Start,
-                        @Date,
-                        @End,
-                        @UiD,
-                        @JobID
-                        )
-                        RETURNING *;",
-                new
-                {
-                    Start = shift.shiftStartTime,
-                    Date = shift.shiftDate,
-                    End = shift.shiftEndTime,
-                    UiD = shift.uiD,
-                    JobID = shift.jobbID
-                });
-
-        return result;
+        return 1;
     }
 
     //update shift
@@ -133,29 +98,19 @@ public class ShiftController : BaseController
     [HttpPut("{id}")]
     public bool PutShift(int id, Shift shift)
     {
-        using var connection = new SqliteConnection(_db.Name);
 
-        var result = connection.Execute(
-            @"UPDATE Shifts
-                    SET
-                        ShiftStartTime = @Start,
-                        ShiftDate = @Date,
-                        ShiftEndTime = @End,
-                        UiD = @UiD,
-                        JobbID = @JobID
-                    WHERE ShiftID = @ID;",
-            new
-            {
-                ID = id,
-                UiD = shift.uiD,
-                Date = shift.shiftDate,
-                Start = shift.shiftStartTime,
-                End = shift.shiftEndTime,
-                JobID = shift.jobbID
-            });
-
-        return result == 1;
+        var shift_to_update = _context.Shifts.FirstOrDefault(t => t.ID == id);
+        if(shift_to_update == null)
+        {
+            return false;
+        }
+        shift_to_update.shiftStartTime = shift.shiftStartTime;
+        shift_to_update.shiftEndTime = shift.shiftEndTime;
+        shift_to_update.shiftDate = shift.shiftDate;
+        shift_to_update.jobbID = shift.jobbID;
+        shift_to_update.jobName = shift.jobName;
+        _context.SaveChanges();
+        return true;
     }
-    
     
 }

@@ -4,8 +4,8 @@ export class RulesAPI
 {
     private enviroment = "http://localhost:6032/api/Rules";
 
-    public async getRules(UiD: number){
-        const response = await fetch(this.enviroment + "/" +  UiD.toString(), {
+    public async getRules(UiD: number) {
+        const response = await fetch(`${this.enviroment}/${UiD}`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -16,6 +16,7 @@ export class RulesAPI
     }
 
     public async postRule(rule: IRule){
+        console.log(rule);
         const response = await fetch(this.enviroment, {
             method: "POST",
             headers: {
@@ -35,20 +36,15 @@ export class RulesAPI
             },
             body: JSON.stringify(rule),
         });
-        const data = await response.json();
-        return data;
     }
 
     public async deleteRule(rule: IRule){
-        const response = await fetch(this.enviroment, {
+        const response = await fetch(`${this.enviroment}/${rule.ruleID}`, {
             method: "DELETE",
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify(rule),
         });
-        const data = await response.json();
-        return data;
     }
 
 }

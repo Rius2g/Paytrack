@@ -1,9 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
 using Paytrack.Models;
-using Paytrack.Database;
-using Microsoft.Data.Sqlite;
-using System;
-using Dapper;
 using backend.Security;
 
 
@@ -14,7 +10,7 @@ namespace backend.Controllers;
 public class UserController : BaseController
 {
 
-    public UserController(DatabaseConfig dbConfig) : base(dbConfig)
+    public UserController(MyDbContext _context) : base(_context)
     {
     }
 
@@ -22,104 +18,75 @@ public class UserController : BaseController
     [HttpPost("register")]
     public int RegisterUser(User user)
     {
-        using var connection = new SqliteConnection(_db.Name);
+        var newuser = _context.Users.FirstOrDefault(u => u.Email == user.Email);
 
-       var resGet = connection.QuerySingleOrDefault<int>(@"
-            SELECT UiD FROM Users WHERE Email = @Email;",
-            new
-            {
-                Email = user.Email
-            });
-
-        if (resGet != 0)
+        if (newuser != null)
         {
             return 0;
         }
 
-        var passwordHash = new PasswordHash();
+        var passwordHash = new PasswordHash(_context);
 
         var hash = passwordHash.CreateHashPassword(user.Password, out var salt);
 
-        var result = connection.QuerySingleOrDefault<int>(@"
-        INSERT OR IGNORE INTO Users (
-            Email,
-            Password,
-            TaxRate
-        ) VALUES (
-            @Email,
-            @Password,
-            @TaxRate
-        );
-        SELECT last_insert_rowid();",
-        new
-        {
-            Password = hash,
+        newuser = new User {
             Email = user.Email,
-            TaxRate = 0
-        });
+            Password = hash,
+            Taxrate = 10,
+            Currency = "USD",
 
-       var res = passwordHash.PostSalt(result, salt, _db.Name);
+        };
+        
+        _context.Users.Add(newuser);
+        _context.SaveChanges();
+
+       //a way to get the ID of the new post
+       Console.WriteLine(newuser.ID);
+        var result = newuser.ID;
+
+        var res = passwordHash.PostSalt(result, salt);
 
         return result;
-
     }
 
     [HttpPost("login")]
     public User loginUser(User user)
     {
-        using var connection = new SqliteConnection(_db.Name);
 
-        var PW = new PasswordHash();
+        var PW = new PasswordHash(_context);
 
-        var correct = PW.VerifyPassword(user.Password, user.Email, _db.Name);
+        var correct = PW.VerifyPassword(user.Password!, user.Email!);
 
         if(correct)
         {
-            var use = connection.QueryFirstOrDefault<User>(@"
-            SELECT * FROM Users WHERE Email = @Email;",
-            new
+            var use = _context.Users.FirstOrDefault(u => u.Email == user.Email);
+            if(use == null)
             {
-                Email = user.Email
-            });
+                return new User();
+            }
             return use;
         }
-        User falseUser = new User();
-        return falseUser;
 
+        return new User();
 
     }
 
     [HttpPut("{uid}")]
-    public bool putUser(int uid, [FromQuery]decimal TaxRate)
+    public bool putUser(int uid, [FromQuery]int TaxRate, [FromQuery]string Currency)
     {
-        using var connection = new SqliteConnection(_db.Name);
-
-        var res = connection.Execute(@"
-        UPDATE Users SET
-            TaxRate = @TaxRate
-        WHERE UiD = @UiD;",
-        new
-        {
-            TaxRate = TaxRate,
-            UiD = uid
-        });
-
-        return res > 0;
+        var user = _context.Users.FirstOrDefault(u => u.ID == uid);
+        user.Currency = Currency;
+        user.Taxrate = TaxRate;
+        _context.SaveChanges();
+        return true;
     }
 
     [HttpGet("{uid}")]
     public User getUser(int uid)
     {
-        using var connection = new SqliteConnection(_db.Name);
-
-        var res = connection.QueryFirstOrDefault<User>(@"
-        SELECT * FROM Users WHERE UiD = @UiD;",
-        new
-        {
-            UiD = uid
-        });
-
-        return res;
+        var user = _context.Users.FirstOrDefault(u => u.ID == uid);
+        
+        return user;
     }
     
 }

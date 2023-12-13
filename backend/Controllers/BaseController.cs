@@ -1,18 +1,15 @@
-using Dapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Data.Sqlite;
-using Paytrack.Database;
 
 namespace backend.Controllers;
 
 
 public class BaseController : ControllerBase
 {
-    protected readonly DatabaseConfig _db;
+    protected readonly MyDbContext _context;
 
-    public BaseController(DatabaseConfig config)
+    public BaseController(MyDbContext context)
     {
-        _db = config;
+        _context = context;
     }
 
 }
