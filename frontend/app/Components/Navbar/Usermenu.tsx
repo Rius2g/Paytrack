@@ -1,5 +1,6 @@
 'use client';
 
+import React from 'react';
 import { Avatar } from '@mui/material';
 import { AiOutlineMenu } from 'react-icons/ai'
 import { useCallback, useState } from 'react';
@@ -25,6 +26,14 @@ const UserMenu = () => {
     const toggleOpen = useCallback(() => {
         setIsOpen((value) => !value);
     }, []);
+
+    const components = [
+      <LoginModal key="login" />,
+      loggedIn && <RegisterModal />,
+      loggedIn && <JobModal />,
+      loggedIn && <RulesModal />,
+      loggedIn && <SettingsModal />
+    ];
 
     return (
         <div className="relative">
@@ -57,22 +66,14 @@ const UserMenu = () => {
                 </div>
             </div>
             {isOpen && (
-       <div className="absolute rounded-xl shadow-md max-w-[90vw] bg-white overflow-hidden right-0 top-12 text-sm">
-       <div
-         className="flex flex-col cursor-pointer h-[calc(100vh-4rem)] overflow-y-auto p-4"
-       >
-            <LoginModal />
-            {loggedIn && ( //only render the others if we are logged in 
-              <div>
-              <RegisterModal />
-              <JobModal />
-              <RulesModal />
-              <SettingsModal />
+              <div className="absolute rounded-xl shadow-md max-w-[90vw] bg-white overflow-hidden right-0 top-12 text-sm">
+              <div className="flex flex-col cursor-pointer overflow-y-auto p-4">
+                  {components.map((component, index) => (
+                    <React.Fragment key={index}>{component}</React.Fragment>
+                  ))}
+                </div>
               </div>
             )}
-          </div>
-        </div>
-      )}
         </div>
     )
 }
