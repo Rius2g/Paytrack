@@ -1,7 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
-using Paytrack.Models;
+using backend.Models;
+using backend.Database;
 
-namespace backend.Controllers;
+
+namespace backend.Controllers
+{
 
 [ApiController]
 [Route("api/[controller]")]
@@ -30,7 +33,7 @@ public class ShiftController : BaseController
         var shift = _context.Shifts.FirstOrDefault(t => t.ID == id);
         if(shift == null)
         {
-            return null;
+            return new Shift();
         }
 
         return shift;
@@ -113,4 +116,5 @@ public class ShiftController : BaseController
         return true;
     }
     
+}
 }

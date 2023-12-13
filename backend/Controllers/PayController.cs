@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
-using Paytrack.Models;
+using backend.Models;
+using backend.Database;
 
-namespace backend.Controllers;
+namespace backend.Controllers
+{
 
 [ApiController]
 [Route("api/[controller]")]
@@ -22,6 +24,11 @@ public decimal ExpectedPay(int userID, int startTime, int endTime)
     var shifts_with_jobs = shifts.Join(jobs, s => s.jobbID, j => j.ID, (s, j) => new { s, j }).ToArray();
 
     var user = _context.Users.Where(t => t.ID == userID).FirstOrDefault();
+
+    if (user == null)
+    {
+        return 0;
+    }
 
     if (shifts_with_jobs.Count() == 0)
     {
@@ -117,7 +124,13 @@ public decimal ExpectedPay(int userID, int startTime, int endTime)
     private double CalculateDateRule(Rules rule, Shift shift, int basePay)
     {
         string dateString = shift.shiftDate.ToString();
-        string ruleDateString = rule.Date.ToString();
+        
+        string? ruleDateString = rule.Date.ToString();
+
+        if(ruleDateString == null)
+        {
+            return 0;
+        }
 
         int year = int.Parse(dateString.Substring(0, 4));
         int ruleYear = int.Parse(ruleDateString.Substring(0, 4));
@@ -194,4 +207,5 @@ public decimal ExpectedPay(int userID, int startTime, int endTime)
         return 0;
     }
     
+}
 }

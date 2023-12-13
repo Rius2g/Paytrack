@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 
 
-namespace Paytrack.Models
+namespace backend.Models
 {
    public class Rules
     {
@@ -12,8 +12,8 @@ namespace Paytrack.Models
         public int JobID { get; set; }
         public int Rate { get; set; }
         public int UiD { get; set; }
-        public string RateType { get; set; }
-        public string RuleType { get; set; }
+        public string? RateType { get; set; }
+        public string? RuleType { get; set; }
         public string? Day { get; set; }
         public int Start { get; set; }
         public int? Date { get; set; }

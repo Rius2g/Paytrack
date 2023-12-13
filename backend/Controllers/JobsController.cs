@@ -1,9 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
-using Paytrack.Models;
+using backend.Models;
+using backend.Database;
 
 
 
-namespace backend.Controllers;
+namespace backend.Controllers
+{
 
 [ApiController]
 [Route("api/[controller]")]
@@ -76,4 +78,5 @@ public class JobController : BaseController
 
 
 
+}
 }

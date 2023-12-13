@@ -1,9 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
-using Paytrack.Models;
+using backend.Models;
 using backend.Security;
+using backend.Database;
 
 
-namespace backend.Controllers;
+
+namespace backend.Controllers
+{
 
 [ApiController]
 [Route("api/[controller]")]
@@ -20,12 +23,17 @@ public class UserController : BaseController
     {
         var newuser = _context.Users.FirstOrDefault(u => u.Email == user.Email);
 
-        if (newuser != null)
+        if (newuser == null)
         {
             return 0;
         }
 
         var passwordHash = new PasswordHash(_context);
+        
+        if (user.Password == null)
+        {
+            return 0;
+        }
 
         var hash = passwordHash.CreateHashPassword(user.Password, out var salt);
 
@@ -41,7 +49,6 @@ public class UserController : BaseController
         _context.SaveChanges();
 
        //a way to get the ID of the new post
-       Console.WriteLine(newuser.ID);
         var result = newuser.ID;
 
         var res = passwordHash.PostSalt(result, salt);
@@ -75,6 +82,10 @@ public class UserController : BaseController
     public bool putUser(int uid, [FromQuery]int TaxRate, [FromQuery]string Currency)
     {
         var user = _context.Users.FirstOrDefault(u => u.ID == uid);
+        if (user == null)
+        {
+            return false;
+        }
         user.Currency = Currency;
         user.Taxrate = TaxRate;
         _context.SaveChanges();
@@ -85,8 +96,13 @@ public class UserController : BaseController
     public User getUser(int uid)
     {
         var user = _context.Users.FirstOrDefault(u => u.ID == uid);
+        if (user == null)
+        {
+            return new User();
+        }
         
         return user;
     }
     
+}
 }
