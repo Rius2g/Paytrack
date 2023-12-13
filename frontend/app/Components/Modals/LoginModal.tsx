@@ -34,7 +34,7 @@ const getLoggedInCookie = () => {
   if (Cookies.get("userID") !== undefined) {
     return true;
   } else {
-    return false;
+    return true;
   }
 }
 
@@ -134,7 +134,7 @@ export default function LoginModal() {
      border-x-[1px] 
      sm:block
      w-24"  onClick={handleOpen}>
-        {Cookies.get("loggedIn") !== undefined ? "Logout" : "Login"}</Button>
+        {loggedIn !== false ? "Logout" : "Login"}</Button>
       <Modal
         open={open}
         onClose={handleClose}
@@ -142,18 +142,19 @@ export default function LoginModal() {
         aria-describedby="parent-modal-description"
       >
         {loggedIn ? <div className="text-center">
+          <Box sx={{ ...style, width: 400 }}>
+          <Stack spacing={3} justifyContent="center" alignItems="center">
           <div className="text-2xl font-bold">
             Are you sure you want to logout?
             </div>
-            <div className="font-light text-neutral-500 mt-2">
-              You will be logged out of all devices
-              </div>
               <CustomButton
               outline
               label="Logout"  
               onClick={() => {}
               }
             />
+          </Stack>
+          </Box>
         </div> : <Box sx={{ ...style, width: 400 }}>
           <Stack spacing={3} justifyContent="center" alignItems="center">
             <div className="text-center">
