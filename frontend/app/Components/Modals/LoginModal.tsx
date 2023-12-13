@@ -14,7 +14,6 @@ import CustomButton from '../Button';
 import Cookies from "js-cookie";
 import { v4 as uuidv4 } from "uuid";
 import { IBackEndUser } from '@/app/Helper/Modules';
-import { get } from 'http';
 
 
 const style = {
