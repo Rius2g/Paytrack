@@ -3,7 +3,7 @@
 import Home from "./Pages/Home"
 import React from "react";
 import { createContext } from 'react';
-import { IDate, UserIdType } from './Helper/Modules';
+import { IDate} from './Helper/Modules';
 import dayjs from "dayjs";
 
 
@@ -19,15 +19,11 @@ var date_instance: IDate = {
 
 export const DateContext = createContext<IDate>(date_instance);
 
-
-
 export default function Pages() {
 
   return (
-    <>
       <div className="dark">
         <Home />
       </div>
-    </>
   )
 }

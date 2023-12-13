@@ -3,6 +3,7 @@ import * as React from 'react'
 import Navbar from './Components/Navbar/Navbar'
 import { Nunito } from 'next/font/google';
 
+
 export const metadata = {
   title: 'Paytrack',
   description: 'A Rius2g project',
@@ -20,12 +21,14 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <div className='dark'>
       <body className={font.className}>
         <Navbar/>
         <div className="pt-36" >
         {children}
         </div>
       </body>
+      </div>
     </html>
   )
 }

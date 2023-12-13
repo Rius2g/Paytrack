@@ -12,7 +12,6 @@ import { Stack } from '@mui/material';
 import Cookies from "js-cookie";
 import { JobsAPI } from '@/app/api/JobsAPI';
 import { useEffect } from 'react';
-import { Console } from 'console';
 
 const style = {
   position: 'absolute' as 'absolute',
