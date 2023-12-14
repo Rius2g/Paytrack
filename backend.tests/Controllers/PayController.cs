@@ -80,6 +80,18 @@ namespace backend.tests.Controllers
         }
 
         [Fact]
+        public void BaseWithTaxAndMultipleShifts()
+        {
+
+        }
+
+        [Fact]
+        public void BaseWithTaxAndMultipleShiftsAndJobs()
+        {
+            
+        }
+
+        [Fact]
         public void BasePayTestWithNoRules()
         {
             //Add shifts to db with rules
