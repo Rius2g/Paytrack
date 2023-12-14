@@ -9,10 +9,29 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<MyDbContext>(options =>
 {
-    var config = new ConfigurationBuilder()
-        .SetBasePath(Path.Combine(Directory.GetCurrentDirectory(), ".."))
-        .AddJsonFile("Configs.json")
-        .Build();
+            DirectoryInfo currentDirectory = new DirectoryInfo(Directory.GetCurrentDirectory());
+            while (currentDirectory != null && !currentDirectory.Name.Equals("paytrack", StringComparison.OrdinalIgnoreCase))
+            {
+                if (currentDirectory.Parent == null)
+                {
+                    throw new InvalidOperationException("Unable to find the '/paytrack/' directory.");
+                }
+                currentDirectory = currentDirectory.Parent;
+            }
+
+            if (currentDirectory == null)
+            {
+                throw new InvalidOperationException("Unable to find the '/paytrack/' directory.");
+            }
+
+            // Construct the path to the Configs.json file
+            string configFilePath = Path.Combine(currentDirectory.FullName, "Configs.json");
+
+            // Build configuration
+            IConfiguration config = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile(configFilePath, optional: false, reloadOnChange: true)
+                .Build();
 
     options.UseSqlServer(config["Azure"]);
 });
