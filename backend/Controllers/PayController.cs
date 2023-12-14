@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using backend.Models;
 using backend.Database;
+using Microsoft.EntityFrameworkCore;
 
 namespace backend.Controllers
 {
@@ -14,14 +15,11 @@ public class PayController : BaseController
     }
 
 [HttpGet]
-public decimal ExpectedPay(int userID, int startTime, int endTime)
+public double ExpectedPay(int userID, int startTime, int endTime)
 {
     double ExpectedPay = 0;
-    var shifts = _context.Shifts.Where(t => t.uiD == userID && t.shiftDate >= startTime && t.shiftDate <= endTime).ToArray();
-    var jobs = _context.Jobs.Where(t => t.ID == userID).ToArray();
+    var shifts = _context.Shifts.Include(t => t.job).Where(t => t.uiD == userID && t.shiftDate >= startTime && t.shiftDate <= endTime).ToArray();
     var rules = _context.Rules.Where(t => t.ID == userID).ToArray();
-
-    var shifts_with_jobs = shifts.Join(jobs, s => s.jobbID, j => j.ID, (s, j) => new { s, j }).ToArray();
 
     var user = _context.Users.Where(t => t.ID == userID).FirstOrDefault();
 
@@ -30,23 +28,27 @@ public decimal ExpectedPay(int userID, int startTime, int endTime)
         return 0;
     }
 
-    if (shifts_with_jobs.Count() == 0)
+    if (shifts.Count() == 0)
     {
         return 0;
     }
     
-    foreach(var shift in shifts_with_jobs)
+    foreach(var shift in shifts)
     {
-        var payRate = shift.j.payRate; // Access payRate from the Job object
-        ExpectedPay += CalculateBasePayHours(shift.s, payRate);
+        if (shift.job == null)
+        {
+            continue;
+        }
+        var payRate = shift.job.payRate; // Access payRate from the Job object
+        ExpectedPay += CalculateBasePayHours(shift, payRate);
+        
         if (rules.Length != 0)
-            ExpectedPay += CalculateExtraFromRules(rules, shift.s, payRate); // Pass payRate here
-
-        // ...
+        {
+            ExpectedPay += CalculateExtraFromRules(rules, shift, payRate); // Pass payRate here
+        }
     }
-
-
-    return 1 * (1 - user.Taxrate);
+    double tax = (double)user.Taxrate / 100;
+    return ExpectedPay * (1 - tax);
 }
 
     private double CalculateExtraFromRules([FromBody] Rules[] rules, [FromBody] Shift shift, int basePay)

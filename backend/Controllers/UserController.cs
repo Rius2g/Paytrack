@@ -23,7 +23,7 @@ public class UserController : BaseController
     {
         var newuser = _context.Users.FirstOrDefault(u => u.Email == user.Email);
 
-        if (newuser == null)
+        if (newuser != null)
         {
             return 0;
         }
@@ -40,8 +40,8 @@ public class UserController : BaseController
         newuser = new User {
             Email = user.Email,
             Password = hash,
-            Taxrate = 10,
-            Currency = "USD",
+            Currency = user.Currency,
+            Taxrate = user.Taxrate,
 
         };
         
@@ -52,7 +52,6 @@ public class UserController : BaseController
         var result = newuser.ID;
 
         var res = passwordHash.PostSalt(result, salt);
-
         return result;
     }
 

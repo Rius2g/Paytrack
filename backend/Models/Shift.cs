@@ -18,6 +18,9 @@ namespace backend.Models
         public int shiftDate { get; set; }
 
         public string? jobName { get; set; }
+
+        public virtual Job? job { get; set; }
+
       
     }
 }

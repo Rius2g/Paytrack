@@ -16,13 +16,37 @@ namespace backend.Database
 
         public DbSet<Salts> Salts { get; set; }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+       protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Job>().ToTable("Jobs").HasKey(j => j.ID);
-            modelBuilder.Entity<Shift>().ToTable("Shifts").HasKey(s => s.ID);
-            modelBuilder.Entity<User>().ToTable("Users").HasKey(u => u.ID);
-            modelBuilder.Entity<Rules>().ToTable("Rules").HasKey(r => r.ID);
-            modelBuilder.Entity<Salts>().ToTable("Salts").HasKey(s => s.ID);
+            // Configuring the Job entity
+            modelBuilder.Entity<Job>()
+                .ToTable("Jobs")
+                .HasKey(j => j.ID);
+
+            // Configuring the Shift entity and its relationship with Job
+            modelBuilder.Entity<Shift>()
+                .ToTable("Shifts")
+                .HasKey(s => s.ID);
+            modelBuilder.Entity<Shift>()
+                .HasOne(s => s.job)
+                .WithMany()
+                .HasForeignKey(s => s.jobbID); // Assuming jobbID is the foreign key
+
+            // Configuring the User entity
+            modelBuilder.Entity<User>()
+                .ToTable("Users")
+                .HasKey(u => u.ID);
+
+            // Configuring the Rules entity
+            modelBuilder.Entity<Rules>()
+                .ToTable("Rules")
+                .HasKey(r => r.ID);
+
+            // Configuring the Salts entity
+            modelBuilder.Entity<Salts>()
+                .ToTable("Salts")
+                .HasKey(s => s.ID);
         }
+
     }
 }
