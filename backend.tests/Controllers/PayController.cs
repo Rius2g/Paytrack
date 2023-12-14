@@ -109,6 +109,16 @@ namespace backend.tests.Controllers
 
             Assert.Equal(700, pay); //2 hours * 175kr/h should be * 2 since rule
 
+            var shift2 = MockShift();
+            shift2.uiD = uid;
+            shift2.jobbID = job1id;
+            shift2.shiftDate = 20231212;
+            shiftsController.PostShift(shift2);
+
+            pay = payController.ExpectedPay(uid, 20231201, 20231230); //succsessfully ignored non "monday" rule day
+
+            Assert.Equal(1050, pay); //2 hours * 175kr/h should be * 2 since rule
+
         }
 
     }
