@@ -72,13 +72,12 @@ namespace backend.tests.Controllers
                 JobID = 1,
                 Rate = 175,
                 UiD = 1,
-                RateType = "Hourly",
+                RateType = "%",
                 RuleType = "Day",
                 Day = "Monday",
                 jobName = "Test job",
                 Start = 0,
                 Date = null,
-                ID = 1
             };
         }
 

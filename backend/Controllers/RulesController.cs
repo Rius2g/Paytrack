@@ -35,6 +35,7 @@ public class RulesController : BaseController
     public int PostRule(Rules rule)
     {
         _context.Rules.Add(rule);
+        
         _context.SaveChanges();
         return 1;
     }
