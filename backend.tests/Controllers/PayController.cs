@@ -67,7 +67,7 @@ namespace backend.tests.Controllers
 
             Assert.Equal(637.5, pay); //shouldnt include the new shift since out of search range
             
-            PurgeDB();
+            // PurgeDB();
         }
 
         [Fact]
@@ -118,6 +118,49 @@ namespace backend.tests.Controllers
             pay = payController.ExpectedPay(uid, 20231201, 20231230); //succsessfully ignored non "monday" rule day
 
             Assert.Equal(1050, pay); //2 hours * 175kr/h should be * 2 since rule
+
+
+            var rule2 = MockRule();
+
+
+            rule2.RuleType = "Time";
+            rule2.Start = 1100; //should be one hour overlap here with both rules :)
+
+            rule2.Rate = 100;
+            rule2.RateType = "Flat"; //Flat or 100%
+            rule2.JobID = job1id;
+
+            ruleController.PostRule(rule2); //post new rule, calc pay which should be 100extra now
+
+            pay = payController.ExpectedPay(uid, 20231201, 20231230); //succsessfully ignored non "monday" rule day
+
+            Assert.Equal(1250, pay); //should be 1050 + 100*2 since 2 shifts with 100 flat between 11 and 12
+
+            //works with day and time rule, have to check day and time + date
+
+            var rule3 = MockRule();
+
+            rule3.RuleType = "Time and Day";
+            rule3.RateType = "Flat";
+            rule3.Start = 1600;
+            rule3.Day = "Saturday";
+            rule3.Rate = 400;
+
+            ruleController.PostRule(rule3);
+
+            var shift3 = MockShift();
+            shift3.uiD = uid;
+            shift3.jobbID = job1id;
+            shift3.shiftDate = 20231216;
+            shift3.shiftStartTime = 1600; //3 hours of 400 extra 400 + 175 = 575 * 3
+            shift3.shiftEndTime = 1900;
+            shiftsController.PostShift(shift3);
+
+            pay = payController.ExpectedPay(uid, 20231201, 20231230); //succsessfully ignored non "monday" rule day
+
+            Assert.Equal(3275, pay); //should be 1050 + 100*2 since 2 shifts with 100 flat between 11 and 12
+
+            PurgeDB();
 
         }
 

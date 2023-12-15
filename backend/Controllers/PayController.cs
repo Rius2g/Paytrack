@@ -19,7 +19,7 @@ public double ExpectedPay(int userID, int startTime, int endTime)
 {
     double ExpectedPay = 0;
     var shifts = _context.Shifts.Include(t => t.job).Where(t => t.uiD == userID && t.shiftDate >= startTime && t.shiftDate <= endTime).ToArray();
-    var rules = _context.Rules.Where(t => t.ID == userID).ToArray();
+    var rules = _context.Rules.Where(t => t.UiD == userID).ToArray();
 
     var user = _context.Users.Where(t => t.ID == userID).FirstOrDefault();
 
@@ -54,6 +54,7 @@ public double ExpectedPay(int userID, int startTime, int endTime)
     private double CalculateExtraFromRules([FromBody] Rules[] rules, [FromBody] Shift shift, int basePay)
     {
         //case switch for each rule type and then call the appropriate method
+        double extraPay = 0;
         foreach(var rule in rules)
         {
             if (rule.JobID == shift.jobbID)
@@ -61,19 +62,23 @@ public double ExpectedPay(int userID, int startTime, int endTime)
                 switch(rule.RuleType)
                 {
                     case "Day":
-                        return CalculateDayRule(rule, shift, basePay);
+                        extraPay += CalculateDayRule(rule, shift, basePay);
+                        break;
                     case "Date":
-                        return CalculateDateRule(rule, shift, basePay);
+                        extraPay += CalculateDateRule(rule, shift, basePay);
+                        break;
                     case "Time":
-                        return CalculateTimeRule(rule, shift, basePay);
+                        extraPay += CalculateTimeRule(rule, shift, basePay);
+                        break;
                     case "Time and Day":
-                        return CalculateDayAndTimeRule(rule, shift, basePay);
+                        extraPay += CalculateDayAndTimeRule(rule, shift, basePay);
+                        break;
                     default:
-                        return 0;
+                        break;
                 }
             }
         }
-        return 0;
+        return extraPay;
     }
 
     public double CalculateBasePayHours(Shift shift, int basepay)
