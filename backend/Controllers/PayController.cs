@@ -174,7 +174,6 @@ public double ExpectedPay(int userID, int startTime, int endTime)
             rule_diff = 0;
         }
     var hours_worked = (shift.shiftEndTime - shift.shiftStartTime + rule_diff)/100;
-    // var hours_worked = (int)Math.Floor((shift.shiftEndTime - rule.Start) / 100.0); //this is wrong, if the rule says 11 but you start 15 and end 18, it gives 7 hours....
     var minutes_worked = (shift.shiftEndTime - rule.Start) % 100;
 
     if (minutes_worked > 50)

@@ -160,6 +160,36 @@ namespace backend.tests.Controllers
 
             Assert.Equal(3275, pay); //should be 1050 + 100*2 since 2 shifts with 100 flat between 11 and 12
 
+            var job2 = MockJob(); //175kr/h
+            job2.UiD = uid;
+            job2.payRate = 250;
+            job2.jobName = "Test job 2";
+
+            var jobid = jobController.PostJob(job2);
+
+            var shift4 = MockShift();
+            shift4.uiD = uid;
+            shift4.jobbID = jobid;
+            shift4.shiftDate = 20231216;   
+            shift4.shiftStartTime = 1600; 
+            shift4.shiftEndTime = 1900;
+            shiftsController.PostShift(shift4);
+
+
+            var rule4 = MockRule();
+            rule4.RuleType = "Date";
+            rule4.Date = 20231216;
+            rule4.Rate = 100;
+            rule4.RateType = "%";
+            rule4.JobID = jobid;
+            rule4.UiD = uid;
+
+            ruleController.PostRule(rule4);
+
+            pay = payController.ExpectedPay(uid, 20231201, 20231230); //succsessfully ignored non "monday" rule day
+
+            Assert.Equal(4775, pay); //with new rule we should add 
+
             PurgeDB();
 
         }
