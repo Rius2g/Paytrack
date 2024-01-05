@@ -12,9 +12,9 @@ import { useContext } from "react";
 const Navbar = () => {
     const date = useContext(DateContext);
     return (
-        <div className="fixed w-full bg-white z-10 shadow-sm">
+        <div className="dark fixed w-full bg-white z-10 shadow-sm">
             <div
-            className="
+            className="dark
             py-4
             border-b-[1px]
             "
@@ -22,6 +22,7 @@ const Navbar = () => {
             <Container >
                 <div
                 className="
+                dark
                 flex
                 flex-row
                 items-center

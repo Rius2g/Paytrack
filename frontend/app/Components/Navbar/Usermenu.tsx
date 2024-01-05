@@ -37,12 +37,12 @@ const UserMenu = () => {
 
     return (
         <div className="relative">
-            <div className="flex flex-row items-center gap-5">
+            <div className="dark flex flex-row items-center gap-5">
                 <div>
                 </div>
                 <div
                 onClick={toggleOpen}
-                className="
+                className="dark
                 py-4
                 md:py-1
                 md:px-2
@@ -66,8 +66,8 @@ const UserMenu = () => {
                 </div>
             </div>
             {isOpen && (
-              <div className="absolute rounded-xl shadow-md max-w-[90vw] bg-white overflow-hidden right-0 top-12 text-sm">
-              <div className="flex flex-col cursor-pointer overflow-y-auto p-4">
+              <div className="dark absolute rounded-xl shadow-md max-w-[90vw] bg-white overflow-hidden right-0 top-12 text-sm">
+              <div className="dark flex flex-col cursor-pointer overflow-y-auto p-4">
                   {components.map((component, index) => (
                     <React.Fragment key={index}>{component}</React.Fragment>
                   ))}

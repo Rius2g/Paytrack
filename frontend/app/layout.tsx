@@ -20,15 +20,15 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
-      <div className='dark'>
-      <body className={font.className}>
-        <Navbar/>
-        <div className="pt-36" >
-        {children}
+      <html lang="en" className='dark'>
+        <div className='dark'>
+        <body className={font.className}>
+          <Navbar/>
+          <div className="pt-36" >
+          {children}
+          </div>
+        </body>
         </div>
-      </body>
-      </div>
-    </html>
-  )
+      </html>
+    )
 }

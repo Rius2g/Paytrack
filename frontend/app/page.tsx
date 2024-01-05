@@ -5,7 +5,6 @@ import React from "react";
 import { createContext } from 'react';
 import { IDate} from './Helper/Modules';
 import dayjs from "dayjs";
-import '../styles/globals.css'
 
 
 var date_instance: IDate = {
@@ -24,7 +23,7 @@ export default function Pages() {
   
 
   return (
-      <div className="dark">
+      <div>
         <Home />
       </div>
   )
