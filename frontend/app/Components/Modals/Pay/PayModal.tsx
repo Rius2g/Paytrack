@@ -152,8 +152,10 @@ export default function PayModal() {
                                 {startFront} - {endFront}:
                             </div>
                             <Stack spacing={3}>
-                            {expectedPay}
-                            <ExplenationsList Explenation={explenations}/>
+                              <div className="font-bold text-xl">
+                                {expectedPay}
+                              </div>
+                              <ExplenationsList Explenation={explenations}/>
                             </Stack>
                         </Stack>
                         </Stack>
