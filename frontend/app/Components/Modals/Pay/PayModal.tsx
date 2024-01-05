@@ -142,7 +142,6 @@ export default function PayModal() {
             sm:block
             "
             >
-            {/* expected pay stuff here */}
                     <Stack justifyContent="center" alignItems="center">
                     <div>
                     Expected pay for range

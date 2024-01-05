@@ -8,3 +8,4 @@ backend/.vs/
 *.vscode
 *.DS_Store
 *.json
+Configs.json
