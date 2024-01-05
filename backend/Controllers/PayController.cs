@@ -18,6 +18,7 @@ public class PayController : BaseController
 public double ExpectedPay(int userID, int startTime, int endTime)
 {
     double ExpectedPay = 0;
+    var Expleantions = new List<Expleantion>(); //create a list for explaining the pay
     var shifts = _context.Shifts.Include(t => t.job).Where(t => t.uiD == userID && t.shiftDate >= startTime && t.shiftDate <= endTime).ToArray();
     var rules = _context.Rules.Where(t => t.UiD == userID).ToArray();
 
@@ -39,19 +40,34 @@ public double ExpectedPay(int userID, int startTime, int endTime)
         {
             continue;
         }
+        if (Expleantions.Count() == 0)
+        {
+            var Expleantion = new Expleantion();
+            Expleantion.Job = shift.job.jobName;
+            Expleantion.shifts = 1;
+            Expleantion.Hours = (int)Math.Floor((shift.shiftEndTime - shift.shiftStartTime) / 100.0);
+            Expleantion.Rate = shift.job.payRate;
+            Expleantion.Salary = Expleantion.Hours * Expleantion.Rate;
+            Expleantion.Type = "Base";
+            Expleantions.Add(Expleantion);
+        } 
+        else //not empty explenation list, we need to iterate over and try to see if there are shifts from same job with same type and eventually the same ruletype
+        {
+            SearchForOrAddExplenations((int)Math.Floor((shift.shiftEndTime - shift.shiftStartTime) / 100.0), CalculateBasePayHours(shift, shift.job.payRate), shift.job?.jobName, "Base", "", Expleantions);
+        }
         var payRate = shift.job.payRate; // Access payRate from the Job object
         ExpectedPay += CalculateBasePayHours(shift, payRate);
         
-        if (rules.Length != 0)
+        if (rules.Length != 0) //add Rules explenations
         {
-            ExpectedPay += CalculateExtraFromRules(rules, shift, payRate); // Pass payRate here
+            ExpectedPay += CalculateExtraFromRules(rules, shift, payRate, Expleantions); // Pass payRate here, also send in the Expleantions list to add to it when calculating
         }
     }
     double tax = (double)user.Taxrate / 100;
     return ExpectedPay * (1 - tax);
 }
 
-    private double CalculateExtraFromRules([FromBody] Rules[] rules, [FromBody] Shift shift, int basePay)
+    private double CalculateExtraFromRules([FromBody] Rules[] rules, [FromBody] Shift shift, int basePay, List<Expleantion> Expleantions)
     {
         //case switch for each rule type and then call the appropriate method
         double extraPay = 0;
@@ -62,16 +78,28 @@ public double ExpectedPay(int userID, int startTime, int endTime)
                 switch(rule.RuleType)
                 {
                     case "Day":
-                        extraPay += CalculateDayRule(rule, shift, basePay);
+                        //check if already this type and job in the list
+                        var DayAdd = CalculateDayRule(rule, shift, basePay);
+                        extraPay += DayAdd;
+
+                        SearchForOrAddExplenations((int)Math.Floor((shift.shiftEndTime - shift.shiftStartTime) / 100.0), DayAdd, shift.job?.jobName, "Rule", "Day", Expleantions);
                         break;
                     case "Date":
-                        extraPay += CalculateDateRule(rule, shift, basePay);
+                        //check if already this type and job in the list
+                        var DateAdd = CalculateDateRule(rule, shift, basePay);
+                        extraPay += DateAdd;
+
+                        SearchForOrAddExplenations((int)Math.Floor((shift.shiftEndTime - shift.shiftStartTime) / 100.0), DateAdd, shift.job?.jobName, "Rule", "Date", Expleantions);
                         break;
                     case "Time":
-                        extraPay += CalculateTimeRule(rule, shift, basePay);
+                        //check if already this type and job in the list
+                        var TimeAdd = CalculateTimeRule(rule, shift, basePay, Expleantions);
+                        extraPay += TimeAdd;
                         break;
                     case "Time and Day":
-                        extraPay += CalculateDayAndTimeRule(rule, shift, basePay);
+                        //check if already this type and job in the list
+                        var TimeAndDayAdd = CalculateDayAndTimeRule(rule, shift, basePay, Expleantions);
+                        extraPay += TimeAndDayAdd;
                         break;
                     default:
                         break;
@@ -166,7 +194,7 @@ public double ExpectedPay(int userID, int startTime, int endTime)
         return 0;
     }
 
-    private double CalculateTimeRule(Rules rule, Shift shift, int basePay)
+    private double CalculateTimeRule(Rules rule, Shift shift, int basePay, List<Expleantion> Expleantions)
     {
         var rule_diff = shift.shiftStartTime - rule.Start;
         if (rule_diff  > 0)
@@ -191,16 +219,20 @@ public double ExpectedPay(int userID, int startTime, int endTime)
 
     if(rule.RateType == "%")
     {
-        return hours_worked * (basePay * ((rule.Rate / 100) + 1) - basePay); // Return the calculated hours_worked instead of 0
+        var Extra = hours_worked * (basePay * ((rule.Rate / 100) + 1) - basePay);
+        SearchForOrAddExplenations(hours_worked, Extra, shift.job?.jobName, "Rule", "Time", Expleantions);
+        return Extra; // Return the calculated hours_worked instead of 0
     }
     else
     {
-        return hours_worked * rule.Rate; // Return the calculated hours_worked instead of 0
+        var Extra = hours_worked * (rule.Rate + basePay);
+        SearchForOrAddExplenations(hours_worked, Extra, shift.job?.jobName, "Rule", "Time", Expleantions);
+        return Extra; // Return the calculated hours_worked instead of 0
     }
     }
 
 
-    private double CalculateDayAndTimeRule(Rules rule, Shift shift, int basePay)
+    private double CalculateDayAndTimeRule(Rules rule, Shift shift, int basePay, List<Expleantion> Expleantions)
     {
         string dateString = shift.shiftDate.ToString();
         int year = int.Parse(dateString.Substring(0, 4));
@@ -213,10 +245,34 @@ public double ExpectedPay(int userID, int startTime, int endTime)
 
         if(rule.Day == date.DayOfWeek.ToString())
         {
-            return CalculateTimeRule(rule, shift, basePay);
+            return CalculateTimeRule(rule, shift, basePay, Expleantions);
         }
        //just check if the Day is right and if it iss call the time Rule
         return 0;
+    }
+
+    private void SearchForOrAddExplenations(double hours, double salary, string? jobName, string? type, string? ruleType, List<Expleantion> Expleantions)
+    {
+        foreach(var explenation in Expleantions)
+        {
+            if(explenation.Job == jobName && explenation.Type == type && explenation.RuleType == ruleType)
+            {
+                explenation.shifts += 1;
+                explenation.Hours += (int)hours;
+                explenation.Salary += (int)salary;
+                return;
+            }
+        }
+        var Expleantion = new Expleantion();
+        Expleantion.Job = jobName;
+        Expleantion.shifts = 1;
+        Expleantion.Hours = (int)hours;
+        Expleantion.Rate = 0;
+        Expleantion.Salary = (int)salary;
+        Expleantion.Type = type;
+        Expleantion.RuleType = ruleType;
+        Expleantions.Add(Expleantion);
+        return;
     }
     
 }
