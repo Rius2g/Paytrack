@@ -14,6 +14,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { PayAPI } from '@/app/api/PayAPI';
 import { UserContext } from '@/app/page';
 import { IExplenation } from '@/app/Helper/Modules';
+import ExplenationsList from './ExplenationList';
 
 
 var api = new PayAPI();
@@ -150,9 +151,10 @@ export default function PayModal() {
                             <div>
                                 {startFront} - {endFront}:
                             </div>
-                            <div>
+                            <Stack spacing={3}>
                             {expectedPay}
-                            </div>
+                            <ExplenationsList Explenation={explenations}/>
+                            </Stack>
                         </Stack>
                         </Stack>
                     </div>

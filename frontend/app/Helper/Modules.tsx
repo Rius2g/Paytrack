@@ -82,7 +82,7 @@ interface IExplenation {
   Rate: number;
   Salary: number;
   Type: string;
-  RuleType: string;
+  RuleType?: string;
 }
 
 

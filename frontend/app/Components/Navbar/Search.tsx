@@ -2,7 +2,7 @@
 
 import WeekPopup from "../Calender/Weekpopup";
 import { IDate } from "../../Helper/Modules";
-import PayModal from "../Modals/PayModal";
+import PayModal from "../Modals/Pay/PayModal";
 
 const Search = (props:{date:IDate}) => {
     return ( 
