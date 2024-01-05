@@ -12,8 +12,8 @@ import { DatePicker } from '@mui/x-date-pickers';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { PayAPI } from '@/app/api/PayAPI';
-import Cookies from "js-cookie";
 import { UserContext } from '@/app/page';
+import { IExplenation } from '@/app/Helper/Modules';
 
 
 var api = new PayAPI();
@@ -37,6 +37,7 @@ export default function PayModal() {
     const [ startDate, setStartDate ] = useState<Dayjs | null>(dayjs().add(-5, 'day'));
     const [ endDate, setEndDate ] = useState<Dayjs | null>(dayjs().add(7, 'day'));
     const [ expectedPay, setExpectedPay ] = useState(0);
+    const [explenations, setExplenations] = useState<IExplenation[]>([]);
 
   const handleOpen = () => {
     setOpen(true);
@@ -70,7 +71,8 @@ export default function PayModal() {
     if(uid != 0)
     {
     api.getPay(uid, start, end).then((resp) => {
-        setExpectedPay(resp);
+        setExpectedPay(resp.expected_pay);
+        setExplenations(resp.explanations);
     });
   }
     

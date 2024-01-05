@@ -75,6 +75,16 @@ interface IBackEndUser {
     Password: string;
 }
 
+interface IExplenation {
+  Job: string;
+  Shifts: number;
+  Hours: number;
+  Rate: number;
+  Salary: number;
+  Type: string;
+  RuleType: string;
+}
 
 
-export type { IShift, IDate, IJob, IRule, IUser, IBackEndUser }
+
+export type { IShift, IDate, IJob, IRule, IUser, IBackEndUser, IExplenation }
