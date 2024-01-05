@@ -15,9 +15,9 @@ public class PayController : BaseController
     }
 
 [HttpGet]
-public double ExpectedPay(int userID, int startTime, int endTime)
+public Pay ExpectedPay(int userID, int startTime, int endTime)
 {
-    double ExpectedPay = 0;
+    var Pay = new Pay();
     var Expleantions = new List<Expleantion>(); //create a list for explaining the pay
     var shifts = _context.Shifts.Include(t => t.job).Where(t => t.uiD == userID && t.shiftDate >= startTime && t.shiftDate <= endTime).ToArray();
     var rules = _context.Rules.Where(t => t.UiD == userID).ToArray();
@@ -26,12 +26,12 @@ public double ExpectedPay(int userID, int startTime, int endTime)
 
     if (user == null)
     {
-        return 0;
+        return new Pay();
     }
 
     if (shifts.Count() == 0)
     {
-        return 0;
+        return new Pay();
     }
     
     foreach(var shift in shifts)
@@ -56,15 +56,17 @@ public double ExpectedPay(int userID, int startTime, int endTime)
             SearchForOrAddExplenations((int)Math.Floor((shift.shiftEndTime - shift.shiftStartTime) / 100.0), CalculateBasePayHours(shift, shift.job.payRate), shift.job?.jobName, "Base", "", Expleantions);
         }
         var payRate = shift.job.payRate; // Access payRate from the Job object
-        ExpectedPay += CalculateBasePayHours(shift, payRate);
+        Pay.ExpectedPay += CalculateBasePayHours(shift, payRate);
         
         if (rules.Length != 0) //add Rules explenations
         {
-            ExpectedPay += CalculateExtraFromRules(rules, shift, payRate, Expleantions); // Pass payRate here, also send in the Expleantions list to add to it when calculating
+            Pay.ExpectedPay += CalculateExtraFromRules(rules, shift, payRate, Expleantions); // Pass payRate here, also send in the Expleantions list to add to it when calculating
         }
     }
     double tax = (double)user.Taxrate / 100;
-    return ExpectedPay * (1 - tax);
+    Pay.ExpectedPay = Pay.ExpectedPay * (1 - tax);
+    Pay.Explanations = Expleantions.ToArray();
+    return Pay;
 }
 
     private double CalculateExtraFromRules([FromBody] Rules[] rules, [FromBody] Shift shift, int basePay, List<Expleantion> Expleantions)
