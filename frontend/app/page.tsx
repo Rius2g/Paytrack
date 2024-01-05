@@ -3,8 +3,9 @@
 import Home from "./Pages/Home"
 import React from "react";
 import { createContext } from 'react';
-import { IDate} from './Helper/Modules';
+import { IDate, IUser} from './Helper/Modules';
 import dayjs from "dayjs";
+import Cookies from "js-cookie";
 
 
 var date_instance: IDate = {
@@ -17,7 +18,28 @@ var date_instance: IDate = {
   startOf: dayjs().startOf('week')
 }
 
+var user_instance: IUser = {
+  id: 0,
+  Email: "",
+  Password: "",
+  loggedIn: false
+}
+
+function getUiD(){
+  const uid = Cookies.get("userID");
+  if (uid === undefined) {
+    user_instance.id = 0;
+    user_instance.loggedIn = false;
+    return;
+  }
+  user_instance.id = parseInt(uid);
+  user_instance.loggedIn = true;
+}
+
+//create a function to fetch cookies and "log in the user"
+
 export const DateContext = createContext<IDate>(date_instance);
+export const UserContext = createContext<IUser>(user_instance);
 
 export default function Pages() {
   

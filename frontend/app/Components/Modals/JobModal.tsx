@@ -4,14 +4,14 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import Button from '@mui/material/Button';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import CustomButton from '../Button';
 import JobList from '../Jobs/JobsList';
 import { IJob } from '@/app/Helper/Modules';
 import { Stack } from '@mui/material';
 import Cookies from "js-cookie";
 import { JobsAPI } from '@/app/api/JobsAPI';
-import { useEffect } from 'react';
+import { UserContext } from '@/app/page';
 
 const style = {
   position: 'absolute' as 'absolute',
@@ -31,12 +31,7 @@ var api = new JobsAPI();
 export default function JobModal() {
   const [ open, setOpen ] = useState(false);
   const [ jobs, setJobs ] = useState<IJob[]>([]);
-
-  const [userId, setuserId] = React.useState<number>(() =>
-  Cookies.get("userID") !== undefined
-    ? (Cookies.get("userID") as unknown as number)
-    : 0
-  );
+  const User_context = React.useContext(UserContext);
 
 
   const getUserId = () => {
@@ -59,7 +54,7 @@ export default function JobModal() {
 
   const handleNewJob = () => {
     //api call here
-    if(userId === 0)
+    if(User_context.id === 0)
     {
       alert("You must be logged in to add a job");
       return;
@@ -68,7 +63,7 @@ export default function JobModal() {
       id: jobs.length + 1,
       jobName: "New Job",
       payRate: 0,
-      uiD: userId,
+      uiD: User_context.id,
     }
     setJobs([...jobs, newJob]);
     const response = api.postJob(newJob);
@@ -84,8 +79,7 @@ export default function JobModal() {
   }
     
   useEffect(() => {
-    var uid = getUserId();
-    setuserId(uid);
+    var uid = User_context.id;
     if(uid === 0 || uid === undefined || uid === null || open === false)
     {
       return;
@@ -96,7 +90,7 @@ export default function JobModal() {
       setJobs(data);
     }
     )
-  }, [open])
+  }, [open, User_context.id])
 
 
   

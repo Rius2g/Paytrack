@@ -14,7 +14,7 @@ import { JobsAPI } from '@/app/api/JobsAPI';
 import { RulesAPI } from '@/app/api/RulesAPI';
 import dayjs from 'dayjs';
 import convert_date2db from '@/app/Helper/Functions';
-import { setuid } from 'process';
+import { UserContext } from '@/app/page';
 
 
 const style = {
@@ -34,22 +34,10 @@ const style = {
 var jobsAPI = new JobsAPI();
 var rulesAPI = new RulesAPI();
 export default function RulesModal() {
+  const User_context = React.useContext(UserContext);
   const [ open, setOpen ] = useState(false);
   const [ rules, setRules ] = useState<IRule[]>([]);
   const [ jobs, setJobs ] = useState<IJob[]>([]);
-  const [userId, setuserId] = React.useState<number>(() =>
-  Cookies.get("userID") !== undefined
-    ? (Cookies.get("userID") as unknown as number)
-    : 0
-  );
-
-  const getUserId = () => {
-    if (Cookies.get("userID") !== undefined) {
-      return Cookies.get("userID") as unknown as number;
-    } else {
-      return 0;
-    }
-  };
 
 
   const handleOpen = () => {
@@ -63,6 +51,7 @@ export default function RulesModal() {
 
   const handleNewRule = () => {
     //api call here
+    const userId = User_context.id;
     if(userId === 0 || userId === undefined)
     {
       alert("You must be logged in to add a rule");
@@ -86,8 +75,7 @@ export default function RulesModal() {
   }
 
   React.useEffect(() => {
-    var uid = getUserId();
-    setuserId(uid);
+    var uid = User_context.id;
     if(uid === 0 || uid === undefined || uid === null || open === false)
     {
       return;
@@ -103,7 +91,7 @@ export default function RulesModal() {
     }
     );
 
-  }, [open]);
+  }, [open, User_context.id]);
   
 
   return (

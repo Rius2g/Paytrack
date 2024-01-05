@@ -2,8 +2,7 @@
 
 import { IShift, IJob } from "../Helper/Modules"
 import { useEffect, useState, useContext } from "react"
-import { Button } from "@mui/material";
-import { Stack } from "@mui/material";
+import { Button, Stack } from "@mui/material";
 import convert_date2db, { convert_dbDate2Frontend } from "../Helper/Functions";
 import { Box, Grid } from "@mui/material";
 import ReturnWorkDay from "../Components/Shifts/WorkDay";
@@ -11,21 +10,14 @@ import { ShiftsAPI } from "../api/ShiftsAPI";
 import { DateContext } from "../page";
 import { JobsAPI } from "../api/JobsAPI";
 import Cookies from "js-cookie";
+import { UserContext } from "../page";
 
 
 const shiftsAPI = new ShiftsAPI();
 const jobsAPI = new JobsAPI();
 
-const getUiD = () => {
-  const uid = Cookies.get("userID");
-  if (uid === undefined) {
-    return 0;
-  }
-  return parseInt(uid);
-}
-
-let gotJobs = false;
 export default function Home() {
+  const User_context = useContext(UserContext);
   const date_instance = useContext(DateContext);
   const [ shiftList, setShiftList ] = useState<IShift[]>([])
   const [ jobList, setJobList ] = useState<IJob[]>([])
@@ -33,19 +25,14 @@ export default function Home() {
 
 
   const addShift = () => {
-    const uid = getUiD();
-    if(uid === 0)
-    {
-      alert("Please login to add a shift");
-      return;
-    }
+    
 
     const newShift: IShift = {
       id: shiftList.length + 1,
       shiftDate: convert_date2db(date_instance.date),
       shiftStartTime: 1030,
       shiftEndTime: 1030,
-      uiD: uid,
+      uiD: User_context.id,
       jobbID: 1,
       jobName: "",
     }
@@ -69,10 +56,9 @@ export default function Home() {
   ];
 
   const getShifts = () => {
-    const uid = getUiD();
-    if(uid !== 0)
+    if(User_context.id !== 0)
     {
-      shiftsAPI.getShiftsInRange(convert_date2db(date_instance.startOf)+1, convert_date2db(date_instance.endOf)+1, uid).then((data) => {
+      shiftsAPI.getShiftsInRange(convert_date2db(date_instance.startOf)+1, convert_date2db(date_instance.endOf)+1, User_context.id).then((data) => {
         setShiftList(data)
       })
   
@@ -108,11 +94,10 @@ export default function Home() {
 
 
   let getJobs = () => {
-    const uid = getUiD();
-    if(uid !== 0)
+    if(User_context.id !== 0)
     {
       //api call here
-      jobsAPI.getJobs(uid).then((data) => {
+      jobsAPI.getJobs(User_context.id).then((data) => {
         setJobList(data);
       });
     }

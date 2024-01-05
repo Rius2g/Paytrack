@@ -14,6 +14,7 @@ import CustomButton from '../Button';
 import Cookies from "js-cookie";
 import { v4 as uuidv4 } from "uuid";
 import { IBackEndUser } from '@/app/Helper/Modules';
+import { UserContext } from '@/app/page';
 
 
 const style = {
@@ -30,21 +31,13 @@ const style = {
   pb: 3,
 };
 
-const getLoggedInCookie = () => {
-  if (Cookies.get("userID") !== undefined) {
-    return true;
-  } else {
-    return false;
-  }
-}
-
 var userAPI = new UserAPI();
 
 export default function LoginModal() {
+  const User_context = React.useContext(UserContext);
   const [open, setOpen] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const loggedIn = getLoggedInCookie();
 
 
   const [showPassword, setShowPassword] = useState(false);
@@ -97,6 +90,9 @@ export default function LoginModal() {
               return;
             }
             //successfull login
+            User_context.id = data.id;
+            User_context.Email = data.email;
+            User_context.loggedIn = true;
             Cookies.set("failedLoginAttempts", "0");
             const cookie = uuidv4();
             Cookies.set("loggedIn", cookie, { expires: 30 }); //change later
@@ -134,14 +130,14 @@ export default function LoginModal() {
      border-x-[1px] 
      sm:block
      w-24"  onClick={handleOpen}>
-        {loggedIn !== false ? "Logout" : "Login"}</Button>
+        {User_context.loggedIn !== false ? "Logout" : "Login"}</Button>
       <Modal
         open={open}
         onClose={handleClose}
         aria-labelledby="parent-modal-title"
         aria-describedby="parent-modal-description"
       >
-        {loggedIn ? <div className="text-center">
+        {User_context.loggedIn ? <div className="text-center">
           <Box sx={{ ...style, width: 400 }}>
           <Stack spacing={3} justifyContent="center" alignItems="center">
           <div className="text-2xl font-bold">
@@ -150,7 +146,11 @@ export default function LoginModal() {
               <CustomButton
               outline
               label="Logout"  
-              onClick={() => {}
+              onClick={() => {User_context.Email = ""; User_context.Password = ""; 
+              User_context.loggedIn = false; User_context.id = 0; 
+              Cookies.remove("loggedIn"); Cookies.remove("userID");
+              Cookies.remove("failedLoginAttempts"); Cookies.remove("timeOut");
+              handleClose();}
               }
             />
           </Stack>

@@ -11,6 +11,7 @@ import { UserAPI } from '@/app/api/UserAPI';
 import { useEffect } from 'react';
 import Cookies from "js-cookie";
 import { SelectChangeEvent } from '@mui/material/Select';
+import { UserContext } from '@/app/page';
 
 const style = {
   position: 'absolute' as 'absolute',
@@ -28,25 +29,11 @@ const style = {
 
 var api = new UserAPI();
 export default function SettingsModal() {
-
-  const [uid, setuid] = React.useState<number>(() =>
-  Cookies.get("userID") !== undefined
-    ? (Cookies.get("userID") as unknown as number)
-    : 0
-  );
+  const User_context = React.useContext(UserContext);
 
     const [ open, setOpen ] = useState(false);
     const [ taxRate, setTaxRate ] = useState(0);
     const [ currency, setCurrency ] = useState('USD');
-
-
-    const getUserId = () => {
-      if (Cookies.get("userID") !== undefined) {
-        return Cookies.get("userID") as unknown as number;
-      } else {
-        return 0;
-      }
-    };
 
 
     const handleCurrencyChange = (event: SelectChangeEvent) => {
@@ -72,7 +59,7 @@ export default function SettingsModal() {
         (key) => currencyOptions[key] === currency
       );
       if (currencyValue) {
-        api.changeSettings(uid, taxRate, currencyValue);
+        api.changeSettings(User_context.id, taxRate, currencyValue);
       }
     };
 
@@ -82,8 +69,7 @@ export default function SettingsModal() {
 
       
       useEffect(() => {
-        var userID = getUserId();
-        setuid(userID);
+        var userID = User_context.id;
         if(userID === 0 || userID === undefined || userID === null || open === false) 
         {
           return;
@@ -95,7 +81,7 @@ export default function SettingsModal() {
             setCurrency(data.currency);
         }
         );
-      }, [open]);
+      }, [open, User_context.id]);
 
 
 

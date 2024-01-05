@@ -3,7 +3,7 @@
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import Button from '@mui/material/Button';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import { Stack } from '@mui/material';
 import dayjs, { Dayjs } from 'dayjs';
 import convert_date2db from '@/app/Helper/Functions';
@@ -13,6 +13,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { PayAPI } from '@/app/api/PayAPI';
 import Cookies from "js-cookie";
+import { UserContext } from '@/app/page';
 
 
 var api = new PayAPI();
@@ -32,19 +33,10 @@ const style = {
 
 export default function PayModal() {
     const [open, setOpen] = useState(false);
+    const User_context = useContext(UserContext);
     const [ startDate, setStartDate ] = useState<Dayjs | null>(dayjs().add(-5, 'day'));
     const [ endDate, setEndDate ] = useState<Dayjs | null>(dayjs().add(7, 'day'));
     const [ expectedPay, setExpectedPay ] = useState(0);
-
-
-  const getUserId = () => {
-    if (Cookies.get("userID") !== undefined) {
-      return Cookies.get("userID") as unknown as number;
-    } else {
-      return 0;
-    }
-  };
-
 
   const handleOpen = () => {
     setOpen(true);
@@ -74,7 +66,7 @@ export default function PayModal() {
 
   useEffect(() => {
     //api call
-    var uid = getUserId();
+    var uid = User_context.id;
     if(uid != 0)
     {
     api.getPay(uid, start, end).then((resp) => {
@@ -82,7 +74,7 @@ export default function PayModal() {
     });
   }
     
-  }, [start, end, open]);
+  }, [start, end, open, User_context.id]);
 
 
   

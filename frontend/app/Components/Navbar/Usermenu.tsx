@@ -10,18 +10,11 @@ import JobModal from '../Modals/JobModal';
 import RulesModal from '../Modals/RulesModal';
 import SettingsModal from '../Modals/SettingsModal';
 import Cookies from "js-cookie";
-
-const getLoggedInCookie = () => {
-  if (Cookies.get("userID") !== undefined) {
-    return true;
-  } else {
-    return false;
-  }
-}
+import { UserContext } from '@/app/page';
 
 const UserMenu = () => {
+    const User_context = React.useContext(UserContext);
     const [isOpen, setIsOpen] = useState(false);
-    const loggedIn = getLoggedInCookie();
 
     const toggleOpen = useCallback(() => {
         setIsOpen((value) => !value);
@@ -29,10 +22,10 @@ const UserMenu = () => {
 
     const components = [
       <LoginModal key="login" />,
-      loggedIn && <RegisterModal />,
-      loggedIn && <JobModal />,
-      loggedIn && <RulesModal />,
-      loggedIn && <SettingsModal />
+      User_context.id && <RegisterModal />,
+      User_context.id && <JobModal />,
+      User_context.id && <RulesModal />,
+      User_context.id && <SettingsModal />
     ];
 
     return (
