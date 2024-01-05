@@ -55,6 +55,10 @@ public Pay ExpectedPay(int userID, int startTime, int endTime)
         {
             SearchForOrAddExplenations((int)Math.Floor((shift.shiftEndTime - shift.shiftStartTime) / 100.0), CalculateBasePayHours(shift, shift.job.payRate), shift.job?.jobName, "Base", "", Expleantions);
         }
+        if (shift.job == null)
+        {
+            continue;
+        }
         var payRate = shift.job.payRate; // Access payRate from the Job object
         Pay.ExpectedPay += CalculateBasePayHours(shift, payRate);
         
