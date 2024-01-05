@@ -9,3 +9,4 @@ backend/.vs/
 *.DS_Store
 *.json
 Configs.json
+Paytrack.sln
