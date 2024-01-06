@@ -34,11 +34,13 @@ namespace backend.tests.Controllers
             _context.Database.ExecuteSqlRaw("DELETE FROM Rules");
             _context.Database.ExecuteSqlRaw("DELETE FROM Jobs");
             _context.Database.ExecuteSqlRaw("DELETE FROM Users");
+            _context.Database.ExecuteSqlRaw("DELETE FROM Salts");
 
             _context.Database.ExecuteSqlRaw("TRUNCATE TABLE Users;");
             _context.Database.ExecuteSqlRaw("TRUNCATE TABLE Jobs;");
             _context.Database.ExecuteSqlRaw("TRUNCATE TABLE Shifts;");
             _context.Database.ExecuteSqlRaw("TRUNCATE TABLE Rules;");
+            _context.Database.ExecuteSqlRaw("TRUNCATE TABLE Salts;");
 
 
 
