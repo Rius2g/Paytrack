@@ -15,6 +15,7 @@ import Cookies from "js-cookie";
 import { v4 as uuidv4 } from "uuid";
 import { IBackEndUser } from '@/app/Helper/Modules';
 import { UserContext } from '@/app/page';
+import { Console } from 'console';
 
 
 const style = {
@@ -75,7 +76,9 @@ export default function LoginModal() {
     var user: IBackEndUser = {
       Email: email,
       Password: password,
-      UiD: 0
+      UiD: 0,
+      Taxrate: 0,
+      Currency: "NOK"
     }
 
     userAPI.loginUser(user).then((res) => {
@@ -93,6 +96,7 @@ export default function LoginModal() {
             User_context.id = data.id;
             User_context.Email = data.email;
             User_context.loggedIn = true;
+            console.log(User_context.loggedIn);
             Cookies.set("failedLoginAttempts", "0");
             const cookie = uuidv4();
             Cookies.set("loggedIn", cookie, { expires: 30 }); //change later

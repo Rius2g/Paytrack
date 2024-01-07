@@ -18,6 +18,7 @@ public class PayController : BaseController
 public Pay ExpectedPay(int userID, int startTime, int endTime)
 {
     var Pay = new Pay();
+    double ExpectedPay = 0;
     var Expleantions = new List<Expleantion>(); //create a list for explaining the pay
     var shifts = _context.Shifts.Include(t => t.job).Where(t => t.uiD == userID && t.shiftDate >= startTime && t.shiftDate <= endTime).ToArray();
     var rules = _context.Rules.Where(t => t.UiD == userID).ToArray();
@@ -60,15 +61,15 @@ public Pay ExpectedPay(int userID, int startTime, int endTime)
             continue;
         }
         var payRate = shift.job.payRate; // Access payRate from the Job object
-        Pay.ExpectedPay += CalculateBasePayHours(shift, payRate);
-        
+        ExpectedPay += CalculateBasePayHours(shift, payRate);
         if (rules.Length != 0) //add Rules explenations
         {
-            Pay.ExpectedPay += CalculateExtraFromRules(rules, shift, payRate, Expleantions); // Pass payRate here, also send in the Expleantions list to add to it when calculating
+            ExpectedPay += CalculateExtraFromRules(rules, shift, payRate, Expleantions); // Pass payRate here, also send in the Expleantions list to add to it when calculating
         }
+
     }
     double tax = (double)user.Taxrate / 100;
-    Pay.ExpectedPay = Pay.ExpectedPay * (1 - tax);
+    Pay.ExpectedPay = ExpectedPay * (1 - tax);
     Pay.Explanations = Expleantions.ToArray();
     return Pay;
 }
@@ -87,25 +88,22 @@ public Pay ExpectedPay(int userID, int startTime, int endTime)
                         //check if already this type and job in the list
                         var DayAdd = CalculateDayRule(rule, shift, basePay);
                         extraPay += DayAdd;
-
                         SearchForOrAddExplenations((int)Math.Floor((shift.shiftEndTime - shift.shiftStartTime) / 100.0), DayAdd, shift.job?.jobName, "Rule", "Day", Expleantions);
                         break;
                     case "Date":
                         //check if already this type and job in the list
                         var DateAdd = CalculateDateRule(rule, shift, basePay);
                         extraPay += DateAdd;
-
                         SearchForOrAddExplenations((int)Math.Floor((shift.shiftEndTime - shift.shiftStartTime) / 100.0), DateAdd, shift.job?.jobName, "Rule", "Date", Expleantions);
                         break;
                     case "Time":
                         //check if already this type and job in the list
-                        var TimeAdd = CalculateTimeRule(rule, shift, basePay, Expleantions);
-                        extraPay += TimeAdd;
+                        var extra = CalculateTimeRule(rule, shift, basePay, Expleantions);
+                        extraPay += extra;
                         break;
                     case "Time and Day":
                         //check if already this type and job in the list
-                        var TimeAndDayAdd = CalculateDayAndTimeRule(rule, shift, basePay, Expleantions);
-                        extraPay += TimeAndDayAdd;
+                        extraPay += CalculateDayAndTimeRule(rule, shift, basePay, Expleantions);
                         break;
                     default:
                         break;
@@ -231,7 +229,7 @@ public Pay ExpectedPay(int userID, int startTime, int endTime)
     }
     else
     {
-        var Extra = hours_worked * (rule.Rate + basePay);
+        var Extra = hours_worked * rule.Rate;
         SearchForOrAddExplenations(hours_worked, Extra, shift.job?.jobName, "Rule", "Time", Expleantions);
         return Extra; // Return the calculated hours_worked instead of 0
     }

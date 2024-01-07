@@ -73,6 +73,8 @@ interface IBackEndUser {
     UiD: number;
     Email: string;
     Password: string;
+    Taxrate: Number;
+    Currency: string;
 }
 
 interface IExplenation {

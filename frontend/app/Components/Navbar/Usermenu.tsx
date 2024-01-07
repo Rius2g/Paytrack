@@ -22,10 +22,10 @@ const UserMenu = () => {
 
     const components = [
       <LoginModal key="login" />,
-      User_context.id && <RegisterModal />,
-      User_context.id && <JobModal />,
-      User_context.id && <RulesModal />,
-      User_context.id && <SettingsModal />
+      <RegisterModal key="register" />,
+      User_context.loggedIn && <JobModal />,
+      User_context.loggedIn && <RulesModal />,
+      User_context.loggedIn && <SettingsModal />
     ];
 
     return (

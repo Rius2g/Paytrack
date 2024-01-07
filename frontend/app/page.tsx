@@ -1,7 +1,7 @@
 'use client';
 
 import Home from "./Pages/Home"
-import React from "react";
+import React, { useEffect } from "react";
 import { createContext } from 'react';
 import { IDate, IUser} from './Helper/Modules';
 import dayjs from "dayjs";
@@ -42,6 +42,11 @@ export const DateContext = createContext<IDate>(date_instance);
 export const UserContext = createContext<IUser>(user_instance);
 
 export default function Pages() {
+ 
+  useEffect(() => {
+    getUiD();
+  }
+  , []);
   
 
   return (
